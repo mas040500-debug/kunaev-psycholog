@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Владимир Кунаев — психолог</title>
+<meta name="description" content="Психолог Владимир Кунаев. Помогаю справиться с выгоранием, прокрастинацией, кризисом в отношениях. Когнитивно-поведенческая терапия, интегративный подход.">
+<meta name="theme-color" content="#4B82FF">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Владимир Кунаев — психолог">
+<meta property="og:description" content="Создание комфортных условий для вашей терапии.">
+<meta property="og:image" content="assets/portrait-about.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- рваный край объявлен один раз, дальше переиспользуется через <use> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="torn-path" d="M-10 40.5H1450V19.5L1426.5 17.5L1406.5 9.5L1380.5 14.5L1358.75 9.5L1340.5 17.5L1319 14.5L1301.5 26L1267.5 29.5L1241.5 22L1211.5 19.5L1176.25 31.5L1152.5 14.5L1123 10L1094 14.5L1085 0.5H1055.5L1030.5 10L993.75 4.5L962 14.5L944.5 29.5L902.5 31.5L882 16.5L845 20.5L811.25 9.5L766.5 16.5L738 20.5L708.5 9.5L667 29.5L628.75 35.5L588.5 20.5L556 35.5L537.5 16.5L492.5 0L446.25 5.5L406 29.5L355 20.5H303.5L263.75 35.5L211 20.5L177.5 17L159.5 29.5L135.5 26.5L126.5 17L94 29.5L81.25 4.5L-10 6.5V40.5Z"/>
+  </defs>
+</svg>
+
+<!-- ==================== ШАПКА ==================== -->
+<header class="header" id="top">
+  <div class="header__bar">
+    <a class="header__brand" href="#top">
+      <img class="header__avatar" src="assets/portrait-about.png" alt="" width="48" height="48">
+      <span class="header__ident">
+        <span class="header__name">Владимир Кунаев</span>
+        <span class="header__role">Психолог</span>
+      </span>
+    </a>
+
+    <nav class="header__nav" aria-label="Основная навигация">
+      <a href="#about">Обо мне</a>
+      <a href="#principles">Принципы</a>
+      <a href="#education">Квалификация</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <a class="btn header__cta" href="#contacts">Связаться со мной</a>
+
+    <button class="header__burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="header__drawer" id="drawer" aria-label="Мобильная навигация">
+    <a href="#about">Обо мне</a>
+    <a href="#principles">Принципы</a>
+    <a href="#education">Квалификация</a>
+    <a href="#contacts">Контакты</a>
+    <a class="btn" href="#contacts">Связаться со мной</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ==================== ГЕРОЙ ==================== -->
+<section class="section section--surface hero">
+  <div class="hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow">Мой приоритет</p>
+      <h1 class="hero__title">
+        Создание<br>
+        <span class="hero__script">комфортных условий</span><br>
+        для вашей терапии
+      </h1>
+      <a class="btn" href="#contacts">Связаться со мной</a>
+    </div>
+
+    <div class="hero__media">
+      <div class="photo-card">
+        <div class="photo-card__perf" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <img class="photo-card__img" src="assets/portrait-hero.png" alt="Владимир Кунаев, психолог" width="365" height="488">
+        <div class="photo-card__plate">
+          <svg class="photo-card__plate-bg" viewBox="0 0 207 76" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0L26.3455 4.87179L51.75 1.94872L78.0955 7.79487L103.5 0.974359L129.845 6.82051L155.25 0L181.595 7.79487L207 0.974359V76L181.595 70.1538L155.25 76L129.845 71.1282L103.5 76L78.0955 70.1538L51.75 76L26.3455 69.1795L0 74.0513V0Z"/>
+          </svg>
+          <span class="photo-card__signature">Владимир Кунаев</span>
+          <span class="photo-card__caption">психолог</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="torn torn--bottom" style="--torn-color: var(--bg-second-soft)" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none"><use href="#torn-path"/></svg>
+  </div>
+</section>
+
+<!-- ==================== НАПРАВЛЕНИЯ ==================== -->
+<section class="section section--second dir">
+  <p class="eyebrow">Направления</p>
+
+  <h2 class="dir__title">
+    Разбираем вашу ситуацию, смотрим на неё под разными углами
+    <span class="dir__accent">и находим точки опоры</span>
+  </h2>
+
+  <div class="dir__cards">
+    <article class="card">
+      <h3 class="card__title">Кризис в отношениях</h3>
+      <ul class="card__list">
+        <li>Разбор конфликтов</li>
+        <li>Восстановление доверия</li>
+        <li>Путь к взаимопониманию</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h3 class="card__title">Выгорание</h3>
+      <ul class="card__list">
+        <li>Преодоление профессионального выгорания</li>
+        <li>Восстановление сил</li>
+        <li>Возвращение энергии</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h3 class="card__title">Прокрастинация</h3>
+      <ul class="card__list">
+        <li>Преодоление прокрастинации</li>
+        <li>Работа с мотивацией</li>
+        <li>Повышение продуктивности</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ==================== ОБО МНЕ ==================== -->
+<section class="section section--surface about" id="about">
+  <div class="torn torn--top" style="--torn-color: var(--bg-second-soft)" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none"><use href="#torn-path"/></svg>
+  </div>
+
+  <p class="eyebrow">Обо мне</p>
+
+  <div class="about__stage">
+    <span class="about__watermark" aria-hidden="true">комфорт</span>
+    <img class="about__photo" src="assets/portrait-about.png" alt="Владимир Кунаев" width="380" height="475">
+  </div>
+
+  <div class="about__statement">
+    <h2 class="about__lead">
+      Психотерапия рождается на стыке
+      <span class="about__accent">искренней эмпатии и точного анализа</span>
+    </h2>
+    <div class="about__col">
+      <p class="about__body">
+        Моё первое образование — инженерное. Благодаря этому я обладаю хорошим
+        аналитическим мышлением и помогаю находить структуру там, где царит хаос.
+      </p>
+      <p class="about__tags">аналитика / структура / эмпатия / доверие</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ПОДХОД ==================== -->
+<section class="section section--surface appr" id="principles">
+  <div class="appr__head">
+    <p class="eyebrow">Подход</p>
+    <h2 class="appr__title">Принципы работы</h2>
+    <p class="appr__sub">
+      Я совмещаю структурированную, системную терапию
+      с комфортной и понимающей атмосферой на сессиях.
+    </p>
+  </div>
+
+  <div class="appr__map">
+    <svg class="appr__links" viewBox="0 0 1440 350" preserveAspectRatio="none" aria-hidden="true">
+      <g transform="translate(299,0)"><path d="M224.957 0.101562C212.457 122.602 42.457 0.101562 0.957031 137.102"/></g>
+      <g transform="translate(905,9)"><path d="M0.754883 0.656006C77.2549 88.6561 201.755 0.656006 223.255 125.156"/></g>
+      <g transform="translate(684,69)"><path d="M13.6192 0.589111C-32.6814 64.0891 67.32 92.5891 13.6192 182.089"/></g>
+    </svg>
+
+    <article class="note note--a">
+      <svg class="note__bg" viewBox="0 0 377 217" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M7.0496 0.980594L36.2541 8.0041L64.9316 4.91764e-05L94.1012 8.02294L122.674 3.01707L151.809 12.0393L180.381 7.03348L198.222 8.1568L209.656 12.0582L228.774 6.72216L242.589 17.711L277.657 7.42859L312.604 15.6532L337.535 9.51958L361.908 19.3762L376.859 12.894L369.74 216.77L202.92 204.941L173.367 207.911L145.178 201.924L115.589 205.893L87.4703 197.907L57.8121 203.876L29.693 195.89L-0.000100475 202.858L7.0496 0.980594Z"/>
+      </svg>
+      <div class="note__body">
+        <h3 class="note__title">Когнитивно-поведенческая терапия</h3>
+        <p class="note__text">Фундамент моих сессий. Основана на идее, что мысли, убеждения и установки влияют на поведение. Помогает изменить негативные модели мышления.</p>
+      </div>
+    </article>
+
+    <article class="note note--b">
+      <svg class="note__bg" viewBox="0 0 373 183" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M-0.000169451 8.36137L29.5176 13.0314L57.7583 4.76056L87.2912 10.2945L115.577 4.61554L145.125 11.0135L173.411 5.33447L191.285 5.45458L202.899 8.2766L221.726 2.76271L236.072 11.5865L270.581 1.04573L305.894 6.4788L330.487 7.31105e-05L355.32 7.34448L369.928 1.04003L373.005 177.285L205.809 175.018L176.442 178.988L147.99 175.163L118.638 179.997L90.1564 174.444L60.8347 181.006L32.3527 175.453L3.04604 182.878L-0.000169451 8.36137Z"/>
+      </svg>
+      <div class="note__body">
+        <h3 class="note__title">Интегративный подход</h3>
+        <p class="note__text">Гибкое использование техник и стилей общения из разных школ психотерапии для адаптации к вашим индивидуальным потребностям.</p>
+      </div>
+    </article>
+
+    <article class="note note--c">
+      <svg class="note__bg" viewBox="0 0 376 189" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M6.09166 0.573076L35.3246 6.78154L63.9594 4.8961e-05L93.1622 7.07206L121.707 2.88123L150.879 10.8168L179.424 6.62596L197.267 7.68136L208.717 11.1073L227.807 6.58632L241.672 16.1488L276.685 7.42858L311.665 14.7024L336.563 9.51958L360.978 18.1536L375.896 12.6223L369.745 188.787L202.897 177.773L173.362 180.2L145.15 174.892L115.585 178.182L87.4326 171.147L57.8076 176.165L29.6553 169.129L0.000174471 175.01L6.09166 0.573076Z"/>
+      </svg>
+      <div class="note__body">
+        <h3 class="note__title">Клиентоцентрированность</h3>
+        <p class="note__text">Терапия строится вокруг потребностей и запросов клиента — комфортная и поддерживающая среда, в которой безопасно быть собой.</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="torn torn--bottom" style="--torn-color: var(--bg-page)" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none"><use href="#torn-path"/></svg>
+  </div>
+</section>
+
+<!-- ==================== ОБРАЗОВАНИЕ ==================== -->
+<section class="edu" id="education">
+  <div class="edu__art">
+    <img src="assets/folder-collage.png" alt="Диплом МГУ, факультет психологии" width="714" height="690">
+  </div>
+
+  <div class="edu__text">
+    <p class="eyebrow">Квалификация</p>
+    <h2 class="edu__title">Образование</h2>
+    <p class="edu__body">
+      У меня диплом МГУ, дополнительная программа обучения по КПТ и опыт
+      в интервизионных группах. При необходимости и с согласия клиента
+      я разбираю конкретные случаи на супервизиях.
+    </p>
+
+    <div class="edu__nav">
+      <button class="edu__arrow" type="button" aria-label="Предыдущий документ">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="edu__arrow" type="button" aria-label="Следующий документ">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== КОНТАКТЫ ==================== -->
+<section class="section section--surface contacts" id="contacts">
+  <div class="torn torn--top" style="--torn-color: var(--bg-page)" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none"><use href="#torn-path"/></svg>
+  </div>
+
+  <div class="contacts__head">
+    <p class="eyebrow">Контакты</p>
+    <h2 class="contacts__title">Давайте поговорим</h2>
+    <p class="contacts__sub">
+      Вы можете связаться со мной по телефону, в телеграме или вотсапе —
+      или оставить заявку на сайте, и я отвечу вам в течение дня.
+    </p>
+  </div>
+
+  <div class="contacts__cards">
+    <a class="contact" href="tel:+79175154012">
+      <span class="contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg>
+      </span>
+      <span class="contact__body">
+        <span class="contact__label">Телефон</span>
+        <span class="contact__value">+7 (917) 515-40-12</span>
+      </span>
+    </a>
+
+    <a class="contact" href="https://t.me/vkunaev" target="_blank" rel="noopener">
+      <span class="contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 5 3 11.5l5 1.8L19 7.5l-8.5 8.2v4l3-3.3 4.2 3.1L21 5Z"/></svg>
+      </span>
+      <span class="contact__body">
+        <span class="contact__label">Telegram</span>
+        <span class="contact__value">@vkunaev</span>
+      </span>
+    </a>
+
+    <a class="contact" href="https://wa.me/79000000000" target="_blank" rel="noopener">
+      <span class="contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9c0 3 3 6 6 6l1.2-1.6-2-1-1 1a6.6 6.6 0 0 1-2.6-2.6l1-1-1-2L9 9Z"/></svg>
+      </span>
+      <span class="contact__body">
+        <span class="contact__label">WhatsApp</span>
+        <span class="contact__value">+7 (900) 000-00-00</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== ПОДВАЛ ==================== -->
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__ident">
+      <span class="footer__name">Владимир Кунаев</span>
+      <span class="footer__role">Психолог</span>
+    </div>
+
+    <nav class="footer__nav" aria-label="Навигация в подвале">
+      <a href="#about">Обо мне</a>
+      <a href="#principles">Принципы</a>
+      <a href="#education">Квалификация</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </div>
+
+  <hr class="footer__rule">
+
+  <div class="footer__legal">
+    <span>© 2026 Владимир Кунаев</span>
+    <a href="#">Политика конфиденциальности</a>
+  </div>
+</footer>
+
+<script>
+  // Бургер-меню. Всё, что нужно скриптом на этой странице.
+  (function () {
+    var header = document.querySelector('.header');
+    var burger = header && header.querySelector('.header__burger');
+    if (!burger) return;
+
+    function setOpen(open) {
+      header.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    }
+
+    burger.addEventListener('click', function () {
+      setOpen(!header.classList.contains('is-open'));
+    });
+
+    // клик по пункту меню — закрыть шторку
+    header.querySelectorAll('.header__drawer a').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+
+    // вернулись на десктоп — сбросить состояние
+    window.matchMedia('(min-width: 1025px)').addEventListener('change', function (e) {
+      if (e.matches) setOpen(false);
+    });
+  })();
+</script>
+
+</body>
+</html>

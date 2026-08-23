@@ -1,0 +1,89 @@
+<!-- ============================================================
+     БЛОК 04 — ОБО МНЕ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
+     1. Фото — загрузите в медиатеку Тильды, вставьте ссылку.
+
+     Слово «комфорт» позади фото — декоративный водяной знак. Он на vw,
+     поэтому тянется плавно, без рывка на границе брейкпоинта.
+     ============================================================ -->
+
+<section class="vk vk-section vk-section--surface vk-about" id="about">
+  <!-- сиреневый рваный край, «натекающий» сверху из «Направлений» -->
+  <div class="vk-torn vk-torn--top" style="--torn-color: var(--vk-bg-second-soft);" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path d="M-10 40.5H1450V19.5L1426.5 17.5L1406.5 9.5L1380.5 14.5L1358.75 9.5L1340.5 17.5L1319 14.5L1301.5 26L1267.5 29.5L1241.5 22L1211.5 19.5L1176.25 31.5L1152.5 14.5L1123 10L1094 14.5L1085 0.5H1055.5L1030.5 10L993.75 4.5L962 14.5L944.5 29.5L902.5 31.5L882 16.5L845 20.5L811.25 9.5L766.5 16.5L738 20.5L708.5 9.5L667 29.5L628.75 35.5L588.5 20.5L556 35.5L537.5 16.5L492.5 0L446.25 5.5L406 29.5L355 20.5H303.5L263.75 35.5L211 20.5L177.5 17L159.5 29.5L135.5 26.5L126.5 17L94 29.5L81.25 4.5L-10 6.5V40.5Z"/>
+    </svg>
+  </div>
+
+  <p class="vk-eyebrow">Обо мне</p>
+
+  <div class="vk-about__stage">
+    <span class="vk-about__watermark" aria-hidden="true">комфорт</span>
+    <!-- CHANGE-ME: ссылка на фото -->
+    <img class="vk-about__photo" src="photo.jpg" alt="Владимир Кунаев">
+  </div>
+
+  <div class="vk-about__statement">
+    <h2 class="vk-about__lead">
+      Психотерапия рождается на стыке
+      <span class="vk-about__accent">искренней эмпатии и точного анализа</span>
+    </h2>
+    <div class="vk-about__col">
+      <p class="vk-about__body">
+        Моё первое образование — инженерное. Благодаря этому я обладаю хорошим
+        аналитическим мышлением и помогаю находить структуру там, где царит хаос.
+      </p>
+      <p class="vk-about__tags">аналитика / структура / эмпатия / доверие</p>
+    </div>
+  </div>
+</section>
+
+<style>
+.vk-about { overflow: hidden; }
+
+/* сцена с фото и водяным знаком */
+.vk-about__stage {
+  position: relative;
+  display: flex; justify-content: center;
+  margin: var(--vk-s48) 0 var(--vk-s64);
+}
+.vk-about__photo {
+  position: relative; z-index: 1;
+  width: 380px; height: 475px;
+  object-fit: cover;
+  border-radius: var(--vk-radius-md);
+  background: var(--vk-bg-accent);
+}
+.vk-about__watermark {
+  position: absolute; left: 50%; top: 55%;
+  transform: translate(-50%, -50%);
+  font: var(--vk-script-watermark);
+  color: var(--vk-bg-second-soft);
+  white-space: nowrap; user-select: none; pointer-events: none;
+  z-index: 0;
+}
+
+/* реплика: два столбца на десктопе */
+.vk-about__statement {
+  display: grid; grid-template-columns: 466px 1fr;
+  gap: var(--vk-s128);
+  align-items: start;
+}
+.vk-about__lead { font: var(--vk-h2); color: var(--vk-text-primary); }
+.vk-about__accent { color: var(--vk-text-accent); }
+.vk-about__col { display: flex; flex-direction: column; gap: var(--vk-s16); }
+.vk-about__body { font: var(--vk-body-lg); color: var(--vk-text-primary); }
+.vk-about__tags { font: var(--vk-h3); color: var(--vk-text-accent); }
+
+@media (max-width: 1024px) {
+  .vk-about__statement { grid-template-columns: 1fr; gap: var(--vk-s32); }
+  .vk-about__stage { margin: var(--vk-s32) 0 var(--vk-s48); }
+}
+
+@media (max-width: 767px) {
+  .vk-about__photo { width: 100%; height: auto; aspect-ratio: 380 / 475; }
+  .vk-about__statement { gap: var(--vk-s24); }
+}
+</style>

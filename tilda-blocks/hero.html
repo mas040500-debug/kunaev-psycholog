@@ -1,0 +1,177 @@
+<!-- ============================================================
+     БЛОК: Hero (Figma node 2218:2)
+     Вставить целиком в блок T123 «HTML-код» в Тильде.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ ПЕРЕД ПУБЛИКАЦИЕЙ (ищите по тегу CHANGE-ME):
+     1. Фото — сейчас placeholder-путь "photo.jpg". Загрузите фото в
+        медиатеку Тильды, скопируйте ссылку на файл и вставьте её
+        в оба места (аватар в шапке и большое фото).
+     2. Ссылки в навигации (href="#") — проставьте реальные якоря/страницы.
+     3. Текст — меняется прямо в HTML между тегами, ищите нужную фразу
+        по тексту (он читаемый, не сжатый).
+     ============================================================ -->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Great+Vibes&display=swap');
+
+  .hero-wcm {
+    --blue-100: #CEE2FF;
+    --blue-500: #4C82FF;
+    --blue-700: #0047F0;
+    --blue-800: #0039C0;
+    --ink-900: #00081A;
+    --ink-500: #6B7280;
+    --ink-200: #D7DBE3;
+    --white: #FFFFFF;
+    --font-main: 'Fraunces', serif;
+    --font-accent: 'Great Vibes', cursive;
+
+    position: relative;
+    background: var(--white);
+    font-family: var(--font-main);
+    overflow: hidden;
+  }
+
+  /* ---------- Header ---------- */
+  .hero-wcm__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 128px;
+    border-bottom: 1px solid var(--ink-200);
+  }
+  .hero-wcm__brand { display: flex; align-items: center; gap: 16px; }
+  .hero-wcm__avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+  }
+  .hero-wcm__name { font: 600 16px/20px var(--font-main); color: var(--ink-900); }
+  .hero-wcm__role { font: 400 12px/16px var(--font-main); color: var(--ink-500); letter-spacing: 0.5px; }
+
+  .hero-wcm__nav { display: flex; gap: 24px; }
+  .hero-wcm__nav a {
+    font: 400 16px/20px var(--font-main); color: var(--ink-900);
+    text-decoration: none; white-space: nowrap;
+  }
+  .hero-wcm__nav a:hover { color: var(--blue-700); }
+
+  .hero-wcm__btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 16px 32px; border-radius: 999px;
+    background: var(--blue-700); color: var(--white);
+    font: 600 16px/24px var(--font-main);
+    text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
+  }
+  .hero-wcm__btn:hover { background: var(--blue-800); }
+
+  /* ---------- Visual (watermark + photo) ---------- */
+  .hero-wcm__visual {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    height: 460px;
+    margin-top: 24px;
+  }
+  .hero-wcm__watermark {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-family: var(--font-accent);
+    font-size: clamp(120px, 25vw, 360px);
+    line-height: 1;
+    color: var(--blue-100);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+    user-select: none;
+  }
+  .hero-wcm__photo {
+    position: relative;
+    z-index: 2;
+    width: 320px; height: 400px;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 24px 48px -4px rgba(22, 29, 33, 0.16);
+  }
+
+  /* ---------- Headline ---------- */
+  .hero-wcm__headline {
+    max-width: 560px;
+    margin: 40px auto 0;
+    text-align: center;
+    font: 600 40px/48px var(--font-main);
+    color: var(--ink-900);
+  }
+  .hero-wcm__headline .accent { color: var(--blue-500); }
+
+  .hero-wcm__cta {
+    display: block;
+    width: max-content;
+    margin: 32px auto 96px;
+  }
+
+  /* ---------- Tablet ---------- */
+  @media (max-width: 1024px) {
+    .hero-wcm__header { padding: 18px 48px; }
+    .hero-wcm__nav { display: none; } /* на планшете/мобиле обычно даёт гамбургер сама Тильда — см. комментарий ниже */
+    .hero-wcm__photo { width: 260px; height: 320px; }
+    .hero-wcm__headline { font-size: 32px; line-height: 40px; max-width: 480px; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 767px) {
+    .hero-wcm__header { padding: 16px; }
+    .hero-wcm__brand .hero-wcm__role { display: none; }
+    .hero-wcm__btn { padding: 12px 20px; font-size: 14px; }
+    .hero-wcm__visual { height: 320px; margin-top: 16px; }
+    .hero-wcm__photo { width: 200px; height: 260px; border-radius: 16px; }
+    .hero-wcm__headline { font-size: 28px; line-height: 36px; max-width: 320px; margin-top: 24px; }
+    .hero-wcm__cta { margin: 24px auto 48px; width: 100%; }
+    .hero-wcm__cta .hero-wcm__btn { width: 100%; }
+  }
+</style>
+
+<!--
+  Про навигацию на планшете/мобиле: если этот блок вставляется ПОД
+  общий хедер Тильды (рекомендую — обычно шапка сайта делается один раз
+  как отдельный общий блок на все страницы), тогда весь .hero-wcm__header
+  ниже можно удалить целиком, а гамбургер-меню и адаптив возьмёт на себя
+  сама Тильда. Если хотите именно этот хедер как есть — на мобиле сейчас
+  просто прячутся ссылки меню (см. @media выше), можно заменить на
+  гамбургер отдельным JS, если понадобится.
+-->
+
+<section class="hero-wcm">
+  <header class="hero-wcm__header">
+    <div class="hero-wcm__brand">
+      <!-- CHANGE-ME: ссылка на фото из медиатеки Тильды -->
+      <img class="hero-wcm__avatar" src="photo.jpg" alt="Владимир Кунаев">
+      <div>
+        <div class="hero-wcm__name">Владимир Кунаев</div>
+        <div class="hero-wcm__role">ПСИХОЛОГ</div>
+      </div>
+    </div>
+    <nav class="hero-wcm__nav">
+      <a href="#">Обо мне</a>
+      <a href="#">Принципы</a>
+      <a href="#">Квалификация</a>
+      <a href="#">Контакты</a>
+    </nav>
+    <a href="#" class="hero-wcm__btn">Связаться со мной</a>
+  </header>
+
+  <div class="hero-wcm__visual">
+    <span class="hero-wcm__watermark">комфорт</span>
+    <!-- CHANGE-ME: та же (или другая) ссылка на фото -->
+    <img class="hero-wcm__photo" src="photo.jpg" alt="Владимир Кунаев, психолог">
+  </div>
+
+  <h1 class="hero-wcm__headline">
+    Создание <span class="accent">комфортных условий</span> для вашей терапии
+  </h1>
+
+  <div class="hero-wcm__cta">
+    <a href="#" class="hero-wcm__btn">Связаться со мной</a>
+  </div>
+</section>

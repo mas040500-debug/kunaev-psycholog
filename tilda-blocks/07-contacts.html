@@ -1,0 +1,116 @@
+<!-- ============================================================
+     БЛОК 07 — КОНТАКТЫ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
+     1. Телефон — в тексте И в href="tel:". Два места.
+     2. Telegram — ник в тексте и в href="https://t.me/...".
+     3. WhatsApp — номер в тексте и в href="https://wa.me/...".
+        В wa.me номер пишется без плюса и скобок: 79000000000.
+
+     В макете в кружках стояли заглушки «тел / tg / wa» — здесь на их
+     месте настоящие иконки в том же стиле обводки, что и остальные.
+     ============================================================ -->
+
+<section class="vk vk-section vk-section--surface vk-contacts" id="contacts">
+  <!-- рваный край, «натекающий» сверху из «Образования» -->
+  <div class="vk-torn vk-torn--top" style="--torn-color: var(--vk-bg-page);" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path d="M-10 40.5H1450V19.5L1426.5 17.5L1406.5 9.5L1380.5 14.5L1358.75 9.5L1340.5 17.5L1319 14.5L1301.5 26L1267.5 29.5L1241.5 22L1211.5 19.5L1176.25 31.5L1152.5 14.5L1123 10L1094 14.5L1085 0.5H1055.5L1030.5 10L993.75 4.5L962 14.5L944.5 29.5L902.5 31.5L882 16.5L845 20.5L811.25 9.5L766.5 16.5L738 20.5L708.5 9.5L667 29.5L628.75 35.5L588.5 20.5L556 35.5L537.5 16.5L492.5 0L446.25 5.5L406 29.5L355 20.5H303.5L263.75 35.5L211 20.5L177.5 17L159.5 29.5L135.5 26.5L126.5 17L94 29.5L81.25 4.5L-10 6.5V40.5Z"/>
+    </svg>
+  </div>
+
+  <div class="vk-contacts__head">
+    <p class="vk-eyebrow">Контакты</p>
+    <h2 class="vk-contacts__title">Давайте поговорим</h2>
+    <p class="vk-contacts__sub">
+      Вы можете связаться со мной по телефону, в телеграме или вотсапе —
+      или оставить заявку на сайте, и я отвечу вам в течение дня.
+    </p>
+  </div>
+
+  <div class="vk-contacts__cards">
+    <!-- CHANGE-ME: телефон в тексте и в href -->
+    <a class="vk-contact" href="tel:+79175154012">
+      <span class="vk-contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg>
+      </span>
+      <span class="vk-contact__body">
+        <span class="vk-contact__label">Телефон</span>
+        <span class="vk-contact__value">+7 (917) 515-40-12</span>
+      </span>
+    </a>
+
+    <!-- CHANGE-ME: ник телеграма в тексте и в href -->
+    <a class="vk-contact" href="https://t.me/vkunaev" target="_blank" rel="noopener">
+      <span class="vk-contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 5 3 11.5l5 1.8L19 7.5l-8.5 8.2v4l3-3.3 4.2 3.1L21 5Z"/></svg>
+      </span>
+      <span class="vk-contact__body">
+        <span class="vk-contact__label">Telegram</span>
+        <span class="vk-contact__value">@vkunaev</span>
+      </span>
+    </a>
+
+    <!-- CHANGE-ME: номер в тексте и в href (в wa.me — без плюса и скобок) -->
+    <a class="vk-contact" href="https://wa.me/79000000000" target="_blank" rel="noopener">
+      <span class="vk-contact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9c0 3 3 6 6 6l1.2-1.6-2-1-1 1a6.6 6.6 0 0 1-2.6-2.6l1-1-1-2L9 9Z"/></svg>
+      </span>
+      <span class="vk-contact__body">
+        <span class="vk-contact__label">WhatsApp</span>
+        <span class="vk-contact__value">+7 (900) 000-00-00</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<style>
+.vk-contacts {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--vk-s48);
+}
+.vk-contacts__head {
+  display: flex; flex-direction: column; align-items: center; gap: var(--vk-s24);
+  text-align: center;
+}
+.vk-contacts__title { font: var(--vk-display-lg); color: var(--vk-text-primary); }
+.vk-contacts__sub {
+  font: var(--vk-body); color: var(--vk-text-secondary); max-width: 660px;
+}
+
+.vk-contacts__cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--vk-s24); width: 100%;
+}
+
+.vk-contact {
+  display: flex; align-items: flex-start; gap: var(--vk-s24);
+  padding: var(--vk-pad-component);
+  border-radius: var(--vk-radius-lg);
+  background: var(--vk-bg-accent-soft);
+  text-decoration: none;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.vk-contact:hover { box-shadow: var(--vk-shadow-card); transform: translateY(-2px); }
+.vk-contact:focus-visible { outline: var(--vk-bw-emphasis) solid var(--vk-border-focus); outline-offset: 2px; }
+
+.vk-contact__icon {
+  width: 48px; height: 48px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--vk-radius-lg);
+  background: var(--vk-bg-accent); color: var(--vk-text-accent);
+}
+.vk-contact__icon svg {
+  width: 22px; height: 22px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.vk-contact__body { display: flex; flex-direction: column; gap: var(--vk-s4); min-width: 0; }
+.vk-contact__label { font: var(--vk-body-sm); color: var(--vk-text-muted); }
+.vk-contact__value { font: var(--vk-h4); color: var(--vk-text-primary); }
+
+@media (max-width: 1024px) {
+  .vk-contacts__cards { grid-template-columns: 1fr; }
+}
+</style>

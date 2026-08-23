@@ -1,0 +1,92 @@
+<!-- ============================================================
+     БЛОК 06 — ОБРАЗОВАНИЕ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
+     1. Коллаж с дипломом — файл assets/folder-collage.png рядом с этими
+        блоками. Загрузите его в медиатеку Тильды и вставьте ссылку.
+        Это цельная картинка: папка, кольца, скан диплома и бирка —
+        собирать её вёрсткой смысла нет, внутри растровый скан.
+     2. Стрелки — заготовка под карусель дипломов. Пока просто кнопки;
+        если карусель не нужна, удалите блок .vk-edu__nav.
+
+     Папка намеренно свисает за левый край — так в макете.
+     ============================================================ -->
+
+<section class="vk vk-edu" id="education">
+  <div class="vk-edu__art">
+    <!-- CHANGE-ME: ссылка на коллаж из медиатеки Тильды -->
+    <img src="assets/folder-collage.png" alt="Диплом МГУ, факультет психологии">
+  </div>
+
+  <div class="vk-edu__text">
+    <p class="vk-eyebrow">Квалификация</p>
+    <h2 class="vk-edu__title">Образование</h2>
+    <p class="vk-edu__body">
+      У меня диплом МГУ, дополнительная программа обучения по КПТ и опыт
+      в интервизионных группах. При необходимости и с согласия клиента
+      я разбираю конкретные случаи на супервизиях.
+    </p>
+
+    <div class="vk-edu__nav">
+      <button class="vk-edu__arrow" type="button" aria-label="Предыдущий документ">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="vk-edu__arrow" type="button" aria-label="Следующий документ">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+.vk-edu {
+  background: var(--vk-bg-page);
+  display: flex; align-items: center; gap: var(--vk-s48);
+  /* слева поля нет: папка свисает за край, как в макете */
+  padding: var(--vk-section-py) var(--vk-margin) var(--vk-section-py) 0;
+}
+.vk-edu__art { flex: 0 1 690px; min-width: 0; }
+.vk-edu__art img { width: 100%; height: auto; }
+
+.vk-edu__text {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; gap: var(--vk-s16);
+  align-items: flex-start;
+}
+.vk-edu__title { font: var(--vk-display-lg); color: var(--vk-text-primary); }
+.vk-edu__body  { font: var(--vk-body); color: var(--vk-text-secondary); }
+
+.vk-edu__nav { display: flex; gap: var(--vk-s16); margin-top: var(--vk-s32); }
+.vk-edu__arrow {
+  width: 68px; height: 68px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: var(--vk-radius-md);
+  background: var(--vk-action-default); color: var(--vk-text-on-accent);
+  cursor: pointer; transition: background .18s ease;
+}
+.vk-edu__arrow:hover  { background: var(--vk-action-hover); }
+.vk-edu__arrow:active { background: var(--vk-action-active); }
+.vk-edu__arrow:focus-visible { outline: var(--vk-bw-emphasis) solid var(--vk-border-focus); outline-offset: 2px; }
+.vk-edu__arrow svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ---------- планшет и уже: папка над текстом ---------- */
+@media (max-width: 1024px) {
+  .vk-edu {
+    flex-direction: column; align-items: stretch;
+    gap: var(--vk-s32);
+    padding: var(--vk-section-py) var(--vk-margin) var(--vk-section-py) 0;
+  }
+  .vk-edu__art { flex: none; max-width: 100%; }
+  .vk-edu__text { padding-left: var(--vk-margin); }
+}
+
+@media (max-width: 767px) {
+  .vk-edu__nav { margin-top: var(--vk-s16); }
+  .vk-edu__arrow { width: 56px; height: 56px; }
+}
+</style>

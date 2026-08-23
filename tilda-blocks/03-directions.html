@@ -1,0 +1,92 @@
+<!-- ============================================================
+     БЛОК 03 — НАПРАВЛЕНИЯ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     Сиреневая полоса. Рваных краёв у неё своих нет: их рисуют соседи —
+     низ героя и верх «Обо мне», оба сиреневым.
+     ============================================================ -->
+
+<section class="vk vk-section vk-section--second vk-dir">
+  <p class="vk-eyebrow">Направления</p>
+
+  <h2 class="vk-dir__title">
+    Разбираем вашу ситуацию, смотрим на неё под разными углами
+    <span class="vk-dir__accent">и находим точки опоры</span>
+  </h2>
+
+  <div class="vk-dir__cards">
+    <article class="vk-card">
+      <h3 class="vk-card__title">Кризис в отношениях</h3>
+      <ul class="vk-card__list">
+        <li>Разбор конфликтов</li>
+        <li>Восстановление доверия</li>
+        <li>Путь к взаимопониманию</li>
+      </ul>
+    </article>
+
+    <article class="vk-card">
+      <h3 class="vk-card__title">Выгорание</h3>
+      <ul class="vk-card__list">
+        <li>Преодоление профессионального выгорания</li>
+        <li>Восстановление сил</li>
+        <li>Возвращение энергии</li>
+      </ul>
+    </article>
+
+    <article class="vk-card">
+      <h3 class="vk-card__title">Прокрастинация</h3>
+      <ul class="vk-card__list">
+        <li>Преодоление прокрастинации</li>
+        <li>Работа с мотивацией</li>
+        <li>Повышение продуктивности</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<style>
+.vk-dir {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--vk-s32);
+  text-align: center;
+}
+.vk-dir__title {
+  font: var(--vk-h2); color: var(--vk-text-primary);
+  max-width: 920px;
+}
+.vk-dir__accent { color: var(--vk-text-accent); }
+
+.vk-dir__cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--vk-s24);
+  width: 100%; text-align: left;
+}
+
+.vk-card {
+  background: var(--vk-bg-surface);
+  border: var(--vk-bw-default) solid transparent;
+  border-radius: var(--vk-radius-lg);
+  padding: var(--vk-pad-container);
+  display: flex; flex-direction: column; gap: var(--vk-s12);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.vk-card:hover {
+  border-color: var(--vk-action-default);
+  box-shadow: var(--vk-shadow-card);
+}
+.vk-card__title { font: var(--vk-h4); color: var(--vk-text-primary); }
+.vk-card__list { display: flex; flex-direction: column; gap: var(--vk-s4); }
+.vk-card__list li {
+  font: var(--vk-body-sm); color: var(--vk-text-secondary);
+  padding-left: 18px; position: relative;
+}
+.vk-card__list li::before {
+  content: ''; position: absolute; left: 4px; top: 8px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--vk-text-accent);
+}
+
+@media (max-width: 1024px) {
+  .vk-dir__cards { grid-template-columns: 1fr; }
+}
+</style>

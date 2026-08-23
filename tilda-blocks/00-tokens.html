@@ -1,0 +1,224 @@
+<!-- ============================================================
+     БЛОК 00 — ТОКЕНЫ. Вставить в блок T123 «HTML-код».
+
+     ВАЖНО: этот блок должен стоять ПЕРВЫМ на странице. Все остальные
+     блоки берут цвета, шрифты и отступы отсюда. Сам он ничего не рисует
+     и высоты не занимает.
+
+     Зеркалит design-system/tokens.css (v12). Если что-то меняется в
+     Figma — правится там, потом переносится сюда.
+
+     ЧТО НУЖНО СДЕЛАТЬ ПЕРЕД ПУБЛИКАЦИЕЙ (ищите CHANGE-ME):
+     1. Good Vibes Pro — рукописный шрифт. На Google Fonts его нет.
+        Загрузите woff2 в медиатеку Тильды и вставьте ссылку в @font-face
+        ниже. Пока ссылки нет, сработает запасной Great Vibes: кириллица
+        у него есть, но метрики другие — строки в герое поедут.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+/* CHANGE-ME: подставьте ссылку на файл шрифта из медиатеки Тильды */
+@font-face {
+  font-family: 'Good Vibes Pro';
+  src: url('https://static.tildacdn.com/ВАШ-ФАЙЛ/GoodVibesPro.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------- ПРИМИТИВЫ · цвет ---------- */
+  --vk-blue-50:  #EAF1FF;
+  --vk-blue-100: #CEE2FF;
+  --vk-blue-500: #4B82FF;
+  --vk-blue-600: #2E5FD9;
+  --vk-blue-700: #1D4ED8;
+  --vk-purple-100: #F3EDFF;
+  --vk-purple-600: #795EF0;
+  --vk-white:      #FFFFFF;
+  --vk-bluewhite:  #F5F8FF;
+  --vk-ink-200: #D7DBE3;
+  --vk-ink-500: #6B7280;
+  --vk-ink-700: #3A4256;
+  --vk-ink-900: #00081A;
+
+  /* ---------- СЕМАНТИКА · цвет (17 ролей) ---------- */
+  --vk-text-primary:       var(--vk-ink-900);
+  --vk-text-secondary:     var(--vk-ink-700);
+  --vk-text-muted:         var(--vk-ink-500);
+  --vk-text-on-accent:     var(--vk-white);
+  --vk-text-accent:        var(--vk-blue-600);
+  --vk-text-accent-strong: var(--vk-blue-700);
+
+  --vk-bg-page:            var(--vk-bluewhite);
+  --vk-bg-surface:         var(--vk-white);
+  --vk-bg-accent:          var(--vk-blue-100);
+  --vk-bg-accent-soft:     var(--vk-blue-50);
+  --vk-bg-second:          var(--vk-purple-600);
+  --vk-bg-second-soft:     var(--vk-purple-100);
+
+  --vk-border-subtle: var(--vk-ink-200);
+  --vk-border-focus:  var(--vk-blue-500);
+
+  --vk-action-default: var(--vk-blue-500);
+  --vk-action-hover:   var(--vk-blue-600);
+  --vk-action-active:  var(--vk-blue-700);
+
+  /* ---------- ПРИМИТИВЫ · форма ---------- */
+  --vk-radius-sm: 8px;  --vk-radius-md: 16px; --vk-radius-lg: 24px;
+  --vk-radius-xl: 32px; --vk-radius-pill: 999px;
+
+  --vk-bw-hairline: 1px; --vk-bw-default: 1.5px;
+  --vk-bw-emphasis: 2px; --vk-bw-accent: 3px;
+
+  --vk-shadow-soft:   0 4px 12px rgba(22, 29, 33, .08);
+  --vk-shadow-card:   0 1px 2px rgba(22, 29, 33, .04), 0 12px 24px rgba(22, 29, 33, .10);
+  --vk-shadow-lifted: 0 24px 48px -4px rgba(22, 29, 33, .16);
+
+  /* ---------- ПРИМИТИВЫ · шаг сетки ---------- */
+  --vk-s4: 4px;   --vk-s8: 8px;   --vk-s12: 12px; --vk-s16: 16px;
+  --vk-s24: 24px; --vk-s32: 32px; --vk-s48: 48px; --vk-s64: 64px;
+  --vk-s96: 96px; --vk-s128: 128px;
+
+  /* ---------- СЕМАНТИКА · отступы (Desktop) ---------- */
+  --vk-margin:       var(--vk-s128); /* поле от края страницы */
+  --vk-section-py:   var(--vk-s96);  /* вертикальный воздух внутри секции */
+  --vk-section-gap:  var(--vk-s64);  /* зазор между крупными блоками */
+  --vk-pad-container: var(--vk-s48);
+  --vk-pad-component: var(--vk-s32);
+  --vk-pad-element:   var(--vk-s16);
+
+  /* ---------- СЕМАНТИКА · типографика (Desktop) ---------- */
+  --vk-font: 'Arimo', 'Helvetica Neue', Arial, sans-serif;
+  --vk-font-script: 'Good Vibes Pro', 'Great Vibes', cursive;
+  --vk-w-regular: 400;
+  --vk-w-bold: 700;
+
+  --vk-display-xl: 700 64px/72px var(--vk-font);
+  --vk-display-lg: 700 48px/56px var(--vk-font);
+  --vk-h1: 700 40px/48px var(--vk-font);
+  --vk-h2: 700 32px/40px var(--vk-font);
+  --vk-h3: 700 24px/32px var(--vk-font);
+  --vk-h4: 700 20px/28px var(--vk-font);
+  --vk-body-lg: 400 18px/26px var(--vk-font);
+  --vk-body:    400 16px/24px var(--vk-font);
+  --vk-body-sm: 400 14px/20px var(--vk-font);
+  --vk-caption: 700 20px/24px var(--vk-font);
+  --vk-button:  700 16px/24px var(--vk-font);
+
+  --vk-script-hero:   400 84px/72px var(--vk-font-script);
+  --vk-script-accent: 400 40px/48px var(--vk-font-script);
+  --vk-script-note:   400 24px/20px var(--vk-font-script);
+  /* водяной знак — единственный токен на vw: в макете 396px при кадре
+     1440 = 27.5vw. Ступени по брейкпоинтам дали бы рывок ровно на
+     границе, а знак фоновый — ему нужна плавность. */
+  --vk-script-watermark: 400 clamp(120px, 27.5vw, 396px)/0.9 var(--vk-font-script);
+}
+
+/* ============ ПЛАНШЕТ ≤1024 ============
+   Жмётся только верх шкалы. Body и Button не двигаются: 16px — пол для
+   основного текста, и он же держит тач-цель в кнопке. */
+@media (max-width: 1024px) {
+  :root {
+    --vk-margin:      var(--vk-s48);
+    --vk-section-py:  var(--vk-s64);
+    --vk-section-gap: var(--vk-s48);
+    --vk-pad-container: var(--vk-s32);
+    --vk-pad-component: var(--vk-s24);
+
+    --vk-display-xl: 700 48px/56px var(--vk-font);
+    --vk-display-lg: 700 40px/48px var(--vk-font);
+    --vk-h1: 700 32px/40px var(--vk-font);
+    --vk-h2: 700 28px/36px var(--vk-font);
+    --vk-caption: 700 18px/24px var(--vk-font);
+
+    /* 56px — потолок, при котором «комфортных условий» ещё влезает
+       в одну строку на 672px контента (фраза ≈ 10.5–12 кеглей) */
+    --vk-script-hero:   400 56px/56px var(--vk-font-script);
+    --vk-script-accent: 400 32px/40px var(--vk-font-script);
+  }
+}
+
+/* ============ МОБИЛЬНЫЙ ≤767 ============
+   Потолок 32px: на 375px с полями по 16 остаётся 343px, и самая длинная
+   строка героя укладывается в одну. Пол — 14px, ниже не идёт ничто. */
+@media (max-width: 767px) {
+  :root {
+    --vk-margin:      var(--vk-s16);
+    --vk-section-py:  var(--vk-s48);
+    --vk-section-gap: var(--vk-s32);
+    --vk-pad-container: var(--vk-s24);
+    --vk-pad-component: var(--vk-s16);
+    --vk-pad-element:   var(--vk-s12);
+
+    --vk-display-xl: 700 32px/40px var(--vk-font);
+    --vk-display-lg: 700 28px/36px var(--vk-font);
+    --vk-h1: 700 28px/36px var(--vk-font);
+    --vk-h2: 700 24px/32px var(--vk-font);
+    --vk-h3: 700 20px/28px var(--vk-font);
+    --vk-h4: 700 18px/26px var(--vk-font);
+    --vk-body-lg: 400 16px/24px var(--vk-font);
+    --vk-caption: 700 14px/20px var(--vk-font);
+
+    /* 28px, а не 44: скрипт обязан влезать в одну строку — узел смешивает
+       два шрифта, и переносить его нельзя (см. README) */
+    --vk-script-hero:   400 28px/40px var(--vk-font-script);
+    --vk-script-accent: 400 24px/32px var(--vk-font-script);
+  }
+}
+
+/* ============ ОБЩЕЕ ДЛЯ ВСЕХ БЛОКОВ ============ */
+.vk { font-family: var(--vk-font); color: var(--vk-text-primary); }
+.vk *, .vk *::before, .vk *::after { box-sizing: border-box; }
+.vk p, .vk h1, .vk h2, .vk h3, .vk h4, .vk ul { margin: 0; padding: 0; }
+.vk ul { list-style: none; }
+.vk img { max-width: 100%; display: block; }
+
+/* полоса секции: поле от края + вертикальный воздух */
+.vk-section { padding: var(--vk-section-py) var(--vk-margin); position: relative; }
+.vk-section--page    { background: var(--vk-bg-page); }
+.vk-section--surface { background: var(--vk-bg-surface); }
+.vk-section--second  { background: var(--vk-bg-second-soft); }
+
+.vk-eyebrow {
+  font: var(--vk-caption);
+  color: var(--vk-text-accent);
+  text-transform: uppercase;
+}
+
+/* кнопка */
+.vk-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--vk-s8);
+  padding: var(--vk-pad-element) var(--vk-pad-container);
+  border: none; border-radius: var(--vk-radius-md);
+  font: var(--vk-button);
+  background: var(--vk-action-default);
+  color: var(--vk-text-on-accent);
+  text-decoration: none; cursor: pointer;
+  transition: background .18s ease;
+}
+.vk-btn:hover  { background: var(--vk-action-hover); color: var(--vk-text-on-accent); }
+.vk-btn:active { background: var(--vk-action-active); }
+.vk-btn:focus-visible { outline: var(--vk-bw-emphasis) solid var(--vk-border-focus); outline-offset: 2px; }
+
+/* рваный край — переход между секциями.
+   В макете края идут ПАРАМИ: низ предыдущей секции и верх следующей,
+   оба цвета той полосы, которая «наступает». Цвет задаётся через
+   --torn-color на самой секции. */
+.vk-torn {
+  position: absolute; left: 0; right: 0;
+  height: 40px; line-height: 0; pointer-events: none; z-index: 1;
+  /* путь нарисован от -10 до 1450 при viewBox 0..1440 — за краями
+     остаются «хвосты», из-за них появляется горизонтальный скролл */
+  overflow: hidden;
+}
+.vk-torn--bottom { bottom: -1px; }
+.vk-torn--top    { top: -1px; transform: scaleY(-1); }
+.vk-torn svg { width: 100%; height: 100%; display: block; }
+.vk-torn path { fill: var(--torn-color, var(--vk-bg-page)); }
+@media (max-width: 767px) { .vk-torn { height: 24px; } }
+</style>

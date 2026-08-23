@@ -1,0 +1,77 @@
+<!-- ============================================================
+     БЛОК 08 — ПОДВАЛ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
+     1. Ссылка на политику конфиденциальности — сейчас href="#".
+        В Тильде создайте отдельную страницу и вставьте её адрес.
+     2. Год в копирайте — обновлять раз в год либо заменить на
+        подстановку Тильды.
+     ============================================================ -->
+
+<footer class="vk vk-footer">
+  <div class="vk-footer__top">
+    <div class="vk-footer__ident">
+      <span class="vk-footer__name">Владимир Кунаев</span>
+      <span class="vk-footer__role">Психолог</span>
+    </div>
+
+    <nav class="vk-footer__nav" aria-label="Навигация в подвале">
+      <a href="#about">Обо мне</a>
+      <a href="#principles">Принципы</a>
+      <a href="#education">Квалификация</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </div>
+
+  <hr class="vk-footer__rule">
+
+  <div class="vk-footer__legal">
+    <span>© 2026 Владимир Кунаев</span>
+    <!-- CHANGE-ME: адрес страницы с политикой -->
+    <a href="#">Политика конфиденциальности</a>
+  </div>
+</footer>
+
+<style>
+.vk-footer {
+  background: var(--vk-bg-page);
+  padding: var(--vk-pad-container) var(--vk-margin);
+  display: flex; flex-direction: column; gap: var(--vk-s24);
+}
+
+.vk-footer__top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--vk-s32);
+}
+.vk-footer__ident { display: flex; flex-direction: column; gap: var(--vk-s4); }
+.vk-footer__name { font: var(--vk-h4); color: var(--vk-text-primary); }
+.vk-footer__role { font: var(--vk-body-sm); color: var(--vk-text-muted); }
+
+.vk-footer__nav { display: flex; flex-wrap: wrap; gap: var(--vk-s32); }
+.vk-footer__nav a {
+  font: var(--vk-body); color: var(--vk-text-secondary);
+  text-decoration: none; transition: color .18s ease;
+}
+.vk-footer__nav a:hover { color: var(--vk-action-default); }
+
+.vk-footer__rule {
+  border: none; height: var(--vk-bw-hairline);
+  background: var(--vk-border-subtle); margin: 0;
+}
+
+.vk-footer__legal {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--vk-s32);
+  font: var(--vk-body-sm); color: var(--vk-text-muted);
+}
+.vk-footer__legal a { color: inherit; text-decoration: none; }
+.vk-footer__legal a:hover { color: var(--vk-action-default); }
+
+/* ---------- мобильный: всё в колонку ---------- */
+@media (max-width: 767px) {
+  .vk-footer__top { flex-direction: column; align-items: flex-start; gap: var(--vk-s24); }
+  .vk-footer__nav { gap: var(--vk-s16); row-gap: var(--vk-s8); }
+  .vk-footer__legal { flex-direction: column; align-items: flex-start; gap: var(--vk-s8); }
+}
+</style>

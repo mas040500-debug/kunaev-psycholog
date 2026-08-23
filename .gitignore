@@ -1,0 +1,22 @@
+# служебные сборки превью
+tilda-blocks/_preview.html
+tilda-blocks/_mobile.html
+tilda-blocks/_chk.html
+tilda-blocks/_debug.html
+
+# промежуточные скриншоты проверок из ранних итераций
+about_v2.png
+current_hero_check.png
+hero_check.png
+hero_check2.png
+priority_block.png
+priority_light.png
+priority_torn_v1.png
+priority_torn_v2.png
+
+# системное
+.DS_Store
+Thumbs.db
+
+# локальные настройки инструментов
+.claude/

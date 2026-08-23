@@ -1,0 +1,621 @@
+/* ============================================================
+   Владимир Кунаев — психолог. Стили сайта.
+
+   Собрано из design-system/tokens.css (v12) и блоков tilda-blocks.
+   Три яруса токенов, три брейкпоинта: десктоп 1440, планшет ≤1024,
+   мобильный ≤767 — ровно как в макетах Figma.
+   ============================================================ */
+
+/* Good Vibes Pro — акцентный рукописный. На Google Fonts его нет.
+   Положите GoodVibesPro.woff2 в assets/fonts/ — и он подхватится.
+   Пока файла нет, работает запасной Great Vibes: кириллица у него
+   есть, но метрики другие, строки в герое станут у́же и выше. */
+@font-face {
+  font-family: 'Good Vibes Pro';
+  src: url('assets/fonts/GoodVibesPro.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------- ПРИМИТИВЫ · цвет ---------- */
+  --blue-50:  #EAF1FF;
+  --blue-100: #CEE2FF;
+  --blue-500: #4B82FF;
+  --blue-600: #2E5FD9;
+  --blue-700: #1D4ED8;
+  --purple-100: #F3EDFF;
+  --purple-600: #795EF0;
+  --white:     #FFFFFF;
+  --bluewhite: #F5F8FF;
+  --ink-200: #D7DBE3;
+  --ink-500: #6B7280;
+  --ink-700: #3A4256;
+  --ink-900: #00081A;
+
+  /* ---------- СЕМАНТИКА · цвет ---------- */
+  --text-primary:       var(--ink-900);
+  --text-secondary:     var(--ink-700);
+  --text-muted:         var(--ink-500);
+  --text-on-accent:     var(--white);
+  --text-accent:        var(--blue-600);
+  --text-accent-strong: var(--blue-700);
+
+  --bg-page:        var(--bluewhite);
+  --bg-surface:     var(--white);
+  --bg-accent:      var(--blue-100);
+  --bg-accent-soft: var(--blue-50);
+  --bg-second:      var(--purple-600);
+  --bg-second-soft: var(--purple-100);
+
+  --border-subtle: var(--ink-200);
+  --border-focus:  var(--blue-500);
+
+  --action-default: var(--blue-500);
+  --action-hover:   var(--blue-600);
+  --action-active:  var(--blue-700);
+
+  /* ---------- ПРИМИТИВЫ · форма ---------- */
+  --radius-sm: 8px;  --radius-md: 16px; --radius-lg: 24px;
+  --radius-xl: 32px; --radius-pill: 999px;
+
+  --bw-hairline: 1px; --bw-default: 1.5px;
+  --bw-emphasis: 2px; --bw-accent: 3px;
+
+  --shadow-soft:   0 4px 12px rgba(22, 29, 33, .08);
+  --shadow-card:   0 1px 2px rgba(22, 29, 33, .04), 0 12px 24px rgba(22, 29, 33, .10);
+  --shadow-lifted: 0 24px 48px -4px rgba(22, 29, 33, .16);
+
+  /* ---------- ПРИМИТИВЫ · шаг сетки ---------- */
+  --s4: 4px;   --s8: 8px;   --s12: 12px; --s16: 16px;
+  --s24: 24px; --s32: 32px; --s48: 48px; --s64: 64px;
+  --s96: 96px; --s128: 128px;
+
+  /* ---------- СЕМАНТИКА · отступы (десктоп) ---------- */
+  --margin:        var(--s128);
+  --section-py:    var(--s96);
+  --section-gap:   var(--s64);
+  --pad-container: var(--s48);
+  --pad-component: var(--s32);
+  --pad-element:   var(--s16);
+
+  /* ---------- СЕМАНТИКА · типографика (десктоп) ---------- */
+  --font: 'Arimo', 'Helvetica Neue', Arial, sans-serif;
+  --font-script: 'Good Vibes Pro', 'Great Vibes', cursive;
+
+  --display-xl: 700 64px/72px var(--font);
+  --display-lg: 700 48px/56px var(--font);
+  --h1: 700 40px/48px var(--font);
+  --h2: 700 32px/40px var(--font);
+  --h3: 700 24px/32px var(--font);
+  --h4: 700 20px/28px var(--font);
+  --body-lg: 400 18px/26px var(--font);
+  --body:    400 16px/24px var(--font);
+  --body-sm: 400 14px/20px var(--font);
+  --caption: 700 20px/24px var(--font);
+  --button:  700 16px/24px var(--font);
+
+  --script-hero:   400 84px/72px var(--font-script);
+  --script-accent: 400 40px/48px var(--font-script);
+  --script-note:   400 24px/20px var(--font-script);
+  /* водяной знак — единственный токен на vw: в макете 396px при кадре
+     1440 = 27.5vw. Ступени дали бы рывок ровно на границе, а знак
+     фоновый — ему нужна плавность. */
+  --script-watermark: 400 clamp(120px, 27.5vw, 396px)/0.9 var(--font-script);
+}
+
+/* ============ ПЛАНШЕТ ≤1024 ============
+   Жмётся только верх шкалы. Body и Button не двигаются: 16px — пол
+   для основного текста, он же держит тач-цель в кнопке. */
+@media (max-width: 1024px) {
+  :root {
+    --margin:        var(--s48);
+    --section-py:    var(--s64);
+    --section-gap:   var(--s48);
+    --pad-container: var(--s32);
+    --pad-component: var(--s24);
+
+    --display-xl: 700 48px/56px var(--font);
+    --display-lg: 700 40px/48px var(--font);
+    --h1: 700 32px/40px var(--font);
+    --h2: 700 28px/36px var(--font);
+    --caption: 700 18px/24px var(--font);
+
+    /* 56px — потолок, при котором «комфортных условий» ещё влезает
+       в одну строку на 672px контента (фраза ≈ 10.5–12 кеглей) */
+    --script-hero:   400 56px/56px var(--font-script);
+    --script-accent: 400 32px/40px var(--font-script);
+  }
+}
+
+/* ============ МОБИЛЬНЫЙ ≤767 ============
+   Потолок 32px: на 375px с полями по 16 остаётся 343px, и самая
+   длинная строка героя укладывается в одну. Пол — 14px. */
+@media (max-width: 767px) {
+  :root {
+    --margin:        var(--s16);
+    --section-py:    var(--s48);
+    --section-gap:   var(--s32);
+    --pad-container: var(--s24);
+    --pad-component: var(--s16);
+    --pad-element:   var(--s12);
+
+    --display-xl: 700 32px/40px var(--font);
+    --display-lg: 700 28px/36px var(--font);
+    --h1: 700 28px/36px var(--font);
+    --h2: 700 24px/32px var(--font);
+    --h3: 700 20px/28px var(--font);
+    --h4: 700 18px/26px var(--font);
+    --body-lg: 400 16px/24px var(--font);
+    --caption: 700 14px/20px var(--font);
+
+    /* 28px, а не крупнее: скрипт обязан влезать в одну строку */
+    --script-hero:   400 28px/40px var(--font-script);
+    --script-accent: 400 24px/32px var(--font-script);
+  }
+}
+
+/* ============================================================
+   БАЗА
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+.section { padding: var(--section-py) var(--margin); position: relative; }
+.section--page    { background: var(--bg-page); }
+.section--surface { background: var(--bg-surface); }
+.section--second  { background: var(--bg-second-soft); }
+
+.eyebrow {
+  font: var(--caption);
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- кнопка ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--s8);
+  padding: var(--pad-element) var(--pad-container);
+  border: none; border-radius: var(--radius-md);
+  font: var(--button);
+  background: var(--action-default);
+  color: var(--text-on-accent);
+  text-decoration: none; cursor: pointer;
+  transition: background .18s ease;
+}
+.btn:hover  { background: var(--action-hover); }
+.btn:active { background: var(--action-active); }
+.btn:focus-visible { outline: var(--bw-emphasis) solid var(--border-focus); outline-offset: 2px; }
+
+/* ---------- рваный край ----------
+   В макете края идут парами: низ одной секции и верх следующей, оба
+   цвета той полосы, которая «наступает». Путь нарисован от -10 до
+   1450 при viewBox 0..1440, поэтому нужен overflow: hidden. */
+.torn {
+  position: absolute; left: 0; right: 0;
+  height: 40px; line-height: 0; pointer-events: none; z-index: 1;
+  overflow: hidden;
+}
+.torn--bottom { bottom: -1px; }
+.torn--top    { top: -1px; transform: scaleY(-1); }
+/* fill ставится на <svg>, а не на path: форма подключается через <use>,
+   и в теневое дерево цвет попадает только наследованием */
+.torn svg {
+  width: 100%; height: 100%; display: block;
+  fill: var(--torn-color, var(--bg-page));
+}
+@media (max-width: 767px) { .torn { height: 24px; } }
+
+/* ============================================================
+   ШАПКА
+   ============================================================ */
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg-surface);
+  border-bottom: var(--bw-hairline) solid var(--border-subtle);
+}
+.header__bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s24);
+  padding: var(--pad-element) var(--margin);
+}
+.header__brand { display: flex; align-items: center; gap: var(--s16); text-decoration: none; }
+.header__avatar {
+  width: 48px; height: 48px; flex: none;
+  border-radius: var(--radius-pill);
+  object-fit: cover; object-position: 50% 22%;
+  background: var(--bg-accent);
+}
+.header__ident { display: flex; flex-direction: column; gap: var(--s4); }
+.header__name { font: var(--h4); color: var(--text-primary); }
+.header__role { font: var(--caption); color: var(--text-muted); }
+
+.header__nav { display: flex; gap: var(--s24); }
+.header__nav a {
+  font: var(--body); color: var(--text-secondary);
+  text-decoration: none; white-space: nowrap;
+  transition: color .18s ease;
+}
+.header__nav a:hover { color: var(--action-default); }
+
+.header__burger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px 0; flex: none;
+  background: none; border: none;
+}
+.header__burger span {
+  width: 24px; height: 2px; border-radius: 2px;
+  background: var(--text-primary);
+  transition: transform .2s ease, opacity .2s ease;
+}
+.header__drawer { display: none; }
+
+@media (max-width: 1024px) {
+  .header__nav { display: none; }
+  .header__burger { display: flex; }
+
+  .header__drawer {
+    display: flex; flex-direction: column; gap: var(--s16);
+    padding: 0 var(--margin);
+    max-height: 0; overflow: hidden;
+    transition: max-height .28s ease, padding .28s ease;
+    border-top: 0 solid var(--border-subtle);
+  }
+  .header__drawer a { font: var(--body); color: var(--text-secondary); text-decoration: none; }
+  .header__drawer a:hover { color: var(--action-default); }
+  .header__drawer .btn { align-self: flex-start; }
+
+  .header.is-open .header__drawer {
+    max-height: 380px;
+    padding: var(--s24) var(--margin);
+    border-top-width: var(--bw-hairline);
+  }
+  .header.is-open .header__burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .header.is-open .header__burger span:nth-child(2) { opacity: 0; }
+  .header.is-open .header__burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+
+@media (max-width: 767px) {
+  .header__cta { display: none; }
+  .header__role { font: var(--body-sm); letter-spacing: .04em; }
+  .header__avatar { width: 40px; height: 40px; }
+}
+
+/* ============================================================
+   ГЕРОЙ
+   ============================================================ */
+.hero { overflow: hidden; }
+.hero__inner { display: flex; align-items: center; gap: var(--s64); }
+.hero__text {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--s24);
+}
+.hero__title { font: var(--display-xl); color: var(--text-primary); }
+.hero__script {
+  font: var(--script-hero);
+  color: var(--text-accent-strong);
+  display: inline-block;
+}
+.hero__text .btn { margin-top: var(--s8); }
+.hero__media { flex: 0 0 auto; }
+
+/* фото-карточка: всё внутри — проценты от её ширины, поэтому
+   перфорация, снимок и подпись держат пропорции на любом экране */
+.photo-card {
+  position: relative;
+  width: 443px; aspect-ratio: 443 / 520;
+  background: var(--bg-second-soft);
+  border-radius: var(--radius-md);
+  transform: rotate(3deg);
+  box-shadow: var(--shadow-soft);
+}
+.photo-card__perf {
+  position: absolute; left: 3.6%; top: 6.5%; bottom: 27.7%; width: 4.97%;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.photo-card__perf span {
+  width: 100%; aspect-ratio: 1;
+  border-radius: 50%; background: var(--bg-surface);
+}
+.photo-card__img {
+  position: absolute; left: 14%; top: 3.1%;
+  width: 82.4%; height: 93.8%;
+  object-fit: cover;
+  background: var(--bg-accent);
+}
+.photo-card__plate {
+  position: absolute; left: 50.7%; top: 79.8%; width: 46.7%;
+  padding: 4.5% 3.6%;
+  display: flex; flex-direction: column;
+  color: var(--text-on-accent);
+}
+.photo-card__plate-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  fill: var(--action-default);
+}
+.photo-card__signature { position: relative; font: var(--script-note); white-space: nowrap; }
+.photo-card__caption   { position: relative; font: var(--body); }
+
+@media (max-width: 1024px) {
+  .hero__inner { flex-direction: column; align-items: center; gap: var(--s48); }
+  .hero__text { align-items: flex-start; width: 100%; }
+  .photo-card { width: min(443px, 100%); }
+}
+@media (max-width: 767px) {
+  .hero__inner { gap: var(--s32); }
+  .photo-card { width: 100%; transform: rotate(2deg); }
+  .photo-card__caption { font: var(--body-sm); }
+}
+
+/* ============================================================
+   НАПРАВЛЕНИЯ
+   ============================================================ */
+.dir {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--s32); text-align: center;
+}
+.dir__title { font: var(--h2); color: var(--text-primary); max-width: 920px; }
+.dir__accent { color: var(--text-accent); }
+.dir__cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--s24); width: 100%; text-align: left;
+}
+.card {
+  background: var(--bg-surface);
+  border: var(--bw-default) solid transparent;
+  border-radius: var(--radius-lg);
+  padding: var(--pad-container);
+  display: flex; flex-direction: column; gap: var(--s12);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.card:hover { border-color: var(--action-default); box-shadow: var(--shadow-card); }
+.card__title { font: var(--h4); color: var(--text-primary); }
+.card__list { display: flex; flex-direction: column; gap: var(--s4); }
+.card__list li {
+  font: var(--body-sm); color: var(--text-secondary);
+  padding-left: 18px; position: relative;
+}
+.card__list li::before {
+  content: ''; position: absolute; left: 4px; top: 8px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--text-accent);
+}
+@media (max-width: 1024px) { .dir__cards { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   ОБО МНЕ
+   ============================================================ */
+.about { overflow: hidden; }
+.about__stage {
+  position: relative; display: flex; justify-content: center;
+  margin: var(--s48) 0 var(--s64);
+}
+.about__photo {
+  position: relative; z-index: 1;
+  width: 380px; height: 475px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: var(--bg-accent);
+}
+.about__watermark {
+  position: absolute; left: 50%; top: 55%;
+  transform: translate(-50%, -50%);
+  font: var(--script-watermark);
+  color: var(--bg-second-soft);
+  white-space: nowrap; user-select: none; pointer-events: none;
+  z-index: 0;
+}
+.about__statement {
+  display: grid; grid-template-columns: 466px 1fr;
+  gap: var(--s128); align-items: start;
+}
+.about__lead { font: var(--h2); color: var(--text-primary); }
+.about__accent { color: var(--text-accent); }
+.about__col { display: flex; flex-direction: column; gap: var(--s16); }
+.about__body { font: var(--body-lg); color: var(--text-primary); }
+.about__tags { font: var(--h3); color: var(--text-accent); }
+
+@media (max-width: 1024px) {
+  .about__statement { grid-template-columns: 1fr; gap: var(--s32); }
+  .about__stage { margin: var(--s32) 0 var(--s48); }
+}
+@media (max-width: 767px) {
+  .about__photo { width: 100%; height: auto; aspect-ratio: 380 / 475; }
+  .about__statement { gap: var(--s24); }
+}
+
+/* ============================================================
+   ПОДХОД
+   ============================================================ */
+.appr { overflow: hidden; }
+.appr__head {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s12);
+  text-align: center; max-width: 460px; margin: 0 auto;
+}
+.appr__title { font: var(--display-lg); color: var(--text-primary); }
+.appr__sub { font: var(--body-sm); color: var(--text-secondary); max-width: 400px; }
+
+.note { position: relative; }
+.note__bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.note--a .note__bg { fill: var(--bg-page); }
+.note--b .note__bg { fill: var(--bg-second-soft); }
+.note--c .note__bg { fill: var(--bg-accent); }
+.note__body {
+  position: relative; padding: 30px;
+  display: flex; flex-direction: column; gap: var(--s8);
+}
+.note__title { font: var(--h4); color: var(--text-primary); }
+.note__text  { font: var(--body-sm); color: var(--text-secondary); }
+
+/* по умолчанию (планшет и уже) — колонка */
+.appr__map { display: flex; flex-direction: column; gap: var(--s32); margin-top: var(--s48); }
+.appr__links { display: none; }
+
+/* десктоп ≥1200 — майндмап как в макете.
+   Ниже 1200 связи скрыты: это нарисованные от руки кривые,
+   привязанные к позициям карточек, они не перетекают. */
+@media (min-width: 1200px) {
+  .appr { padding-left: 0; padding-right: 0; }
+  .appr__map { display: block; position: relative; height: 350px; margin-top: 0; }
+  .appr__links { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  .appr__links path {
+    fill: none; stroke: var(--action-default); stroke-width: 2;
+    stroke-dasharray: 5 5; vector-effect: non-scaling-stroke;
+  }
+  .note { position: absolute; width: 25.7%; }
+  .note--a { left: 9.4%;  top: 73px; }
+  .note--b { left: 37.1%; top: 155px; }
+  .note--c { left: 65.4%; top: 101px; }
+}
+
+/* ============================================================
+   ОБРАЗОВАНИЕ
+   ============================================================ */
+.edu {
+  background: var(--bg-page);
+  display: flex; align-items: center; gap: var(--s48);
+  /* слева поля нет: папка намеренно свисает за край, как в макете */
+  padding: var(--section-py) var(--margin) var(--section-py) 0;
+  position: relative;
+}
+.edu__art { flex: 0 1 690px; min-width: 0; }
+.edu__art img { width: 100%; height: auto; }
+.edu__text {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; gap: var(--s16); align-items: flex-start;
+}
+.edu__title { font: var(--display-lg); color: var(--text-primary); }
+.edu__body  { font: var(--body); color: var(--text-secondary); }
+.edu__nav { display: flex; gap: var(--s16); margin-top: var(--s32); }
+.edu__arrow {
+  width: 68px; height: 68px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: var(--radius-md);
+  background: var(--action-default); color: var(--text-on-accent);
+  cursor: pointer; transition: background .18s ease;
+}
+.edu__arrow:hover  { background: var(--action-hover); }
+.edu__arrow:active { background: var(--action-active); }
+.edu__arrow:focus-visible { outline: var(--bw-emphasis) solid var(--border-focus); outline-offset: 2px; }
+.edu__arrow svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+@media (max-width: 1024px) {
+  .edu { flex-direction: column; align-items: stretch; gap: var(--s32); }
+  .edu__art { flex: none; max-width: 100%; }
+  .edu__text { padding-left: var(--margin); }
+}
+@media (max-width: 767px) {
+  .edu__nav { margin-top: var(--s16); }
+  .edu__arrow { width: 56px; height: 56px; }
+}
+
+/* ============================================================
+   КОНТАКТЫ
+   ============================================================ */
+.contacts { display: flex; flex-direction: column; align-items: center; gap: var(--s48); }
+.contacts__head {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s24);
+  text-align: center;
+}
+.contacts__title { font: var(--display-lg); color: var(--text-primary); }
+.contacts__sub { font: var(--body); color: var(--text-secondary); max-width: 660px; }
+.contacts__cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--s24); width: 100%;
+}
+.contact {
+  display: flex; align-items: flex-start; gap: var(--s24);
+  padding: var(--pad-component);
+  border-radius: var(--radius-lg);
+  background: var(--bg-accent-soft);
+  text-decoration: none;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.contact:hover { box-shadow: var(--shadow-card); transform: translateY(-2px); }
+.contact:focus-visible { outline: var(--bw-emphasis) solid var(--border-focus); outline-offset: 2px; }
+.contact__icon {
+  width: 48px; height: 48px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-lg);
+  background: var(--bg-accent); color: var(--text-accent);
+}
+.contact__icon svg {
+  width: 22px; height: 22px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.contact__body { display: flex; flex-direction: column; gap: var(--s4); min-width: 0; }
+.contact__label { font: var(--body-sm); color: var(--text-muted); }
+.contact__value { font: var(--h4); color: var(--text-primary); }
+
+@media (max-width: 1024px) { .contacts__cards { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   ПОДВАЛ
+   ============================================================ */
+.footer {
+  background: var(--bg-page);
+  padding: var(--pad-container) var(--margin);
+  display: flex; flex-direction: column; gap: var(--s24);
+}
+.footer__top {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s32);
+}
+.footer__ident { display: flex; flex-direction: column; gap: var(--s4); }
+.footer__name { font: var(--h4); color: var(--text-primary); }
+.footer__role { font: var(--body-sm); color: var(--text-muted); }
+.footer__nav { display: flex; flex-wrap: wrap; gap: var(--s32); }
+.footer__nav a {
+  font: var(--body); color: var(--text-secondary);
+  text-decoration: none; transition: color .18s ease;
+}
+.footer__nav a:hover { color: var(--action-default); }
+.footer__rule {
+  border: none; height: var(--bw-hairline);
+  background: var(--border-subtle); margin: 0;
+}
+.footer__legal {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s32);
+  font: var(--body-sm); color: var(--text-muted);
+}
+.footer__legal a { text-decoration: none; }
+.footer__legal a:hover { color: var(--action-default); }
+
+@media (max-width: 767px) {
+  .footer__top { flex-direction: column; align-items: flex-start; gap: var(--s24); }
+  .footer__nav { gap: var(--s16); row-gap: var(--s8); }
+  .footer__legal { flex-direction: column; align-items: flex-start; gap: var(--s8); }
+}
+
+/* ---------- уважение к системной настройке «меньше движения» ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

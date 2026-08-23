@@ -1,0 +1,593 @@
+/*
+  Design tokens — Владимир Кунаев, психолог (v12)
+  Пересобрано по ФИНАЛЬНОМУ МАКЕТУ: Figma X0v0aUp3kP6ARQ1FvH7dxT, node 2399:55
+  (Page 1 → "Frame 15", 1440×4608). Десктопные значения взяты из макета
+  один в один; Tablet/Mobile выведены здесь (в макете их нет).
+
+  Источник правды — ПЕРЕМЕННЫЕ Figma + макет. Подписи на странице
+  "Design System" (2048:2) были отставшими на несколько версий (говорили
+  "Fraunces SemiBold", показывали коралловый Purple #FBE3DA/#E8603F и
+  Blue/700 = #0047F0) — при этой пересборке они переписаны и теперь
+  генерируются из реальных значений переменных.
+
+  Три яруса (структура не менялась):
+    1) PRIMITIVE — сырые значения, смысла не несут
+    2) SEMANTIC  — то, чем пользуются: роли (Text/Background/Border/
+                   Action) + типографика + отступы; у типографики и
+                   отступов по три режима (Desktop/Tablet/Mobile = @media)
+    3) COMPONENT — токены компонентов, ссылаются только на Semantic
+
+  ЧТО ИЗМЕНИЛОСЬ ПРОТИВ v11 (всё — следствие макета):
+
+  1. ШРИФТ. Fraunces → Arimo. Это закрывает главный баг файла: Fraunces не
+     содержит кириллицы, и весь русский текст молча подменялся на Noto Sans.
+     Arimo (Google Fonts, Apache 2.0) везёт полную кириллицу.
+  2. НАЧЕРТАНИЯ. Было Light 300 / Regular 400 / SemiBold 600 → стало
+     Regular 400 / Bold 700. Третьего в макете нет нигде.
+  3. CAPTION/EYEBROW. 14/20 → 20/24. Самое неочевидное изменение: в макете
+     надзаголовки секций (МОЙ ПРИОРИТЕТ, НАПРАВЛЕНИЯ, ОБО МНЕ, ПОДХОД,
+     КВАЛИФИКАЦИЯ, КОНТАКТЫ) крупные — 20px Bold цветом Text/Accent.
+  4. СИНИЙ СТАЛ СВЕТЛЕЕ. Вся шкала уехала: 700 был #0047F0 → стал #1D4ED8,
+     800 #0039C0 → #1E3A8A, 900 #002B90 → #172554; добавился Blue/50.
+     Кнопка теперь заливается Blue/500 (#4B82FF), а не Blue/700.
+  5. ФИОЛЕТОВЫЙ. Purple/600 #A749FC → #795EF0 (барвинковый вместо
+     пурпурного), Purple/700 #7604C2 → #6904C2.
+  6. РАДИУС КНОПКИ. pill (999) → md (16). В макете все кнопки —
+     скруглённые прямоугольники, не пилюли.
+  7. ФУТЕР СТАЛ СВЕТЛЫМ. Был Background/Dark, в макете — Background/Page.
+
+  ЧТО ДОБАВЛЕНО В ЭТОЙ ВЕРСИИ (и синхронно заведено в Figma):
+
+  - Background/AccentSoft (Blue/50). В макете карточки контактов были
+    залиты примитивом Blue/50 напрямую, минуя семантический ярус —
+    нарушение правила «компонент ссылается только на семантику». Роль
+    заведена, карточки перепривязаны.
+  - Layout/SectionPaddingY (96 / 64 / 48). В макете вертикальный воздух
+    секций везде Spacing/96, но это примитив, роли у него не было.
+  - Script/* в четырёх размерах. У Script/Accent был один размер (40/48),
+    а макет использует скрипт в четырёх местах и четырёх размерах: 84px
+    в заголовке героя, 396px водяным знаком «Комфорт», 24px в подписи на
+    фото и на бирке диплома.
+  - Режимы Tablet и Mobile переписаны целиком — см. ниже.
+
+  ПРО РЕЖИМЫ TABLET/MOBILE. Их не трогали с эпохи Fraunces, и они были не
+  просто устаревшими, а несогласованными: Body/LG 18px с интерлиньяжем 20,
+  Body/Default 16px с интерлиньяжем 20, Body/SM 14px с интерлиньяжем 16,
+  Button 16px с интерлиньяжем 16 на мобильном, Heading/H4 18px с
+  интерлиньяжем 20. Всё это — строки, налезающие друг на друга. А
+  Caption/Eyebrow вообще стоял голым числом 20/24 во всех трёх режимах,
+  без привязки к примитивам и без адаптации. Пересобрано целиком.
+
+  Отдельно: Blue/600 (#2E5FD9) и Text/Accent в Figma уже были заведены
+  корректными алиасами — на первый взгляд показалось, что там сырые
+  хексы, это было неверно.
+
+  ЧИСТКА ПАЛИТРЫ — в два захода, по прямому решению владельца: в системе
+  остаются только цвета, которые есть в макете, плюс цвета состояний
+  интерактивных элементов.
+
+  Заход 1 (не использовал ни макет, ни компоненты):
+    примитивы  — Blue/200, Blue/800, Blue/900, Purple/700, Purple/900
+    семантика  — Border/Accent, Icon/Muted, Icon/OnAccent,
+                 Background/SecondaryAccentHover
+
+  Заход 2 (в макете нет, но на них держались оставленные компоненты):
+    примитивы  — Neutral/Beige100, Green/600, Amber/600, Red/600
+    семантика  — Background/Dark, Background/Warm, Icon/Default,
+                 Icon/Accent, Status/Success, Status/Warning, Status/Error
+
+  Icon/Default и Icon/Accent не просто удалены: их потребители переведены
+  на Text/Secondary и Text/AccentStrong — значения там ровно те же
+  (Ink700 и Blue700), а иконки в этой системе и так наследуют цвет текста
+  через currentColor, так что отдельный ярус ролей под них был лишним.
+
+  ЦЕНА второго захода: компоненты, которые жили на удалённых цветах,
+  потеряли привязки и держат цвет литералом — Alert, состояние ошибки у
+  Input, Card/Quote, тёмный Footer из библиотеки, Tag/Warm, Torn Section
+  Divider. В коде классы Alert, Tag/Warm и .section--warm убраны, потому
+  что красить их стало нечем.
+
+  Оттенки состояний сохранены целиком: кнопка Default (Blue/500) → Hover
+  (Blue/600) → Active (Blue/700), плюс Border/Focus (Blue/500).
+
+  Итог: Color Primitives 22 → 13, Color Semantic 27 → 17.
+
+  Text/Link не удалён, а ПЕРЕИМЕНОВАН в Text/AccentStrong: роли ссылки в
+  макете нет (в футере «Политика конфиденциальности» набрана Text/Muted),
+  зато рукописной строке в герое не хватало роли — она сидела прямо на
+  примитиве Blue/700. Мёртвый токен переиспользован вместо нового.
+
+  Заодно закрыты восемь мест, где макет был привязан к примитивам мимо
+  семантики: подложка карточки с фото, шесть кружков перфорации, плашка
+  под подписью, водяной знак, корешок и тело папки с дипломом. Все они
+  теперь ссылаются на роли; цвета при этом не изменились ни на пиксель.
+*/
+
+/* Arimo — Google Fonts, латиница + кириллица, вес 400 и 700. */
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap');
+
+/*
+  Good Vibes Pro — акцентный рукописный. НЕ веб-шрифт: на Google Fonts его
+  нет, в Figma он подключён локально. Чтобы он появился на сайте, его нужно
+  положить рядом и раздать самому:
+
+    @font-face {
+      font-family: 'Good Vibes Pro';
+      src: url('./fonts/GoodVibesPro.woff2') format('woff2');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+
+  Great Vibes в стеке ниже — не замена, а страховка: если woff2 не доехал
+  на прод, браузер иначе свалится в системный cursive (на Windows это
+  Comic Sans). Great Vibes есть на Google Fonts и везёт кириллицу, но
+  метрики у него другие — он у́же и выше, так что при срабатывании
+  страховки строки в герое поедут. Импорт оставлен включённым намеренно.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+:root {
+  /* ============================================================
+     ЯРУС 1 — ПРИМИТИВЫ
+     ============================================================ */
+
+  /* Примитив — цвет. Сверено с переменными Figma (не со свотчами на странице). */
+  --prim-blue-50:  #EAF1FF;  /* новый: подложка карточек контактов */
+  --prim-blue-100: #CEE2FF;
+  --prim-blue-500: #4B82FF;  /* заливка кнопки по умолчанию + кольцо фокуса */
+  --prim-blue-600: #2E5FD9;  /* добавлен здесь: акцентный текст + hover кнопки */
+  --prim-blue-700: #1D4ED8;  /* active кнопки + Text/AccentStrong + Icon/Accent */
+
+  --prim-purple-100: #F3EDFF;
+  --prim-purple-600: #795EF0;
+
+  --prim-neutral-white:      #FFFFFF;
+  --prim-neutral-blue-white: #F5F8FF;
+  --prim-neutral-ink-200:    #D7DBE3;
+  --prim-neutral-ink-500:    #6B7280;
+  --prim-neutral-ink-700:    #3A4256;
+  --prim-neutral-ink-900:    #00081A;
+
+  /* Примитив — семейства */
+  --prim-font-arimo:  'Arimo', 'Helvetica Neue', Arial, sans-serif;
+  --prim-font-script: 'Good Vibes Pro', 'Great Vibes', cursive;
+
+  /* Примитив — начертания. Только два: в макете третьего нет. */
+  --prim-weight-regular: 400;
+  --prim-weight-bold:    700;
+
+  /* Примитив — размеры (px). Пол шкалы теперь 14 на всех брейкпоинтах:
+     12px из системы ушёл, его больше негде применить. */
+  --prim-size-14: 14px; --prim-size-16: 16px; --prim-size-18: 18px;
+  --prim-size-20: 20px; --prim-size-24: 24px; --prim-size-28: 28px;
+  --prim-size-32: 32px; --prim-size-40: 40px; --prim-size-48: 48px;
+  --prim-size-64: 64px;
+
+  /* Примитив — размеры скрипта. Отдельной группой намеренно: рукописное
+     начертание декоративное, у него другая оптика (маленький рост
+     строчных), и подмешивать 44/84 в общую шкалу UI-размеров значило бы
+     сломать её чистоту ради одного шрифта. */
+  --prim-script-24: 24px; --prim-script-28: 28px; --prim-script-32: 32px;
+  --prim-script-40: 40px; --prim-script-56: 56px; --prim-script-84: 84px;
+
+  /* Примитив — интерлиньяж (px) */
+  --prim-lh-20: 20px; --prim-lh-24: 24px; --prim-lh-26: 26px; --prim-lh-28: 28px;
+  --prim-lh-32: 32px; --prim-lh-36: 36px; --prim-lh-40: 40px; --prim-lh-48: 48px;
+  --prim-lh-56: 56px; --prim-lh-72: 72px;
+
+  /* Примитив — толщина обводки (по роли, не по числу) */
+  --prim-border-hairline: 1px;   /* разделители: линия под хедером, линейка в футере */
+  --prim-border-default:  1.5px; /* обводка в покое: Outlined-кнопка, Input, Radio/Checkbox */
+  --prim-border-emphasis: 2px;   /* фокус/активность: Input focus, Radio checked, Steps active */
+  --prim-border-accent:   3px;   /* левая полоса Alert */
+
+  /* Примитив — отступы и радиусы */
+  --spacing-4: 4px; --spacing-8: 8px; --spacing-12: 12px; --spacing-16: 16px;
+  --spacing-24: 24px; --spacing-32: 32px; --spacing-48: 48px; --spacing-64: 64px;
+  --spacing-96: 96px; --spacing-128: 128px;
+
+  --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --radius-xl: 32px; --radius-pill: 999px;
+
+  /* Примитив — тени */
+  --shadow-soft:   0 4px 12px rgba(22, 29, 33, 0.08);
+  --shadow-card:   0 1px 2px rgba(22, 29, 33, 0.04), 0 12px 24px rgba(22, 29, 33, 0.10);
+  --shadow-lifted: 0 24px 48px -4px rgba(22, 29, 33, 0.16);
+
+  /* ============================================================
+     ЯРУС 2 — СЕМАНТИКА (цвет). По роли применения, не по оттенку.
+     ============================================================ */
+
+  /* Text */
+  --color-text-primary:   var(--prim-neutral-ink-900);
+  --color-text-secondary: var(--prim-neutral-ink-700);
+  --color-text-muted:     var(--prim-neutral-ink-500);
+  --color-text-on-accent: var(--prim-neutral-white);
+  --color-text-accent:        var(--prim-blue-600);  /* надзаголовки + выделенные куски фраз */
+  --color-text-accent-strong: var(--prim-blue-700);  /* насыщеннее: рукописная строка в герое */
+
+  /* Background */
+  --color-bg-page:                  var(--prim-neutral-blue-white);
+  --color-bg-surface:               var(--prim-neutral-white);
+  --color-bg-accent:                var(--prim-blue-100);
+  --color-bg-accent-soft:           var(--prim-blue-50);
+  --color-bg-secondary-accent:      var(--prim-purple-600);
+  --color-bg-secondary-accent-soft: var(--prim-purple-100);
+
+  /* Border */
+  --color-border-subtle: var(--prim-neutral-ink-200);
+  --color-border-focus:  var(--prim-blue-500);
+
+  /* Action — состояния кнопки живут здесь */
+  --color-action-primary-default: var(--prim-blue-500);
+  --color-action-primary-hover:   var(--prim-blue-600);
+  --color-action-primary-active:  var(--prim-blue-700);
+
+  /* Status — УДАЛЁН. Success/Warning/Error не встречаются в макете, и при
+     чистке палитры роли и примитивы (Green/Amber/Red 600) снесены. Как
+     только появится форма заявки, ярус нужно завести заново: без него
+     нечем показать ошибку поля и нечем покрасить Alert. */
+
+  /* ============================================================
+     ЯРУС 2 — СЕМАНТИКА (отступы). Значения Desktop, они же по умолчанию.
+     Tablet/Mobile — в @media ниже, под ТЕМИ ЖЕ именами.
+     ============================================================ */
+  --space-margin:            var(--spacing-128); /* поле от края страницы */
+  --space-section-padding-y: var(--spacing-96);  /* вертикальный воздух внутри секции */
+  --space-section-gap:       var(--spacing-64);  /* зазор между крупными блоками */
+  --space-padding-container: var(--spacing-48);  /* внешняя вложенная коробка (обёртка секции, крупная карточка) */
+  --space-padding-component: var(--spacing-32);  /* средняя коробка (карточка, группа полей) */
+  --space-padding-element:   var(--spacing-16);  /* внутренняя коробка (кнопка, тег, инпут) */
+
+  /* ============================================================
+     ЯРУС 2 — СЕМАНТИКА (типографика). Значения Desktop = ровно то, что
+     стоит в макете. Tablet/Mobile — в @media ниже.
+     letter-spacing нигде нет: везде 0, алиасить нечего.
+     ============================================================ */
+  --font-main:   var(--prim-font-arimo);
+  --font-script: var(--prim-font-script);
+
+  --text-display-xl-size: var(--prim-size-64); --text-display-xl-lh: var(--prim-lh-72); --text-display-xl-weight: var(--prim-weight-bold);
+  --text-display-lg-size: var(--prim-size-48); --text-display-lg-lh: var(--prim-lh-56); --text-display-lg-weight: var(--prim-weight-bold);
+  --text-h1-size: var(--prim-size-40); --text-h1-lh: var(--prim-lh-48); --text-h1-weight: var(--prim-weight-bold);
+  --text-h2-size: var(--prim-size-32); --text-h2-lh: var(--prim-lh-40); --text-h2-weight: var(--prim-weight-bold);
+  --text-h3-size: var(--prim-size-24); --text-h3-lh: var(--prim-lh-32); --text-h3-weight: var(--prim-weight-bold);
+  --text-h4-size: var(--prim-size-20); --text-h4-lh: var(--prim-lh-28); --text-h4-weight: var(--prim-weight-bold);
+  --text-body-lg-size: var(--prim-size-18); --text-body-lg-lh: var(--prim-lh-26); --text-body-lg-weight: var(--prim-weight-regular);
+  --text-body-size: var(--prim-size-16); --text-body-lh: var(--prim-lh-24); --text-body-weight: var(--prim-weight-regular);
+  --text-body-sm-size: var(--prim-size-14); --text-body-sm-lh: var(--prim-lh-20); --text-body-sm-weight: var(--prim-weight-regular);
+  --text-caption-size: var(--prim-size-20); --text-caption-lh: var(--prim-lh-24); --text-caption-weight: var(--prim-weight-bold);
+  --text-button-size: var(--prim-size-16); --text-button-lh: var(--prim-lh-24); --text-button-weight: var(--prim-weight-bold);
+
+  /* Скрипт. Четыре роли — по тому, как он реально используется в макете. */
+  --text-script-hero-size:   var(--prim-script-84); --text-script-hero-lh:   var(--prim-lh-72); /* строка внутри заголовка героя */
+  --text-script-accent-size: var(--prim-script-40); --text-script-accent-lh: var(--prim-lh-48); /* отдельная акцентная строка */
+  --text-script-note-size:   var(--prim-script-24); --text-script-note-lh:   var(--prim-lh-20); /* подпись на фото, бирка диплома */
+  --text-script-weight: var(--prim-weight-regular);
+
+  /* Водяной знак «Комфорт» — единственный токен на vw, и намеренно.
+     В макете он 396px при ширине кадра 1440 (= 27.5vw) и тянется во всю
+     ширину полосы. Брейкпоинтные ступени дали бы рывок ровно на границе,
+     а знак фоновый — ему нужна плавность, не ступени. Нижняя граница
+     120px — чтобы на 375px он не превратился в кляксу. */
+  --text-script-watermark-size: clamp(120px, 27.5vw, 396px);
+  --text-script-watermark-lh: 0.9;
+}
+
+/* ============================================================
+   ПЛАНШЕТ (≤1024px). Те же имена, сжатые значения.
+   Логика: жмётся только верх шкалы. H3 и всё, что мельче, на десктопе
+   уже стоят на своём планшетном размере — двигать их значит терять
+   читаемость ни за что. Body/Button не двигаются вообще: 16px — пол для
+   основного текста, а 16px в кнопке ещё и держит тач-цель.
+   Eyebrow 20 → 18: при заголовке 48 вместо 64 надзаголовок обязан
+   остаться заметно подчинённым.
+   ============================================================ */
+@media (max-width: 1024px) {
+  :root {
+    --text-display-xl-size: var(--prim-size-48); --text-display-xl-lh: var(--prim-lh-56);
+    --text-display-lg-size: var(--prim-size-40); --text-display-lg-lh: var(--prim-lh-48);
+    --text-h1-size: var(--prim-size-32); --text-h1-lh: var(--prim-lh-40);
+    --text-h2-size: var(--prim-size-28); --text-h2-lh: var(--prim-lh-36);
+    --text-caption-size: var(--prim-size-18); --text-caption-lh: var(--prim-lh-24);
+    /* h3, h4, body-lg, body, body-sm, button — без изменений */
+
+    --text-script-hero-size:   var(--prim-script-56); --text-script-hero-lh:   var(--prim-lh-56);
+    --text-script-accent-size: var(--prim-script-32); --text-script-accent-lh: var(--prim-lh-40);
+    /* script-note не меняется ни на одном брейкпоинте: 24px — это уже
+       минимум для рукописного начертания. У скрипта маленький рост
+       строчных, он читается ХУЖЕ мелким, а не лучше, поэтому обычное
+       правило «на мобилке уменьшаем» к нему не применяется. */
+
+    --space-margin: var(--spacing-48);
+    --space-section-padding-y: var(--spacing-64);
+    --space-section-gap: var(--spacing-48);
+    --space-padding-container: var(--spacing-32);
+    --space-padding-component: var(--spacing-24);
+    /* padding-element остаётся 16px */
+  }
+}
+
+/* ============================================================
+   МОБИЛЬНЫЙ (≤767px). Объявлен после планшетного, поэтому выигрывает.
+   Потолок — 32px (Display/XL): на 375px с полями по 16 остаётся 343px,
+   и самая длинная строка героя «для вашей терапии» в Arimo Bold 32
+   укладывается в одну строку. Пол — 14px, ниже не опускается ничто.
+   Display/LG и H1 на мобильном сходятся в один размер (28) — это
+   нормально: на такой ширине разница между ними всё равно не читается.
+   ============================================================ */
+@media (max-width: 767px) {
+  :root {
+    --text-display-xl-size: var(--prim-size-32); --text-display-xl-lh: var(--prim-lh-40);
+    --text-display-lg-size: var(--prim-size-28); --text-display-lg-lh: var(--prim-lh-36);
+    --text-h1-size: var(--prim-size-28); --text-h1-lh: var(--prim-lh-36);
+    --text-h2-size: var(--prim-size-24); --text-h2-lh: var(--prim-lh-32);
+    --text-h3-size: var(--prim-size-20); --text-h3-lh: var(--prim-lh-28);
+    --text-h4-size: var(--prim-size-18); --text-h4-lh: var(--prim-lh-26);
+    --text-body-lg-size: var(--prim-size-16); --text-body-lg-lh: var(--prim-lh-24);
+    --text-caption-size: var(--prim-size-14); --text-caption-lh: var(--prim-lh-20);
+    /* body, body-sm, button — уже на полу, не меняются */
+
+    --text-script-hero-size:   var(--prim-script-28); --text-script-hero-lh:   var(--prim-lh-40);
+    --text-script-accent-size: var(--prim-script-24); --text-script-accent-lh: var(--prim-lh-32);
+
+    --space-margin: var(--spacing-16);
+    --space-section-padding-y: var(--spacing-48);
+    --space-section-gap: var(--spacing-32);
+    --space-padding-container: var(--spacing-24);
+    --space-padding-component: var(--spacing-16);
+    --space-padding-element: var(--spacing-12);
+  }
+}
+
+/* ============================================================
+   Справочные классы типографики
+   ============================================================ */
+.text-display-xl { font: var(--text-display-xl-weight) var(--text-display-xl-size)/var(--text-display-xl-lh) var(--font-main); }
+.text-display-lg { font: var(--text-display-lg-weight) var(--text-display-lg-size)/var(--text-display-lg-lh) var(--font-main); }
+.text-h1 { font: var(--text-h1-weight) var(--text-h1-size)/var(--text-h1-lh) var(--font-main); }
+.text-h2 { font: var(--text-h2-weight) var(--text-h2-size)/var(--text-h2-lh) var(--font-main); }
+.text-h3 { font: var(--text-h3-weight) var(--text-h3-size)/var(--text-h3-lh) var(--font-main); }
+.text-h4 { font: var(--text-h4-weight) var(--text-h4-size)/var(--text-h4-lh) var(--font-main); }
+.text-body-lg { font: var(--text-body-lg-weight) var(--text-body-lg-size)/var(--text-body-lg-lh) var(--font-main); }
+.text-body { font: var(--text-body-weight) var(--text-body-size)/var(--text-body-lh) var(--font-main); }
+.text-body-sm { font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); }
+.text-caption { font: var(--text-caption-weight) var(--text-caption-size)/var(--text-caption-lh) var(--font-main); text-transform: uppercase; color: var(--color-text-accent); }
+.text-button { font: var(--text-button-weight) var(--text-button-size)/var(--text-button-lh) var(--font-main); }
+
+.text-script-hero { font: var(--text-script-weight) var(--text-script-hero-size)/var(--text-script-hero-lh) var(--font-script); color: var(--color-text-accent-strong); }
+.text-script-accent { font: var(--text-script-weight) var(--text-script-accent-size)/var(--text-script-accent-lh) var(--font-script); }
+.text-script-note { font: var(--text-script-weight) var(--text-script-note-size)/var(--text-script-note-lh) var(--font-script); }
+.text-script-watermark {
+  font: var(--text-script-weight) var(--text-script-watermark-size)/var(--text-script-watermark-lh) var(--font-script);
+  color: var(--color-bg-secondary-accent-soft);
+  text-transform: lowercase;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Каркас страницы. Три роли, повторяющиеся в макете в каждой секции:
+   поле от края, вертикальный воздух секции, фон полосы.
+   ============================================================ */
+.section {
+  padding: var(--space-section-padding-y) var(--space-margin);
+  position: relative;
+}
+.section__eyebrow { font: var(--text-caption-weight) var(--text-caption-size)/var(--text-caption-lh) var(--font-main); color: var(--color-text-accent); text-transform: uppercase; }
+.section--page      { background: var(--color-bg-page); }
+.section--surface   { background: var(--color-bg-surface); }
+.section--secondary { background: var(--color-bg-secondary-accent-soft); }
+
+/* ============================================================
+   Button — Type (primary/outlined/ghost) × State (default/hover/active/
+   disabled). Радиус в v12 стал md (16), а не pill: в макете все кнопки —
+   скруглённые прямоугольники. Горизонтальный паддинг тоже вырос до
+   container (48) — так стоит в макете, кнопка «Связаться со мной» 248×56.
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  padding: var(--space-padding-element) var(--space-padding-container);
+  border-radius: var(--radius-md);
+  border: none;
+  font: var(--text-button-weight) var(--text-button-size)/var(--text-button-lh) var(--font-main);
+  cursor: pointer;
+}
+.btn__content { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+.btn__icon { width: var(--prim-size-20); height: var(--prim-size-20); stroke: currentColor; flex-shrink: 0; }
+.btn:focus-visible { outline: var(--prim-border-emphasis) solid var(--color-border-focus); outline-offset: 2px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Квадратная кнопка-иконка (стрелки карусели в блоке «Образование»):
+   паддинг 24 со всех сторон, тот же радиус md — 68×68 в макете. */
+.btn--icon-only { padding: var(--spacing-24); justify-content: center; }
+
+.btn[data-type="primary"] {
+  background: var(--color-action-primary-default); color: var(--color-text-on-accent);
+}
+.btn[data-type="primary"]:hover  { background: var(--color-action-primary-hover); }
+.btn[data-type="primary"]:active { background: var(--color-action-primary-active); }
+
+.btn[data-type="outlined"] {
+  background: var(--color-bg-surface); color: var(--color-action-primary-default);
+  border: var(--prim-border-default) solid var(--color-action-primary-default);
+}
+.btn[data-type="outlined"]:hover  { background: var(--color-bg-accent); color: var(--color-action-primary-hover); border-color: var(--color-action-primary-hover); }
+.btn[data-type="outlined"]:active { background: var(--color-bg-accent); color: var(--color-action-primary-active); border-color: var(--color-action-primary-active); }
+
+.btn[data-type="ghost"] { background: transparent; color: var(--color-action-primary-default); }
+.btn[data-type="ghost"]:hover  { background: var(--color-bg-accent); color: var(--color-action-primary-hover); }
+.btn[data-type="ghost"]:active { background: var(--color-bg-accent); color: var(--color-action-primary-active); }
+
+/* Иконки — Iconoir (https://iconoir.com, MIT), viewBox 24×24, обводка
+   1.5px, круглые концы, stroke="currentColor". Набор в Figma: ArrowRight,
+   ArrowLeft, ChevronRight, Calendar, Chat, Check, Close. */
+
+/* ============================================================
+   Tag/Pill — Type (primary/warm) × State (default/hover).
+   Подпись переведена с caption на body-sm: caption в v12 стал 20px,
+   а тег с таким текстом перестаёт быть тегом.
+   ============================================================ */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: var(--spacing-8) var(--space-padding-element);
+  border-radius: var(--radius-pill);
+  font: var(--prim-weight-bold) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main);
+  cursor: pointer;
+}
+.tag[data-type="primary"] { background: var(--color-bg-accent); color: var(--color-text-accent-strong); }
+.tag[data-type="primary"]:hover { background: var(--color-action-primary-default); color: var(--color-text-on-accent); }
+/* Вариант Tag/Warm убран: он держался на Background/Warm, а тёплый бежевый
+   из палитры удалён — в макете его нет. */
+
+/* ============================================================
+   Card/Premium Bento — Default/Hover. В макете (секция «Направления»)
+   карточка белая на фиолетовой подложке, радиус lg, паддинг container.
+   ============================================================ */
+.card-bento {
+  padding: var(--space-padding-container);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  border: var(--prim-border-default) solid transparent;
+  display: flex; flex-direction: column; gap: var(--spacing-12);
+  cursor: pointer;
+}
+.card-bento:hover { border-color: var(--color-action-primary-default); box-shadow: var(--shadow-card); }
+.card-bento__title { font: var(--text-h4-weight) var(--text-h4-size)/var(--text-h4-lh) var(--font-main); color: var(--color-text-primary); }
+.card-bento__body  { font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); color: var(--color-text-secondary); }
+
+/* ============================================================
+   Card/Contact — новая карточка из макета (телефон / telegram /
+   whatsapp). Подложка Blue/50, слот под иконку на Blue/100.
+   ============================================================ */
+.card-contact {
+  display: flex; gap: var(--spacing-24); align-items: flex-start;
+  padding: var(--space-padding-component);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-accent-soft);
+}
+.card-contact__icon {
+  width: var(--spacing-48); height: var(--spacing-48);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-accent);
+  color: var(--color-text-accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-contact__channel { display: flex; flex-direction: column; gap: var(--spacing-4); }
+.card-contact__label { font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); color: var(--color-text-muted); }
+.card-contact__value { font: var(--text-h4-weight) var(--text-h4-size)/var(--text-h4-lh) var(--font-main); color: var(--color-text-primary); }
+
+/* ============================================================
+   Steps/Circle — Upcoming/Active/Completed.
+   ============================================================ */
+.step-circle {
+  width: var(--spacing-48); height: var(--spacing-48); border-radius: var(--radius-pill);
+  display: flex; align-items: center; justify-content: center;
+  font: var(--text-h4-weight) var(--text-h4-size)/1 var(--font-main);
+}
+.step-circle[data-state="upcoming"]  { border: var(--prim-border-default) solid var(--color-border-subtle); color: var(--color-text-muted); }
+.step-circle[data-state="active"]    { border: var(--prim-border-emphasis) solid var(--color-action-primary-default); color: var(--color-action-primary-default); }
+.step-circle[data-state="completed"] { background: var(--color-action-primary-default); color: var(--color-text-on-accent); border: none; }
+.step-circle[data-state="completed"] svg { width: var(--prim-size-20); height: var(--prim-size-20); stroke: currentColor; }
+
+/* ============================================================
+   Input/Text Field — Default/Focus/Error/Disabled.
+   Лейбл переведён с caption на body-sm по той же причине, что и тег.
+   ============================================================ */
+.field { display: flex; flex-direction: column; gap: var(--spacing-8); width: 280px; }
+.field__label { font: var(--prim-weight-bold) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); color: var(--color-text-secondary); }
+.field__input {
+  padding: var(--space-padding-element) var(--space-padding-component);
+  border-radius: var(--radius-md);
+  border: var(--prim-border-default) solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+  font: var(--text-body-weight) var(--text-body-size)/var(--text-body-lh) var(--font-main);
+  color: var(--color-text-primary);
+}
+.field__input::placeholder { color: var(--color-text-muted); }
+.field__input:focus { outline: none; border: var(--prim-border-emphasis) solid var(--color-border-focus); }
+.field[data-state="disabled"] { opacity: 0.45; }
+.field[data-state="disabled"] .field__input { cursor: not-allowed; }
+.field__helper { font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); color: var(--color-text-muted); }
+
+/* ============================================================
+   Checkbox / Radio — Unchecked/Checked/Disabled, 20×20.
+   ============================================================ */
+.checkbox {
+  width: var(--prim-size-20); height: var(--prim-size-20); border-radius: var(--radius-sm);
+  border: var(--prim-border-default) solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.checkbox[data-checked="true"] { background: var(--color-action-primary-default); border: none; }
+.checkbox[data-checked="true"] svg { width: var(--prim-size-14); height: var(--prim-size-14); stroke: var(--color-text-on-accent); }
+.checkbox[data-disabled="true"] { opacity: 0.45; }
+
+.radio {
+  width: var(--prim-size-20); height: var(--prim-size-20); border-radius: var(--radius-pill);
+  border: var(--prim-border-default) solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.radio[data-checked="true"] { border: var(--prim-border-emphasis) solid var(--color-action-primary-default); }
+.radio[data-checked="true"]::after { content: ''; width: 10px; height: 10px; border-radius: var(--radius-pill); background: var(--color-action-primary-default); }
+.radio[data-disabled="true"] { opacity: 0.45; }
+
+/* ============================================================
+   Navigation/Header + Footer. В макете футер СВЕТЛЫЙ (Background/Page)
+   с тонкой линейкой Border/Subtle — тёмного футера из v8–v11 там нет.
+   ============================================================ */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-padding-element) var(--space-margin);
+  background: var(--color-bg-surface);
+  border-bottom: var(--prim-border-hairline) solid var(--color-border-subtle);
+}
+.site-header__logo { font: var(--text-h4-weight) var(--text-h4-size)/var(--text-h4-lh) var(--font-main); color: var(--color-text-primary); }
+.site-header__role { font: var(--text-caption-weight) var(--text-caption-size)/var(--text-caption-lh) var(--font-main); color: var(--color-text-muted); text-transform: uppercase; }
+.site-header__nav { display: flex; gap: var(--spacing-24); }
+.site-header__nav a { font: var(--text-body-weight) var(--text-body-size)/var(--text-body-lh) var(--font-main); color: var(--color-text-secondary); text-decoration: none; }
+.site-header__nav a:hover { color: var(--color-action-primary-default); }
+
+.site-footer { background: var(--color-bg-page); padding: var(--spacing-48) var(--space-margin); display: flex; flex-direction: column; gap: var(--spacing-24); }
+.site-footer__top { display: flex; align-items: center; justify-content: space-between; }
+.site-footer__logo { font: var(--text-h4-weight) var(--text-h4-size)/var(--text-h4-lh) var(--font-main); color: var(--color-text-primary); }
+.site-footer__role { font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); color: var(--color-text-muted); }
+.site-footer__links { display: flex; gap: var(--spacing-32); }
+.site-footer__links a { color: var(--color-text-secondary); text-decoration: none; font: var(--text-body-weight) var(--text-body-size)/var(--text-body-lh) var(--font-main); }
+.site-footer__divider { border: none; border-top: var(--prim-border-hairline) solid var(--color-border-subtle); }
+.site-footer__legal { display: flex; justify-content: space-between; color: var(--color-text-muted); font: var(--text-body-sm-weight) var(--text-body-sm-size)/var(--text-body-sm-lh) var(--font-main); }
+
+/* ============================================================
+   Modal/Dialog
+   ============================================================ */
+.modal {
+  width: 440px;
+  padding: var(--space-padding-container);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-lifted);
+  display: flex; flex-direction: column; gap: var(--spacing-16);
+}
+.modal__header { display: flex; align-items: center; justify-content: space-between; }
+.modal__title { font: var(--text-h3-weight) var(--text-h3-size)/var(--text-h3-lh) var(--font-main); color: var(--color-text-primary); }
+.modal__close { background: none; border: none; cursor: pointer; color: var(--color-text-secondary); }
+.modal__close svg { width: var(--prim-size-20); height: var(--prim-size-20); stroke: currentColor; }
+.modal__body { font: var(--text-body-weight) var(--text-body-size)/var(--text-body-lh) var(--font-main); color: var(--color-text-secondary); }
+.modal__actions { display: flex; gap: var(--spacing-16); }
+
+/* ============================================================
+   Alert — УДАЛЁН вместе с ярусом Status.
+   Компонент целиком держался на Status/Success|Warning|Error: фон был
+   нейтральный, а весь смысл несли цветная левая полоса и цвет текста.
+   Без этих трёх цветов от него не остаётся ничего, что различало бы
+   успех и ошибку, поэтому класс убран, а не перекрашен в синий.
+   В Figma компонент Alert оставлен, но его цвета там теперь литералы.
+
+   Чтобы вернуть: завести Status/* заново (Green/Amber/Red 600 —
+   #1FAA59 / #F5A623 / #EF4444, они были именно такими) и восстановить
+   .alert + .field[data-state="error"].
+   ============================================================ */

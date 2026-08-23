@@ -1,0 +1,131 @@
+<!-- ============================================================
+     БЛОК 02 — ГЕРОЙ. Вставить в блок T123 «HTML-код».
+     Требует блок 00-tokens выше на странице.
+
+     ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
+     1. Фото — загрузите в медиатеку Тильды, вставьте ссылку в <img>.
+
+     Фото-карточка собрана на процентах от своей ширины, поэтому
+     перфорация, снимок и подпись держат пропорции на любом экране.
+     Наклон 3° — как в макете.
+     ============================================================ -->
+
+<section class="vk vk-section vk-section--surface vk-hero" id="top">
+  <div class="vk-hero__inner">
+
+    <div class="vk-hero__text">
+      <p class="vk-eyebrow">Мой приоритет</p>
+      <h1 class="vk-hero__title">
+        Создание<br>
+        <span class="vk-hero__script">комфортных условий</span><br>
+        для вашей терапии
+      </h1>
+      <a class="vk-btn" href="#contacts">Связаться со мной</a>
+    </div>
+
+    <div class="vk-hero__media">
+      <div class="vk-photo-card">
+        <div class="vk-photo-card__perf" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+
+        <!-- CHANGE-ME: ссылка на фото -->
+        <img class="vk-photo-card__img" src="photo.jpg" alt="Владимир Кунаев, психолог">
+
+        <div class="vk-photo-card__plate">
+          <svg class="vk-photo-card__plate-bg" viewBox="0 0 207 76" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0L26.3455 4.87179L51.75 1.94872L78.0955 7.79487L103.5 0.974359L129.845 6.82051L155.25 0L181.595 7.79487L207 0.974359V76L181.595 70.1538L155.25 76L129.845 71.1282L103.5 76L78.0955 70.1538L51.75 76L26.3455 69.1795L0 74.0513V0Z"/>
+          </svg>
+          <span class="vk-photo-card__signature">Владимир Кунаев</span>
+          <span class="vk-photo-card__caption">психолог</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- переход в «Направления» (сиреневая полоса) -->
+  <div class="vk-torn vk-torn--bottom" style="--torn-color: var(--vk-bg-second-soft);" aria-hidden="true">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path d="M-10 40.5H1450V19.5L1426.5 17.5L1406.5 9.5L1380.5 14.5L1358.75 9.5L1340.5 17.5L1319 14.5L1301.5 26L1267.5 29.5L1241.5 22L1211.5 19.5L1176.25 31.5L1152.5 14.5L1123 10L1094 14.5L1085 0.5H1055.5L1030.5 10L993.75 4.5L962 14.5L944.5 29.5L902.5 31.5L882 16.5L845 20.5L811.25 9.5L766.5 16.5L738 20.5L708.5 9.5L667 29.5L628.75 35.5L588.5 20.5L556 35.5L537.5 16.5L492.5 0L446.25 5.5L406 29.5L355 20.5H303.5L263.75 35.5L211 20.5L177.5 17L159.5 29.5L135.5 26.5L126.5 17L94 29.5L81.25 4.5L-10 6.5V40.5Z"/>
+    </svg>
+  </div>
+</section>
+
+<style>
+.vk-hero { overflow: hidden; }
+
+.vk-hero__inner {
+  display: flex; align-items: center; gap: var(--vk-s64);
+}
+.vk-hero__text {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--vk-s24);
+}
+.vk-hero__title { font: var(--vk-display-xl); color: var(--vk-text-primary); }
+.vk-hero__script {
+  font: var(--vk-script-hero);
+  color: var(--vk-text-accent-strong);
+  /* скрипт сидит на своей базовой линии — компенсируем оптический сдвиг */
+  display: inline-block;
+}
+.vk-hero__text .vk-btn { margin-top: var(--vk-s8); }
+
+.vk-hero__media { flex: 0 0 auto; }
+
+/* ---------- фото-карточка ---------- */
+.vk-photo-card {
+  position: relative;
+  width: 443px; aspect-ratio: 443 / 520;
+  background: var(--vk-bg-second-soft);
+  border-radius: var(--vk-radius-md);
+  transform: rotate(3deg);
+  box-shadow: var(--vk-shadow-soft);
+}
+/* перфорация: 6 кружков, позиции в % от карточки — держат пропорцию */
+.vk-photo-card__perf {
+  position: absolute; left: 3.6%; top: 6.5%; bottom: 27.7%; width: 4.97%;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.vk-photo-card__perf span {
+  width: 100%; aspect-ratio: 1;
+  border-radius: 50%; background: var(--vk-bg-surface);
+}
+.vk-photo-card__img {
+  position: absolute; left: 14%; top: 3.1%;
+  width: 82.4%; height: 93.8%;
+  object-fit: cover;
+  background: var(--vk-bg-accent);
+}
+/* подпись на «рваной» плашке */
+.vk-photo-card__plate {
+  position: absolute; left: 50.7%; top: 79.8%; width: 46.7%;
+  padding: 4.5% 3.6%;
+  display: flex; flex-direction: column;
+  color: var(--vk-text-on-accent);
+}
+.vk-photo-card__plate-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  fill: var(--vk-action-default);
+}
+.vk-photo-card__signature {
+  position: relative; font: var(--vk-script-note); white-space: nowrap;
+}
+.vk-photo-card__caption { position: relative; font: var(--vk-body); }
+
+/* ---------- планшет: текст над фото ---------- */
+@media (max-width: 1024px) {
+  .vk-hero__inner { flex-direction: column; align-items: center; gap: var(--vk-s48); }
+  .vk-hero__text { align-items: flex-start; width: 100%; }
+  .vk-photo-card { width: min(443px, 100%); }
+}
+
+/* ---------- мобильный ---------- */
+@media (max-width: 767px) {
+  .vk-hero__inner { gap: var(--vk-s32); }
+  .vk-photo-card { width: 100%; transform: rotate(2deg); }
+  .vk-photo-card__caption { font: var(--vk-body-sm); }
+}
+</style>
