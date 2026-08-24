@@ -363,6 +363,12 @@ a { color: inherit; }
 @media (max-width: 1024px) {
   .hero__inner { flex-direction: column; align-items: center; gap: var(--s48); }
   .hero__text { align-items: flex-start; width: 100%; }
+  /* .hero__media нужна СВОЯ явная ширина: align-items:center не растягивает
+     флекс-элемент, а всё содержимое .photo-card абсолютно спозиционировано,
+     поэтому её «природная» ширина — 0. Без этой строки width:100% у
+     .photo-card резолвится как 100% от неопределённого — и карточка
+     схлопывается в 0×0 (реальный баг, ловился на мобильном). */
+  .hero__media { width: 100%; }
   .photo-card { width: min(443px, 100%); }
 }
 @media (max-width: 767px) {
