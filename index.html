@@ -220,8 +220,40 @@
 
 <!-- ==================== ОБРАЗОВАНИЕ ==================== -->
 <section class="edu" id="education">
+  <!-- Папка собрана вёрсткой, а не картинкой: так бумажка с подписью
+       масштабируется вместе с ней на всех экранах. Геометрия — из макета,
+       в процентах от системы координат коллажа 690×654. -->
   <div class="edu__art">
-    <img src="assets/folder-collage.png" alt="Диплом МГУ, факультет психологии" width="714" height="690">
+    <div class="edu__folder">
+      <span class="edu__spine" aria-hidden="true"></span>
+
+      <svg class="edu__body" viewBox="24 12 540 629" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M24 32C24 20.9543 32.9543 12 44 12L514 12C525.046 12 534 20.9543 534 32V145.333C534 149.661 535.404 153.871 538 157.333L560 186.667C562.596 190.129 564 194.339 564 198.667V621C564 632.046 555.046 641 544 641H44C32.9543 641 24 632.046 24 621V32Z"/>
+      </svg>
+
+      <span class="edu__ring" style="--y:20.34%" aria-hidden="true"></span>
+      <span class="edu__ring" style="--y:39.91%" aria-hidden="true"></span>
+      <span class="edu__ring" style="--y:59.48%" aria-hidden="true"></span>
+      <span class="edu__ring" style="--y:79.05%" aria-hidden="true"></span>
+
+      <span class="edu__sheet" aria-hidden="true"></span>
+
+      <a class="edu__doc" id="edu-link" href="assets/docs/01-msu-diploma.jpg" target="_blank" rel="noopener"
+         title="Открыть документ в полном размере">
+        <img class="edu__doc-img" id="edu-img" src="assets/docs/01-msu-diploma.jpg"
+             alt="Диплом магистра МГУ по направлению «Психология»" width="393" height="556">
+      </a>
+
+      <span class="edu__note" aria-hidden="true"></span>
+
+      <div class="edu__label" aria-live="polite">
+        <span class="edu__label-script" id="edu-note-title">Диплом МГУ</span>
+        <span class="edu__label-sub" id="edu-note-sub">Факультет психологии</span>
+      </div>
+
+      <span class="edu__clip-wire" aria-hidden="true"></span>
+      <span class="edu__clip" aria-hidden="true"></span>
+    </div>
   </div>
 
   <div class="edu__text">
@@ -234,10 +266,10 @@
     </p>
 
     <div class="edu__nav">
-      <button class="edu__arrow" type="button" aria-label="Предыдущий документ">
+      <button class="edu__arrow" type="button" id="edu-prev" aria-label="Предыдущий документ">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
-      <button class="edu__arrow" type="button" aria-label="Следующий документ">
+      <button class="edu__arrow" type="button" id="edu-next" aria-label="Следующий документ">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
@@ -343,6 +375,66 @@
     // вернулись на десктоп — сбросить состояние
     window.matchMedia('(min-width: 1025px)').addEventListener('change', function (e) {
       if (e.matches) setOpen(false);
+    });
+  })();
+
+  // Карусель документов в блоке «Образование».
+  // Подпись живёт на бумажке, приколотой к папке, — как в макете.
+  (function () {
+    var docs = [
+      { src: '01-msu-diploma.jpg',           note: 'Диплом МГУ',      sub: 'Факультет психологии',
+        alt: 'Диплом магистра МГУ по направлению «Психология»' },
+      { src: '02-retraining-cover.jpg',      note: 'Переподготовка',  sub: 'НАДПО, 2022',
+        alt: 'Диплом о профессиональной переподготовке, НАДПО' },
+      { src: '03-retraining-inner.jpg',      note: '640 часов',       sub: 'КПТ в практике психолога',
+        alt: 'Приложение к диплому: программа 640 часов' },
+      { src: '04-upgrade-cover.jpg',         note: 'Повышение',       sub: 'квалификации, 2022',
+        alt: 'Удостоверение о повышении квалификации, НАДПО' },
+      { src: '05-upgrade-inner.jpg',         note: 'Практикум КПТ',   sub: 'Ступень 1, 32 часа',
+        alt: 'Приложение к удостоверению: практикум по КПТ' },
+      { src: '06-msu-certificate-cover.jpg', note: 'Сертификат МГУ',  sub: '2021',
+        alt: 'Сертификат МГУ' },
+      { src: '07-msu-certificate-inner.jpg', note: '704 часа',        sub: 'Основы психологии',
+        alt: 'Сертификат МГУ: программа «Основы психологии»' }
+    ];
+    var BASE = 'assets/docs/';
+
+    var img  = document.getElementById('edu-img');
+    var link = document.getElementById('edu-link');
+    var note = document.getElementById('edu-note-title');
+    var sub  = document.getElementById('edu-note-sub');
+    var prev = document.getElementById('edu-prev');
+    var next = document.getElementById('edu-next');
+    if (!img || !prev || !next) return;
+
+    var i = 0;
+
+    // подгружаем остальные сканы заранее — переключение без мигания
+    docs.forEach(function (d, n) { if (n) { var p = new Image(); p.src = BASE + d.src; } });
+
+    function show(n) {
+      i = (n + docs.length) % docs.length;
+      var d = docs[i];
+
+      img.classList.add('is-swapping');
+      window.setTimeout(function () {
+        img.src = BASE + d.src;
+        img.alt = d.alt;
+        link.href = BASE + d.src;
+        img.classList.remove('is-swapping');
+      }, 140);
+
+      note.textContent = d.note;
+      sub.textContent = d.sub;
+    }
+
+    prev.addEventListener('click', function () { show(i - 1); });
+    next.addEventListener('click', function () { show(i + 1); });
+
+    // стрелки на клавиатуре — когда фокус внутри блока
+    document.querySelector('.edu').addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  { show(i - 1); }
+      if (e.key === 'ArrowRight') { show(i + 1); }
     });
   })();
 </script>

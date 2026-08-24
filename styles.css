@@ -6,13 +6,14 @@
    мобильный ≤767 — ровно как в макетах Figma.
    ============================================================ */
 
-/* Good Vibes Pro — акцентный рукописный. На Google Fonts его нет.
-   Положите GoodVibesPro.woff2 в assets/fonts/ — и он подхватится.
-   Пока файла нет, работает запасной Great Vibes: кириллица у него
-   есть, но метрики другие, строки в герое станут у́же и выше. */
+/* Good Vibes Pro — акцентный рукописный, кириллическая версия
+   (assets/fonts/GoodVibesPro.ttf). На Google Fonts его нет, поэтому
+   самохостится. Great Vibes ниже в стеке — не альтернатива, а
+   страховка на случай, если .ttf не подгрузится: у него другие
+   метрики, строки в герое поедут. */
 @font-face {
   font-family: 'Good Vibes Pro';
-  src: url('assets/fonts/GoodVibesPro.woff2') format('woff2');
+  src: url('assets/fonts/GoodVibesPro.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -502,13 +503,100 @@ a { color: inherit; }
   position: relative;
 }
 .edu__art { flex: 0 1 690px; min-width: 0; }
-.edu__art img { width: 100%; height: auto; }
+
+/* ---------- папка с документами ----------
+   Собрана вёрсткой, а не картинкой: скан внутри меняется, а бумажка
+   с подписью должна масштабироваться вместе с папкой.
+   Все координаты — проценты от системы координат макета 690×654.
+   Размеры, зависящие от масштаба папки (радиусы, кегль подписи),
+   заданы в cqw — процентах ширины самой папки. */
+.edu__folder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 690 / 654;
+  container-type: inline-size;
+}
+.edu__folder > * { position: absolute; }
+
+.edu__spine {
+  left: -2.32%; top: 3.82%; width: 21.74%; height: 94.19%;
+  background: var(--bg-second);
+  border-radius: 2.899cqw;
+}
+.edu__body {
+  left: 21.74%; top: 3.82%; width: 78.26%; height: 96.18%;
+  fill: var(--bg-second-soft);
+  filter: drop-shadow(0 1px 2px rgba(22, 29, 33, .04))
+          drop-shadow(0 12px 24px rgba(22, 29, 33, .10));
+}
+.edu__ring {
+  left: 16.09%; top: var(--y); width: 8.99%; height: 2.45%;
+  background: var(--border-subtle);
+  border-radius: 1.159cqw;
+}
+
+/* второй лист, выглядывающий из-под основного — как в макете */
+.edu__sheet {
+  left: 33.33%; top: 9.94%; width: 56.96%; height: 85.02%;
+  background: var(--bg-surface);
+  box-shadow: 0 1px 2px rgba(22, 29, 33, .06);
+}
+
+.edu__doc {
+  left: 28.99%; top: 8.41%; width: 56.96%; height: 85.02%;
+  display: block; overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+}
+.edu__doc-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 0;
+  transition: opacity .14s ease;
+}
+.edu__doc-img.is-swapping { opacity: 0; }
+
+/* бумажка под зажимом + подпись, которая меняется вместе с документом */
+.edu__note {
+  left: 24.35%; top: 4.74%; width: 30.29%; height: 17.89%;
+  background: var(--bg-surface);
+  border-radius: 0.29cqw;
+  box-shadow: 0 6px 16px rgba(22, 29, 33, .10);
+}
+.edu__label {
+  left: 27.25%; top: 12.39%; width: 23.77%;
+  display: flex; flex-direction: column;
+}
+.edu__label-script {
+  font: 400 3.478cqw/2.899cqw var(--font-script);
+  color: var(--text-primary);
+  text-align: center;
+  white-space: nowrap;
+}
+.edu__label-sub {
+  font: 400 2.319cqw/3.478cqw var(--font);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.edu__clip-wire {
+  left: 35.94%; top: 0; width: 6.67%; height: 4.59%;
+  border: 0.507cqw solid #969CA8;
+  border-radius: 2.029cqw;
+}
+.edu__clip {
+  left: 32.46%; top: 2.60%; width: 13.62%; height: 6.73%;
+  background: var(--text-secondary);
+  border-radius: 0.87cqw;
+  box-shadow: 0 3px 8px rgba(22, 29, 33, .16);
+}
+
 .edu__text {
   flex: 1 1 0; min-width: 0;
   display: flex; flex-direction: column; gap: var(--s16); align-items: flex-start;
 }
 .edu__title { font: var(--display-lg); color: var(--text-primary); }
 .edu__body  { font: var(--body); color: var(--text-secondary); }
+
 .edu__nav { display: flex; gap: var(--s16); margin-top: var(--s32); }
 .edu__arrow {
   width: 68px; height: 68px; flex: none;
@@ -534,6 +622,14 @@ a { color: inherit; }
 @media (max-width: 767px) {
   .edu__nav { margin-top: var(--s16); }
   .edu__arrow { width: 56px; height: 56px; }
+
+  /* На мобильном папка сжимается до ширины экрана, и пропорциональная
+     подпись стала бы 13px — нечитаемо. Поэтому бумажка увеличивается,
+     а кегль фиксируется, как и сделано в мобильном кадре Figma. */
+  .edu__note  { left: 26.1%; top: 3.38%; width: 48%; height: 18.87%; }
+  .edu__label { left: 30.9%; top: 7.32%; width: 40%; }
+  .edu__label-script { font: var(--script-note); text-align: left; }
+  .edu__label-sub    { font: var(--body-sm); }
 }
 
 /* ============================================================
