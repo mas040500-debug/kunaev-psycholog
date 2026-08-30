@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Пароли для редактора</title>
+<link rel="stylesheet" href="admin.css">
+<style>
+  .setup { max-width: 640px; margin: 40px auto; padding: 0 20px; }
+  .setup h1 { font-size: 22px; margin-bottom: 8px; }
+  .setup__lead { color: var(--ink-2); font-size: 14px; line-height: 1.5; margin-bottom: 24px; }
+  .setup__box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .setup__row { display: flex; gap: 10px; align-items: flex-end; }
+  .setup__row .field { flex: 1; margin-bottom: 0; }
+  .setup__out {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+    white-space: pre; overflow: auto; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-top: 14px;
+  }
+  .setup__safe {
+    font-size: 13px; color: #1F6B3A; background: #E9F7EE;
+    border-radius: 10px; padding: 10px 12px; margin-bottom: 20px;
+  }
+  .setup__users { font-size: 13px; color: var(--ink-2); margin-top: 12px; }
+  .setup__err { font-size: 13px; color: #8A231C; background: #FCEDEC; border-radius: 8px; padding: 8px 10px; margin-top: 10px; }
+</style>
+</head>
+<body style="height:auto; overflow:auto; display:block">
+
+<div class="setup">
+  <h1>Пароли для входа в редактор</h1>
+  <p class="setup__lead">
+    Здесь готовится запись, которую нужно вставить в настройки сервера админки
+    (секрет <code>AUTH_USERS</code>). Заполните почту и пароль, нажмите кнопку —
+    и скопируйте то, что появится внизу.
+  </p>
+
+  <p class="setup__safe">
+    Пароль никуда не отправляется. Всё считается прямо в этой вкладке, и в
+    результат попадает только его отпечаток — восстановить пароль обратно из
+    него нельзя. Поэтому запишите пароль себе отдельно: показать его ещё раз
+    не сможет никто, включая меня.
+  </p>
+
+  <div class="setup__box">
+    <div class="setup__row">
+      <div class="field">
+        <label class="field__label" for="email">Почта</label>
+        <input type="email" id="email" placeholder="psy@example.com">
+      </div>
+      <div class="field">
+        <label class="field__label" for="password">Пароль</label>
+        <input type="text" id="password" placeholder="несколько слов подряд">
+      </div>
+    </div>
+    <p class="field__hint">
+      Не меньше 12 символов. Проще всего взять три-четыре не связанных слова —
+      такое и запоминается, и подбирается тяжело.
+    </p>
+    <p class="setup__err" id="err" hidden></p>
+
+    <div class="setup__row" style="margin-top:14px">
+      <button class="btn" type="button" id="add">Добавить человека</button>
+      <button class="btn btn--ghost" type="button" id="copy" hidden>Скопировать</button>
+      <button class="btn btn--ghost" type="button" id="clear" hidden>Начать заново</button>
+    </div>
+
+    <p class="setup__users" id="users" hidden></p>
+    <div class="setup__out" id="out" hidden></div>
+  </div>
+</div>
+
+<script type="module">
+const $ = (s) => document.querySelector(s);
+const users = [];
+
+const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+async function hash(password, salt) {
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  return crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations: 210000, hash: 'SHA-256' }, key, 256);
+}
+
+function show() {
+  $('#out').hidden = false;
+  $('#out').textContent = JSON.stringify(users, null, 2);
+  $('#copy').hidden = false;
+  $('#clear').hidden = false;
+  $('#users').hidden = false;
+  $('#users').textContent = `Добавлено: ${users.map((u) => u.email).join(', ')}`;
+}
+
+$('#add').onclick = async () => {
+  const email = $('#email').value.trim();
+  const password = $('#password').value;
+  const err = $('#err');
+  err.hidden = true;
+
+  if (!email.includes('@')) { err.textContent = 'Похоже, это не почта.'; err.hidden = false; return; }
+  if (password.length < 12) {
+    err.textContent = `Пароль короче 12 символов (сейчас ${password.length}). Это единственный замок на редакторе — возьмите длиннее.`;
+    err.hidden = false; return;
+  }
+  if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
+    err.textContent = 'Такая почта уже добавлена.'; err.hidden = false; return;
+  }
+
+  $('#add').disabled = true;
+  $('#add').textContent = 'Считаю…';
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  users.push({ email, salt: b64(salt), hash: b64(await hash(password, salt)), iterations: 210000 });
+  $('#add').disabled = false;
+  $('#add').textContent = 'Добавить человека';
+  $('#email').value = '';
+  $('#password').value = '';
+  show();
+};
+
+$('#copy').onclick = async () => {
+  await navigator.clipboard.writeText(JSON.stringify(users));
+  $('#copy').textContent = 'Скопировано';
+  setTimeout(() => ($('#copy').textContent = 'Скопировать'), 1500);
+};
+
+$('#clear').onclick = () => {
+  users.length = 0;
+  $('#out').hidden = $('#copy').hidden = $('#clear').hidden = $('#users').hidden = true;
+};
+</script>
+</body>
+</html>
