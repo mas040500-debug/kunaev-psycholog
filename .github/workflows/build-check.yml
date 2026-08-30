@@ -1,0 +1,31 @@
+name: Сборка совпадает с контентом
+
+# index.html теперь собирается из content/site.json. Пока сборка запускается
+# вручную и результат коммитится, эта проверка ловит единственную реальную
+# опасность: кто-то поправил разметку руками, и она разошлась с контентом —
+# следующая же сборка молча затрёт эту правку.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: index.html собран из content/site.json
+        run: node build/build.mjs --check
+
+      - name: Показать расхождение, если оно есть
+        if: failure()
+        run: |
+          node build/build.mjs
+          git --no-pager diff --stat
+          git --no-pager diff

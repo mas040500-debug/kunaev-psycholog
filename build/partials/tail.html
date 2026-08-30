@@ -1,0 +1,202 @@
+</main>
+
+<!-- ==================== ПОДВАЛ ==================== -->
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__ident">
+      <span class="footer__name">Владимир Кунаев</span>
+      <span class="footer__role">Психолог</span>
+    </div>
+
+    <nav class="footer__nav" aria-label="Навигация в подвале">
+      <a href="#about">Обо мне</a>
+      <a href="#principles">Принципы</a>
+      <a href="#education">Квалификация</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </div>
+
+  <hr class="footer__rule">
+
+  <div class="footer__legal">
+    <span>© 2026 Владимир Кунаев</span>
+    <a href="#">Политика конфиденциальности</a>
+  </div>
+</footer>
+
+<script>
+  // Бургер-меню. Всё, что нужно скриптом на этой странице.
+  (function () {
+    var header = document.querySelector('.header');
+    var burger = header && header.querySelector('.header__burger');
+    if (!burger) return;
+
+    function setOpen(open) {
+      header.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    }
+
+    burger.addEventListener('click', function () {
+      setOpen(!header.classList.contains('is-open'));
+    });
+
+    // клик по пункту меню — закрыть шторку
+    header.querySelectorAll('.header__drawer a').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+
+    // вернулись на десктоп — сбросить состояние
+    window.matchMedia('(min-width: 1025px)').addEventListener('change', function (e) {
+      if (e.matches) setOpen(false);
+    });
+  })();
+
+  // Карточка в герое чуть ведёт за курсором. Смещение маленькое (до 12px
+  // и 1.2°) — это лёгкий отклик, а не параллакс.
+  (function () {
+    var hero  = document.querySelector('.hero');
+    var media = document.querySelector('.hero__media');
+    if (!hero || !media) return;
+
+    // только там, где есть настоящий курсор: на тач-экранах наведения нет,
+    // а системная настройка «меньше движения» отменяет эффект
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var MAX_SHIFT = 12;   // px
+    var MAX_TURN  = 1.2;  // deg
+    var pending   = false;
+    var nx = 0, ny = 0;
+
+    function apply() {
+      pending = false;
+      media.style.setProperty('--px', (nx * MAX_SHIFT).toFixed(2) + 'px');
+      media.style.setProperty('--py', (ny * MAX_SHIFT).toFixed(2) + 'px');
+      media.style.setProperty('--pr', (nx * MAX_TURN).toFixed(2) + 'deg');
+    }
+
+    hero.addEventListener('mousemove', function (e) {
+      var r = hero.getBoundingClientRect();
+      // -1..1 от центра блока
+      nx = (e.clientX - r.left) / r.width  * 2 - 1;
+      ny = (e.clientY - r.top)  / r.height * 2 - 1;
+      // считаем не чаще кадра — mousemove сыплется гораздо чаще
+      if (!pending) { pending = true; requestAnimationFrame(apply); }
+    });
+
+    hero.addEventListener('mouseleave', function () {
+      nx = ny = 0;
+      if (!pending) { pending = true; requestAnimationFrame(apply); }
+    });
+  })();
+
+  // Появление блоков при прокрутке. Класс вешается скриптом: при
+  // выключенном JS страница остаётся полностью видимой.
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+
+    // Соседи в одной группе всплывают друг за другом с небольшой задержкой.
+    var groups = [
+      ['.hero__text', '.photo-card'],
+      ['.dir__title', '.card'],
+      ['.about__stage', '.about__statement'],
+      ['.appr__head', '.note'],
+      ['.edu__art', '.edu__text'],
+      ['.contacts__head', '.contact']
+    ];
+
+    var targets = [];
+    groups.forEach(function (sel) {
+      var n = 0;
+      sel.forEach(function (s) {
+        document.querySelectorAll(s).forEach(function (el) {
+          el.style.setProperty('--reveal-delay', (n * 0.08) + 's');
+          el.classList.add('reveal');
+          targets.push(el);
+          n++;
+        });
+      });
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);           // появление одноразовое
+      });
+    }, { rootMargin: '0px 0px -10% 0px' });
+
+    targets.forEach(function (el) { io.observe(el); });
+  })();
+
+  // Карусель документов в блоке «Образование».
+  // Подпись живёт на бумажке, приколотой к папке, — как в макете.
+  (function () {
+    // Подписи — как в макете: на бумажке стоит название самого документа,
+    // а не выжимка из него. Разворот несёт ту же подпись, что и обложка.
+    // sub может быть пустым — тогда на бумажке только рукописная строка.
+    var docs = [
+      { src: '01-msu-diploma.jpg',           note: 'Диплом МГУ',      sub: 'Факультет психологии',
+        alt: 'Диплом магистра МГУ по направлению «Психология»' },
+      { src: '02-retraining-cover.jpg',      note: 'Диплом о профессиональной переподготовке', sub: '',
+        alt: 'Диплом о профессиональной переподготовке, НАДПО' },
+      { src: '03-retraining-inner.jpg',      note: 'Диплом о профессиональной переподготовке', sub: '',
+        alt: 'Разворот диплома о переподготовке: КПП в практике психолога, 640 часов' },
+      { src: '04-upgrade-cover.jpg',         note: 'Повышение квалификации', sub: 'Практикум по КПП',
+        alt: 'Удостоверение о повышении квалификации, НАДПО' },
+      { src: '05-upgrade-inner.jpg',         note: 'Повышение квалификации', sub: 'Практикум по КПП',
+        alt: 'Разворот удостоверения о повышении квалификации' },
+      { src: '06-msu-certificate-cover.jpg', note: 'Сертификат МГУ',  sub: 'Основы психологии',
+        alt: 'Сертификат МГУ' },
+      { src: '07-msu-certificate-inner.jpg', note: 'Сертификат МГУ',  sub: 'Основы психологии',
+        alt: 'Разворот сертификата МГУ: программа «Основы психологии»' }
+    ];
+    var BASE = 'assets/docs/';
+
+    var img  = document.getElementById('edu-img');
+    var link = document.getElementById('edu-link');
+    var note  = document.getElementById('edu-note-title');
+    var sub   = document.getElementById('edu-note-sub');
+    var label = document.querySelector('.edu__label');
+    var prev = document.getElementById('edu-prev');
+    var next = document.getElementById('edu-next');
+    if (!img || !prev || !next) return;
+
+    var i = 0;
+
+    // подгружаем остальные сканы заранее — переключение без мигания
+    docs.forEach(function (d, n) { if (n) { var p = new Image(); p.src = BASE + d.src; } });
+
+    function show(n) {
+      i = (n + docs.length) % docs.length;
+      var d = docs[i];
+
+      img.classList.add('is-swapping');
+      window.setTimeout(function () {
+        img.src = BASE + d.src;
+        img.alt = d.alt;
+        link.href = BASE + d.src;
+        img.classList.remove('is-swapping');
+      }, 140);
+
+      note.textContent = d.note;
+      sub.textContent = d.sub;
+      // длинное название набирается мельче, совсем длинное — ещё и переносится
+      label.classList.toggle('is-long', d.note.length > 11);
+      label.classList.toggle('is-wrapped', d.note.length > 18);
+    }
+
+    prev.addEventListener('click', function () { show(i - 1); });
+    next.addEventListener('click', function () { show(i + 1); });
+
+    // стрелки на клавиатуре — когда фокус внутри блока
+    document.querySelector('.edu').addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  { show(i - 1); }
+      if (e.key === 'ArrowRight') { show(i + 1); }
+    });
+  })();
+</script>
+
+</body>
+</html>
