@@ -26,9 +26,9 @@ const b64 = (buf) => Buffer.from(new Uint8Array(buf)).toString('base64');
 const salt = crypto.getRandomValues(new Uint8Array(16));
 const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
 const bits = await crypto.subtle.deriveBits(
-  { name: 'PBKDF2', salt, iterations: 210000, hash: 'SHA-256' }, key, 256);
+  { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, key, 256);
 
-const user = { email, salt: b64(salt), hash: b64(bits), iterations: 210000 };
+const user = { email, salt: b64(salt), hash: b64(bits), iterations: 100000 };
 
 console.log('\nЗапись о пользователе — добавьте её в список AUTH_USERS:\n');
 console.log(JSON.stringify([user], null, 2));
