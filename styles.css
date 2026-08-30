@@ -321,7 +321,15 @@ a { color: inherit; }
   display: inline-block;
 }
 .hero__text .btn { margin-top: var(--s8); }
-.hero__media { flex: 0 0 auto; }
+/* Смещение за курсором живёт на обёртке, а не на самой карточке: у той
+   на transform уже висят наклон и анимация появления, и они бы дрались.
+   Переход короткий — иначе карточка тянулась бы за мышью с задержкой. */
+.hero__media {
+  flex: 0 0 auto;
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) rotate(var(--pr, 0deg));
+  transition: transform .35s cubic-bezier(.22, .61, .36, 1);
+  will-change: transform;
+}
 
 /* фото-карточка: всё внутри — проценты от её ширины, поэтому
    перфорация, снимок и подпись держат пропорции на любом экране */
@@ -471,6 +479,51 @@ a { color: inherit; }
 @media (max-width: 767px) {
   .about__photo { width: 100%; height: auto; aspect-ratio: 380 / 475; }
   .about__statement { gap: var(--s24); }
+}
+
+/* ============================================================
+   БЕГУЩАЯ СТРОКА
+   ============================================================ */
+.marquee {
+  position: relative;
+  background: var(--bg-second-soft);
+  /* сверху запас на рваный край (40px), иначе строка идёт вплотную к нему */
+  padding: calc(var(--s32) + 24px) 0 var(--s32);
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex; width: max-content;
+  animation: marquee-run 38s linear infinite;
+}
+/* Сдвиг ровно на половину дорожки — то есть на ширину одного набора.
+   В этот момент второй набор стоит там, где начинал первый, и кадр
+   совпадает с исходным: цикл замыкается без рывка. */
+@keyframes marquee-run {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+.marquee__set {
+  display: flex; align-items: center;
+  gap: var(--s48); padding: 0 var(--s24);
+  font: var(--h3); color: var(--text-accent-strong);
+  white-space: nowrap;
+}
+/* точка-разделитель рисуется псевдоэлементом, а не отдельным узлом:
+   так в разметке остаются только сами слова */
+.marquee__set li { position: relative; }
+.marquee__set li::after {
+  content: ''; position: absolute; right: calc(var(--s24) * -1 - 3px); top: 50%;
+  width: 6px; height: 6px; margin-top: -3px;
+  border-radius: 50%; background: var(--text-accent);
+  opacity: .45;
+}
+
+@media (max-width: 767px) {
+  .marquee { padding: var(--s24) 0; }
+  .marquee__set { gap: var(--s32); }
+  .marquee__set li::after { right: calc(var(--s32) / -2 - 3px); }
 }
 
 /* ============================================================
@@ -777,4 +830,8 @@ a { color: inherit; }
   /* появление отключается целиком: без перехода оно бы просто мигало */
   .reveal, .photo-card.reveal { opacity: 1; transform: rotate(var(--tilt)); }
   .reveal:not(.photo-card) { transform: none; }
+  /* лента останавливается: без этого правило выше просто домотало бы её
+     до конца цикла за 0.01мс и бросило там */
+  .marquee__track { animation: none; }
+  .hero__media { transform: none; }
 }
