@@ -1,0 +1,48 @@
+name: Пересобрать страницу после правки контента
+
+# Админка кладёт в репозиторий только content/site.json — саму страницу
+# собирает этот процесс. Иначе пришлось бы держать сборщик на сервере
+# админки, то есть в двух местах сразу.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/site.json'
+      - 'build/**'
+
+permissions:
+  contents: write
+
+# Правки могут приходить чаще, чем идёт сборка. Очередь на одну ветку без
+# отмены: каждая правка должна доехать, отменять их нельзя.
+concurrency:
+  group: rebuild-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    # Иначе собственный коммит этого же процесса запустил бы его снова.
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Собрать index.html
+        run: node build/build.mjs
+
+      - name: Закоммитить, если что-то изменилось
+        run: |
+          if git diff --quiet; then
+            echo "Страница уже соответствует контенту — коммитить нечего."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html content/assets.json
+          git commit -m "Пересобрать страницу после правки контента"
+          git push
