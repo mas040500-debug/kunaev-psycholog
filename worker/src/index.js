@@ -39,10 +39,17 @@ function equalConstantTime(a, b) {
   return diff === 0;
 }
 
-async function pbkdf2(password, saltB64, iterations = 210000) {
+/** Потолок повторений на Workers — 100 000; больше платформа отклоняет
+ *  (NotSupportedError), и запрос падает пятисоткой вместо честного «неверный
+ *  пароль». Поэтому число ограничивается здесь: запись со старым, большим
+ *  значением просто не сойдётся по отпечатку — её надо перевыпустить. */
+const MAX_ITERATIONS = 100000;
+
+async function pbkdf2(password, saltB64, iterations = MAX_ITERATIONS) {
   const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt: unb64(saltB64), iterations, hash: 'SHA-256' }, key, 256);
+    { name: 'PBKDF2', salt: unb64(saltB64), iterations: Math.min(iterations, MAX_ITERATIONS), hash: 'SHA-256' },
+    key, 256);
   return b64(bits);
 }
 
@@ -189,9 +196,12 @@ async function handle(request, env) {
     try {
       const list = JSON.parse(env.AUTH_USERS || '[]');
       if (list.length) {
+        const хочет = list[0].iterations || MAX_ITERATIONS;
         const t0 = Date.now();
-        await pbkdf2('проверка', list[0].salt, list[0].iterations || 210000);
-        проверкаОтпечатка = `считается, ${Date.now() - t0} мс, повторений ${list[0].iterations || 210000}`;
+        await pbkdf2('проверка', list[0].salt, хочет);
+        проверкаОтпечатка = хочет > MAX_ITERATIONS
+          ? `ЗАПИСЬ УСТАРЕЛА: в ней ${хочет} повторений, площадка разрешает ${MAX_ITERATIONS} — вход не сойдётся, перевыпустите AUTH_USERS`
+          : `считается, ${Date.now() - t0} мс, повторений ${хочет}`;
       }
     } catch (e) {
       проверкаОтпечатка = `НЕ СЧИТАЕТСЯ: ${e.name}: ${e.message}`;
@@ -228,7 +238,7 @@ async function handle(request, env) {
     // Хеш считаем всегда, даже когда пользователя нет: иначе по времени ответа
     // видно, какие адреса заведены.
     const probe = user || { salt: 'AAAAAAAAAAAAAAAAAAAAAA==', hash: '' };
-    const got = await pbkdf2(String(password || ''), probe.salt, probe.iterations || 210000);
+    const got = await pbkdf2(String(password || ''), probe.salt, probe.iterations || 100000);
     if (!user || !equalConstantTime(got, probe.hash)) return json({ error: 'Неверная почта или пароль.' }, 401);
 
     return json({ token: await issueToken(env, user.email), email: user.email });
