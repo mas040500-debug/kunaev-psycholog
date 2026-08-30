@@ -209,22 +209,19 @@
             "icon": "phone",
             "label": "Телефон",
             "value": "+7 (917) 515-40-12",
-            "href": "tel:+79175154012",
-            "external": false
+            "href": "tel:+79175154012"
           },
           {
             "icon": "telegram",
             "label": "Telegram",
             "value": "@vkunaev",
-            "href": "https://t.me/vkunaev",
-            "external": true
+            "href": "https://t.me/vkunaev"
           },
           {
             "icon": "whatsapp",
             "label": "WhatsApp",
             "value": "Написать в WhatsApp",
-            "href": "https://wa.me/79175154012",
-            "external": true
+            "href": "https://wa.me/79175154012"
           }
         ]
       }

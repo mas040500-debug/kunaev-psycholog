@@ -1,0 +1,179 @@
+/* Интерфейс редактора. Он намеренно не похож на сайт: это рабочий инструмент,
+   и его собственный стиль не должен путаться с тем, что видно в предпросмотре. */
+
+:root {
+  --ink: #161D21;
+  --ink-2: #5A6470;
+  --ink-3: #8A93A0;
+  --line: #E3E7EE;
+  --field: #FFFFFF;
+  --panel: #F7F8FB;
+  --accent: #4B82FF;
+  --accent-dark: #2E5FD9;
+  --danger: #C8453C;
+  --radius: 10px;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: var(--font); color: var(--ink);
+  background: var(--panel); height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+h2, h3, p, ol, ul { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+
+/* ---------- верхняя полоса ---------- */
+.bar {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 12px 20px;
+  background: #fff; border-bottom: 1px solid var(--line);
+}
+.bar__title { font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.bar__hint {
+  font-weight: 400; font-size: 13px; color: #8A6A1F;
+  background: #FFF6DF; border-radius: 999px; padding: 3px 10px;
+}
+.bar__actions { display: flex; gap: 8px; }
+
+.btn {
+  font: inherit; font-weight: 600; cursor: pointer;
+  padding: 9px 16px; border-radius: var(--radius);
+  border: 1px solid transparent; background: var(--accent); color: #fff;
+}
+.btn:hover { background: var(--accent-dark); }
+.btn--ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { background: #F0F3F9; }
+.btn--small { padding: 7px 12px; font-size: 14px; }
+.btn:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible,
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- три колонки ---------- */
+.app {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: 300px 380px 1fr;
+}
+.pane { min-height: 0; overflow: auto; padding: 16px; border-right: 1px solid var(--line); }
+.pane--preview { padding: 0; border-right: none; display: flex; flex-direction: column; }
+.pane__title { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); }
+.pane__note { font-size: 13px; color: var(--ink-3); margin: 6px 0 12px; }
+.grip-demo { color: var(--ink-2); }
+
+.loading { padding: 40px; color: var(--ink-2); }
+
+/* ---------- список блоков ---------- */
+.blocks { display: flex; flex-direction: column; gap: 6px; }
+.block {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 10px; background: #fff;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  cursor: pointer;
+}
+.block:hover { border-color: #C9D3E6; }
+.block.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(75,130,255,.15); }
+.block.is-hidden .block__name { color: var(--ink-3); text-decoration: line-through; }
+.block.is-dragging { opacity: .4; }
+.block.is-over { border-top: 2px solid var(--accent); }
+
+.block__grip { cursor: grab; color: var(--ink-3); padding: 0 2px; }
+.block__body { flex: 1; min-width: 0; }
+.block__name { font-weight: 600; font-size: 14px; display: block; }
+.block__type { font-size: 12px; color: var(--ink-3); }
+.block__btn {
+  border: none; background: none; cursor: pointer; padding: 4px;
+  border-radius: 6px; color: var(--ink-2); font-size: 15px; line-height: 1;
+}
+.block__btn:hover { background: #F0F3F9; }
+.block__btn--danger:hover { background: #FCEDEC; color: var(--danger); }
+
+.add { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.add__label { font-size: 13px; color: var(--ink-2); display: block; margin-bottom: 6px; }
+.add__row { display: flex; gap: 8px; }
+.add__row select { flex: 1; }
+
+/* ---------- форма ---------- */
+.empty { color: var(--ink-3); font-size: 14px; padding-top: 8px; }
+.form__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+.form__title { font-size: 17px; }
+.form__type { font-size: 12px; color: var(--ink-3); }
+
+.field { margin-bottom: 14px; }
+.field__label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.field__hint { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+input[type=text], textarea, select {
+  width: 100%; font: inherit; font-size: 14px; color: var(--ink);
+  padding: 8px 10px; background: var(--field);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
+
+.image { display: flex; gap: 10px; align-items: center; }
+.image__thumb {
+  width: 56px; height: 56px; flex: none; object-fit: cover;
+  border-radius: 8px; border: 1px solid var(--line); background: #fff;
+}
+.image__side { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.image__path { font-size: 12px; color: var(--ink-3); overflow-wrap: anywhere; }
+
+/* повторяющиеся элементы */
+.list { display: flex; flex-direction: column; gap: 10px; }
+.item {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: #fff; padding: 10px;
+}
+.item__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.item__name { font-size: 12px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.item__tools { display: flex; gap: 2px; }
+.list__add { margin-top: 4px; }
+
+/* ---------- предпросмотр ---------- */
+.preview__bar {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 16px; background: #fff; border-bottom: 1px solid var(--line);
+}
+.preview__label { font-size: 13px; color: var(--ink-3); }
+.preview__widths { display: flex; gap: 4px; }
+.preview__widths button {
+  font: inherit; font-size: 13px; cursor: pointer;
+  padding: 6px 10px; border-radius: 8px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink-2);
+}
+.preview__widths button.is-on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.preview__stage {
+  flex: 1; min-height: 0; overflow: auto;
+  display: flex; justify-content: center; padding: 16px;
+  background: #E9ECF3;
+}
+/* Страница рисуется в свою настоящую ширину и ужимается, а не сжимается
+   вёрсткой: иначе «Компьютер» на узком мониторе показывал бы планшетную
+   раскладку и врал.
+   Уменьшение сделано через zoom, а не transform: scale(). С transform
+   содержимое рамки перестаёт отрисовываться — остаются бледные призраки
+   текста; проверено, с zoom этого нет. Плюс zoom меняет и место, которое
+   элемент занимает в разметке, так что подпорки под размер не нужны. */
+.preview__sizer {
+  flex: none;
+  background: #fff; box-shadow: 0 4px 20px rgba(22,29,33,.12);
+}
+#preview { border: none; display: block; }
+
+/* ---------- выбор картинки ---------- */
+.picker { border: none; border-radius: 14px; padding: 20px; max-width: 640px; width: 92vw; }
+.picker::backdrop { background: rgba(22,29,33,.45); }
+.picker__title { font-size: 17px; margin-bottom: 14px; }
+.picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.picker__item {
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+  padding: 6px; cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+}
+.picker__item:hover { border-color: var(--accent); }
+.picker__item img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; }
+.picker__item span { font-size: 11px; color: var(--ink-3); overflow-wrap: anywhere; }
+.picker__note { font-size: 13px; color: var(--ink-3); margin: 14px 0; }
+
+@media (max-width: 1100px) {
+  .app { grid-template-columns: 260px 1fr; }
+  .pane--preview { display: none; }
+}

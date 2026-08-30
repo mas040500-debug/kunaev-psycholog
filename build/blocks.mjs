@@ -38,7 +38,9 @@ const CONTACT_ICONS = {
   whatsapp: '<svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9c0 3 3 6 6 6l1.2-1.6-2-1-1 1a6.6 6.6 0 0 1-2.6-2.6l1-1-1-2L9 9Z"/></svg>',
 };
 
-const anchor = (b) => (b.anchor ? ` id="${b.anchor}"` : '');
+// id — только если у блока есть якорь для навигации; data-block стоит всегда:
+// по нему админка находит секцию в предпросмотре и прокручивает к ней
+const anchor = (b) => `${b.anchor ? ` id="${b.anchor}"` : ''} data-block="${b.id}"`;
 
 const BG_CLASS = { surface: 'section--surface', 'second-soft': 'section--second', page: 'section--page' };
 const bgClass = (b) => BG_CLASS[b.bg] || 'section--surface';
@@ -279,7 +281,9 @@ ${torn('bottom', b.torn.bottom)}
   contacts(b) {
     const d = b.data;
     const items = d.items.map((c) => {
-      const ext = c.external ? ' target="_blank" rel="noopener"' : '';
+      // «внешность» ссылки выводится из неё самой, а не хранится отдельным
+      // флагом: два поля об одном и том же рано или поздно разъезжаются
+      const ext = /^https?:/i.test(c.href) ? ' target="_blank" rel="noopener"' : '';
       return `    <a class="contact" href="${esc(c.href)}"${ext}>
       <span class="contact__icon" aria-hidden="true">
         ${CONTACT_ICONS[c.icon]}

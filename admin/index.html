@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Редактор страницы — Владимир Кунаев</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__title">
+    Редактор страницы
+    <span class="bar__hint" id="dirty" hidden>есть несохранённые правки</span>
+  </div>
+  <div class="bar__actions">
+    <button class="btn btn--ghost" type="button" id="reset">Вернуть как на сайте</button>
+    <button class="btn btn--ghost" type="button" id="download">Скачать файл</button>
+    <button class="btn" type="button" id="publish">Опубликовать</button>
+  </div>
+</header>
+
+<main class="app" id="app" hidden>
+  <!-- ЛЕВО: список блоков -->
+  <section class="pane pane--list">
+    <h2 class="pane__title">Блоки страницы</h2>
+    <p class="pane__note">Потяните за <span class="grip-demo">⠿</span>, чтобы поменять порядок.</p>
+
+    <ol class="blocks" id="blocks"></ol>
+
+    <div class="add">
+      <label class="add__label" for="add-type">Добавить блок</label>
+      <div class="add__row">
+        <select id="add-type"></select>
+        <button class="btn btn--small" type="button" id="add">Добавить</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЦЕНТР: поля выбранного блока -->
+  <section class="pane pane--form">
+    <div id="form-empty" class="empty">Выберите блок слева, чтобы его отредактировать.</div>
+    <div id="form" hidden></div>
+  </section>
+
+  <!-- ПРАВО: предпросмотр -->
+  <section class="pane pane--preview">
+    <div class="preview__bar">
+      <span class="preview__label">Так это будет выглядеть</span>
+      <div class="preview__widths" role="group" aria-label="Ширина экрана">
+        <button type="button" data-w="1440" class="is-on">Компьютер</button>
+        <button type="button" data-w="768">Планшет</button>
+        <button type="button" data-w="390">Телефон</button>
+      </div>
+    </div>
+    <div class="preview__stage">
+      <!-- Обёртка нужна из-за того, что transform не меняет место, которое
+           элемент занимает в разметке: без неё уменьшенная страница всё
+           равно резервировала бы свои полные 1440px и давала полосу прокрутки. -->
+      <div class="preview__sizer" id="sizer">
+        <iframe id="preview" title="Предпросмотр страницы"></iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="loading" id="loading">Загружаю страницу…</div>
+
+<!-- выбор картинки -->
+<dialog id="picker" class="picker">
+  <h2 class="picker__title">Картинки сайта</h2>
+  <div class="picker__grid" id="picker-grid"></div>
+  <p class="picker__note">
+    Загрузка новых картинок появится вместе с входом по почте — сейчас можно выбрать
+    из уже загруженных.
+  </p>
+  <form method="dialog"><button class="btn btn--ghost" value="cancel">Закрыть</button></form>
+</dialog>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
