@@ -101,8 +101,10 @@
   object-fit: cover;
 }
 /* подпись на «рваной» плашке */
+/* Плашка привязана к низу карточки, а не к «top: 79.8%»: её высота зависит
+   от текста, и при привязке сверху она свисала за нижний край снимка. */
 .vk-photo-card__plate {
-  position: absolute; left: 50.7%; top: 79.8%; width: 46.7%;
+  position: absolute; left: 50.7%; bottom: 7%; width: 46.7%;
   padding: 4.5% 3.6%;
   display: flex; flex-direction: column;
   color: var(--vk-text-on-accent);

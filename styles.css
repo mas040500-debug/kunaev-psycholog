@@ -330,7 +330,10 @@ a { color: inherit; }
   width: 443px; aspect-ratio: 443 / 520;
   background: var(--bg-second-soft);
   border-radius: var(--radius-md);
-  transform: rotate(3deg);
+  /* наклон вынесен в переменную: его переопределяет мобильный брейкпоинт,
+     и он же нужен анимации появления, чтобы она не сбрасывала угол */
+  --tilt: 3deg;
+  transform: rotate(var(--tilt));
   box-shadow: var(--shadow-soft);
 }
 .photo-card__perf {
@@ -349,8 +352,11 @@ a { color: inherit; }
   width: 82.4%; height: 93.8%;
   object-fit: cover;
 }
+/* Плашка привязана к низу карточки, а не к «top: 79.8%»: её высота зависит
+   от текста, и при привязке сверху она свисала за нижний край снимка.
+   7% снизу оставляют её целиком на фотографии, как в макете. */
 .photo-card__plate {
-  position: absolute; left: 50.7%; top: 79.8%; width: 46.7%;
+  position: absolute; left: 50.7%; bottom: 7%; width: 46.7%;
   padding: 4.5% 3.6%;
   display: flex; flex-direction: column;
   color: var(--text-on-accent);
@@ -375,7 +381,7 @@ a { color: inherit; }
 }
 @media (max-width: 767px) {
   .hero__inner { gap: var(--s32); }
-  .photo-card { width: 100%; transform: rotate(2deg); }
+  .photo-card { width: 100%; --tilt: 2deg; }
   .photo-card__caption { font: var(--body-sm); }
 }
 
@@ -588,12 +594,14 @@ a { color: inherit; }
   display: flex; flex-direction: column; align-items: center; gap: 0.3cqw;
   text-align: center;
 }
+/* Интерлиньяж плотный: у рукописной гарнитуры длинные выносные элементы,
+   и при обычном межстрочном три строки не помещаются на бумажку. */
 .edu__label-script {
-  font: 400 3.478cqw/1.15 var(--font-script);
+  font: 400 3.478cqw/1.05 var(--font-script);
   color: var(--text-primary);
 }
 /* Длинное название не влезает крупным кеглем — набирается мельче. */
-.edu__label.is-long .edu__label-script { font-size: 2.9cqw; }
+.edu__label.is-long .edu__label-script { font-size: 2.9cqw; line-height: 0.95; }
 /* Совсем длинному вдобавок сужается мера строки: поля по бокам задают
    те же места переноса, что в макете, — «Диплом о / профессиональной /
    переподготовке», «Повышение / квалификации». */
@@ -658,8 +666,8 @@ a { color: inherit; }
     padding: 5.64cqw 2cqw 2cqw;
   }
   .edu__label.is-wrapped { padding: 0 4cqw; }
-  .edu__label-script { font: var(--script-note); line-height: 1.15; }
-  .edu__label.is-long .edu__label-script { font-size: 20px; }
+  .edu__label-script { font: var(--script-note); line-height: 1.05; }
+  .edu__label.is-long .edu__label-script { font-size: 20px; line-height: 0.95; }
   .edu__label-sub    { font: var(--body-sm); }
 }
 
@@ -741,8 +749,30 @@ a { color: inherit; }
   .footer__legal { flex-direction: column; align-items: flex-start; gap: var(--s8); }
 }
 
+/* ============================================================
+   АНИМАЦИЯ ПОЯВЛЕНИЯ
+   Блоки чуть всплывают при прокрутке. Класс .reveal вешает скрипт, а не
+   разметка: если он не отработал, содержимое просто видно сразу, а не
+   остаётся навсегда прозрачным.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.22, .61, .36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* Карточка с фото доезжает до своего наклона — маленький штрих,
+   из-за которого герой выглядит собранным вручную. */
+.photo-card.reveal { transform: translateY(18px) rotate(0deg); }
+.photo-card.reveal.is-in { transform: rotate(var(--tilt)); }
+
 /* ---------- уважение к системной настройке «меньше движения» ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  /* появление отключается целиком: без перехода оно бы просто мигало */
+  .reveal, .photo-card.reveal { opacity: 1; transform: rotate(var(--tilt)); }
+  .reveal:not(.photo-card) { transform: none; }
 }
