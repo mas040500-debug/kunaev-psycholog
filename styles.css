@@ -325,24 +325,20 @@ a { color: inherit; }
 
 /* фото-карточка: всё внутри — проценты от её ширины, поэтому
    перфорация, снимок и подпись держат пропорции на любом экране */
+/* Размер карточки — из макета: padding 16, перфорация 22, gap 24 и снимок
+   365×488, то есть ровно 443×520. Ни фона, ни скругления у самой .card нет:
+   и то и другое несёт контур .photo-card__bg, у которого вырезаны дырки. */
 .photo-card {
   position: relative;
   width: 443px; aspect-ratio: 443 / 520;
-  background: var(--bg-second-soft);
-  border-radius: var(--radius-md);
   /* наклон вынесен в переменную: его переопределяет мобильный брейкпоинт,
      и он же нужен анимации появления, чтобы она не сбрасывала угол */
   --tilt: 3deg;
   transform: rotate(var(--tilt));
-  box-shadow: var(--shadow-soft);
 }
-.photo-card__perf {
-  position: absolute; left: 3.6%; top: 6.5%; bottom: 27.7%; width: 4.97%;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.photo-card__perf span {
-  width: 100%; aspect-ratio: 1;
-  border-radius: 50%; background: var(--bg-surface);
+.photo-card__bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  fill: var(--bg-second-soft);
 }
 /* Никакой подложки под снимком: portrait-hero.png несёт собственную
    скруглённую маску с мягкой тенью и прозрачным полем по краю. Заливка
@@ -352,12 +348,15 @@ a { color: inherit; }
   width: 82.4%; height: 93.8%;
   object-fit: cover;
 }
-/* Плашка привязана к низу карточки, а не к «top: 79.8%»: её высота зависит
-   от текста, и при привязке сверху она свисала за нижний край снимка.
-   7% снизу оставляют её целиком на фотографии, как в макете. */
+/* Плашка 207×76 с полем 16 по кругу, повёрнутая на 3° относительно снимка —
+   в макете она лежит на фотографии наискось, а не параллельно ей.
+   Поле в процентах считается от ширины КАРТОЧКИ (содержащего блока), а не
+   самой плашки: 3.612% от 443px дают ровно 16px со всех сторон, и высота
+   складывается в те же 76px (20 + 24 + 2×16). */
 .photo-card__plate {
-  position: absolute; left: 50.7%; bottom: 7%; width: 46.7%;
-  padding: 4.5% 3.6%;
+  position: absolute; left: 50.2%; bottom: 4.5%; width: 46.7%;
+  padding: 3.612%;
+  transform: rotate(3deg);
   display: flex; flex-direction: column;
   color: var(--text-on-accent);
 }
@@ -382,6 +381,9 @@ a { color: inherit; }
 @media (max-width: 767px) {
   .hero__inner { gap: var(--s32); }
   .photo-card { width: 100%; --tilt: 2deg; }
+  /* Плашка сжимается вместе с карточкой, а кегль подписи — нет, и строка
+     вылезала за её край: на узком экране рукописная строка мельче. */
+  .photo-card__signature { font-size: 18px; line-height: 16px; }
   .photo-card__caption { font: var(--body-sm); }
 }
 
