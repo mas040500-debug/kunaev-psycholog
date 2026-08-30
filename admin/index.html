@@ -15,6 +15,7 @@
     <span class="bar__hint" id="dirty" hidden>есть несохранённые правки</span>
   </div>
   <div class="bar__actions">
+    <span class="bar__who" id="who" hidden></span>
     <button class="btn btn--ghost" type="button" id="reset">Вернуть как на сайте</button>
     <button class="btn btn--ghost" type="button" id="download">Скачать файл</button>
     <button class="btn" type="button" id="publish">Опубликовать</button>
@@ -74,12 +75,30 @@
 <!-- выбор картинки -->
 <dialog id="picker" class="picker">
   <h2 class="picker__title">Картинки сайта</h2>
+  <div class="picker__upload" id="picker-upload" hidden>
+    <label class="btn btn--ghost btn--small" for="picker-file">Загрузить с компьютера</label>
+    <input type="file" id="picker-file" accept="image/jpeg,image/png,image/webp" hidden>
+    <span class="picker__status" id="picker-status"></span>
+  </div>
   <div class="picker__grid" id="picker-grid"></div>
-  <p class="picker__note">
-    Загрузка новых картинок появится вместе с входом по почте — сейчас можно выбрать
-    из уже загруженных.
-  </p>
+  <p class="picker__note" id="picker-note"></p>
   <form method="dialog"><button class="btn btn--ghost" value="cancel">Закрыть</button></form>
+</dialog>
+
+<!-- вход -->
+<dialog id="login" class="login">
+  <form id="login-form">
+    <h2 class="login__title">Вход в редактор</h2>
+    <label class="field__label" for="login-email">Почта</label>
+    <input type="email" id="login-email" autocomplete="username" required>
+    <label class="field__label" for="login-password">Пароль</label>
+    <input type="password" id="login-password" autocomplete="current-password" required>
+    <p class="login__error" id="login-error" hidden></p>
+    <div class="login__actions">
+      <button class="btn" type="submit" id="login-submit">Войти</button>
+      <button class="btn btn--ghost" type="button" id="login-cancel">Отмена</button>
+    </div>
+  </form>
 </dialog>
 
 <script type="module" src="admin.js"></script>

@@ -5,6 +5,20 @@
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+// Ссылки приходят из админки, то есть из формы, куда можно вписать что угодно.
+// Экранирование кавычек тут не спасает: href="javascript:…" — валидный атрибут
+// и исполняемый код. Поэтому схема проверяется по белому списку, а всё
+// неопознанное превращается в «#» — ссылка перестаёт работать, но не стреляет.
+const SAFE_SCHEME = /^(https?:|mailto:|tel:)/i;
+const href = (v) => {
+  const s = String(v ?? '').trim();
+  if (!s) return '#';
+  if (s.startsWith('#') || s.startsWith('/') || SAFE_SCHEME.test(s)) return esc(s);
+  // относительный путь без схемы (about.html) — тоже безопасен
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(s)) return esc(s);
+  return '#';
+};
+
 // --- рваный край между секциями --------------------------------------------
 // Цвет — той полосы, которая «наступает» на эту секцию.
 const TORN_VAR = { surface: 'var(--bg-surface)', 'second-soft': 'var(--bg-second-soft)', page: 'var(--bg-page)' };
@@ -81,7 +95,7 @@ const templates = {
         <span class="hero__script">${esc(d.titleScript)}</span><br>
         ${esc(d.titleBottom)}
       </h1>
-      <a class="btn" href="${esc(d.cta.href)}">${esc(d.cta.label)}</a>
+      <a class="btn" href="${href(d.cta.href)}">${esc(d.cta.label)}</a>
     </div>
 
     <div class="hero__media">
@@ -298,7 +312,7 @@ ${torn('bottom', b.torn.bottom)}
       // «внешность» ссылки выводится из неё самой, а не хранится отдельным
       // флагом: два поля об одном и том же рано или поздно разъезжаются
       const ext = /^https?:/i.test(c.href) ? ' target="_blank" rel="noopener"' : '';
-      return `    <a class="contact" href="${esc(c.href)}"${ext}>
+      return `    <a class="contact" href="${href(c.href)}"${ext}>
       <span class="contact__icon" aria-hidden="true">
         ${CONTACT_ICONS[c.icon]}
       </span>
@@ -391,7 +405,7 @@ ${torn('bottom', b.torn.bottom)}
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
-    <a class="btn" href="${esc(d.button.href)}">${esc(d.button.label)}</a>
+    <a class="btn" href="${href(d.button.href)}">${esc(d.button.label)}</a>
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -412,7 +426,7 @@ ${torn('top', b.torn.top)}${torn('bottom', b.torn.bottom)}
 // месте, тихо не появился бы в двух других.
 
 export function renderHeader(header = {}, nav = []) {
-  const links = (indent) => nav.map((n) => `${indent}<a href="${esc(n.href)}">${esc(n.label)}</a>`).join('\n');
+  const links = (indent) => nav.map((n) => `${indent}<a href="${href(n.href)}">${esc(n.label)}</a>`).join('\n');
   return `<!-- ==================== ШАПКА ==================== -->
 <header class="header" id="top">
   <div class="header__bar">
@@ -428,7 +442,7 @@ export function renderHeader(header = {}, nav = []) {
 ${links('      ')}
     </nav>
 
-    <a class="btn header__cta" href="${esc(header.cta.href)}">${esc(header.cta.label)}</a>
+    <a class="btn header__cta" href="${href(header.cta.href)}">${esc(header.cta.label)}</a>
 
     <button class="header__burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="drawer">
       <span></span><span></span><span></span>
@@ -437,7 +451,7 @@ ${links('      ')}
 
   <nav class="header__drawer" id="drawer" aria-label="Мобильная навигация">
 ${links('    ')}
-    <a class="btn" href="${esc(header.cta.href)}">${esc(header.cta.label)}</a>
+    <a class="btn" href="${href(header.cta.href)}">${esc(header.cta.label)}</a>
   </nav>
 </header>
 `;
@@ -453,7 +467,7 @@ export function renderFooter(footer = {}, nav = []) {
     </div>
 
     <nav class="footer__nav" aria-label="Навигация в подвале">
-${nav.map((n) => `      <a href="${esc(n.href)}">${esc(n.label)}</a>`).join('\n')}
+${nav.map((n) => `      <a href="${href(n.href)}">${esc(n.label)}</a>`).join('\n')}
     </nav>
   </div>
 
@@ -461,7 +475,7 @@ ${nav.map((n) => `      <a href="${esc(n.href)}">${esc(n.label)}</a>`).join('\n'
 
   <div class="footer__legal">
     <span>${esc(footer.copyright)}</span>
-    <a href="${esc(footer.policyHref)}">${esc(footer.policyLabel)}</a>
+    <a href="${href(footer.policyHref)}">${esc(footer.policyLabel)}</a>
   </div>
 </footer>
 `;

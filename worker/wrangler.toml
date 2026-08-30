@@ -1,0 +1,11 @@
+name = "kunaev-admin"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+# Не секретные настройки. Секреты (GITHUB_TOKEN, SESSION_SECRET, AUTH_USERS)
+# сюда НЕ пишутся — они задаются через `wrangler secret put` и хранятся у
+# Cloudflare. Этот файл лежит в репозитории и виден всем.
+[vars]
+REPO = "mas040500-debug/kunaev-psycholog"
+BRANCH = "main"
+ALLOWED_ORIGINS = "https://mas040500-debug.github.io"

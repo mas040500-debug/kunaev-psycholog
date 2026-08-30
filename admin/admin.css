@@ -16,6 +16,10 @@
 }
 
 * { box-sizing: border-box; }
+/* Атрибут hidden ставит display:none слабым правилом браузера, и любой
+   авторский display: flex его перебивает. Без этой строки спрятанные
+   элементы остаются на экране. */
+[hidden] { display: none !important; }
 body {
   margin: 0; font-family: var(--font); color: var(--ink);
   background: var(--panel); height: 100vh; overflow: hidden;
@@ -179,3 +183,20 @@ textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
 }
 
 .pane__title--spaced { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+.bar__who { font-size: 13px; color: var(--ink-3); align-self: center; margin-right: 4px; }
+
+/* ---------- вход ---------- */
+.login { border: none; border-radius: 14px; padding: 24px; width: min(380px, 92vw); }
+.login::backdrop { background: rgba(22,29,33,.5); }
+.login__title { font-size: 18px; margin-bottom: 16px; }
+.login input { width: 100%; margin-bottom: 12px; }
+.login__error {
+  font-size: 13px; color: #8A231C; background: #FCEDEC;
+  border-radius: 8px; padding: 8px 10px; margin-bottom: 12px;
+}
+.login__actions { display: flex; gap: 8px; }
+
+/* ---------- загрузка картинки ---------- */
+.picker__upload { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.picker__status { font-size: 13px; color: var(--ink-3); }

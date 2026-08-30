@@ -11,6 +11,7 @@
 
 import { assemble } from '../build/assemble.mjs';
 import { SCHEMA, BACKGROUNDS, SIMPLE, SITE_PARTS, addableTypes, getAt, setAt } from '../build/schema.mjs';
+import * as api from './api.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, cls, text) => {
@@ -28,6 +29,7 @@ let head = '', tail = '';
 let assets = [];
 let selectedId = null;   // id блока либо 'part:header' / 'part:nav' / 'part:footer'
 let dirty = false;
+let account = null;   // почта вошедшего, либо null
 
 // ---------------------------------------------------------------- загрузка
 async function boot() {
@@ -52,6 +54,33 @@ async function boot() {
   $('#app').hidden = false;
   fillAddMenu();
   renderAll();
+  await restoreSession();
+}
+
+// Токен мог протухнуть, пока вкладка была закрыта. Проверяем молча: если он
+// уже не годится, человек просто увидит кнопку «Войти», а не ошибку.
+async function restoreSession() {
+  if (!api.configured() || !api.getToken()) return renderAccount();
+  try {
+    account = (await api.me()).email;
+  } catch {
+    account = null;
+  }
+  renderAccount();
+}
+
+function renderAccount() {
+  const who = $('#who');
+  if (!api.configured()) {
+    who.hidden = false;
+    who.textContent = 'сервер не подключён';
+  } else if (account) {
+    who.hidden = false;
+    who.textContent = account;
+  } else {
+    who.hidden = false;
+    who.textContent = 'вы не вошли';
+  }
 }
 
 // ------------------------------------------------------------- список блоков
@@ -412,19 +441,56 @@ function fillAddMenu() {
 function openPicker(f, onPick) {
   const dlg = $('#picker');
   const grid = $('#picker-grid');
-  grid.replaceChildren();
-  // для документов показываем только их папку — иначе легко подставить портрет
-  const list = f.dir ? assets.filter((a) => a.startsWith(f.dir)) : assets;
-  list.forEach((a) => {
-    const item = el('button', 'picker__item');
-    item.type = 'button';
-    const img = el('img');
-    img.src = '../' + a;
-    img.alt = '';
-    item.append(img, el('span', null, a.replace('assets/', '')));
-    item.onclick = () => { onPick(a); dlg.close(); };
-    grid.append(item);
-  });
+  const note = $('#picker-note');
+  const upload = $('#picker-upload');
+  const status = $('#picker-status');
+  const file = $('#picker-file');
+
+  function fill() {
+    grid.replaceChildren();
+    // для документов показываем только их папку — иначе легко подставить портрет
+    const list = f.dir ? assets.filter((a) => a.startsWith(f.dir)) : assets;
+    list.forEach((a) => {
+      const item = el('button', 'picker__item');
+      item.type = 'button';
+      const img = el('img');
+      img.src = '../' + a;
+      img.alt = '';
+      item.append(img, el('span', null, a.replace('assets/', '')));
+      item.onclick = () => { onPick(a); dlg.close(); };
+      grid.append(item);
+    });
+  }
+  fill();
+
+  upload.hidden = !api.configured();
+  status.textContent = '';
+  note.textContent = api.configured()
+    ? 'Большие фотографии перед отправкой уменьшаются сами — до 1600px по длинной стороне.'
+    : 'Сервер админки не подключён, поэтому загрузка недоступна. Выберите из уже загруженных.';
+
+  file.value = '';
+  file.onchange = async () => {
+    const chosen = file.files[0];
+    if (!chosen) return;
+    if (!account && !(await askLogin())) return;
+
+    status.textContent = 'Уменьшаю…';
+    try {
+      const { blob } = await api.shrink(chosen);
+      status.textContent = `Отправляю (${Math.round(blob.size / 1024)} КБ)…`;
+      const r = await api.upload(blob, chosen.name);
+      // добавляем в опись сразу: assets.json пересоберётся только к следующей
+      // сборке сайта, а картинка нужна прямо сейчас
+      if (!assets.includes(r.path)) assets.push(r.path);
+      status.textContent = '';
+      onPick(r.path);
+      dlg.close();
+    } catch (ex) {
+      status.textContent = ex.message;
+    }
+  };
+
   dlg.showModal();
 }
 
@@ -459,12 +525,72 @@ $('#download').onclick = () => {
   URL.revokeObjectURL(a.href);
 };
 
-$('#publish').onclick = () => {
-  alert(
-    'Публикация появится на следующем шаге — вместе со входом по почте.\n\n' +
-    'Сейчас правки хранятся в этом браузере: их можно спокойно продолжать, ' +
-    'ничего не потеряется. Чтобы передать их разработчику, нажмите «Скачать файл».'
-  );
+// ---------------------------------------------------------------- вход
+function askLogin() {
+  return new Promise((resolve) => {
+    const dlg = $('#login');
+    const form = $('#login-form');
+    const err = $('#login-error');
+    const submit = $('#login-submit');
+    err.hidden = true;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'Проверяю…';
+      try {
+        account = await api.login($('#login-email').value, $('#login-password').value);
+        renderAccount();
+        dlg.close();
+        resolve(true);
+      } catch (ex) {
+        err.textContent = ex.message;
+        err.hidden = false;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Войти';
+      }
+    };
+    $('#login-cancel').onclick = () => { dlg.close(); resolve(false); };
+    dlg.showModal();
+  });
+}
+
+$('#publish').onclick = async () => {
+  if (!api.configured()) {
+    alert(
+      'Сервер админки ещё не подключён.\n\n' +
+      'Правки хранятся в этом браузере и никуда не денутся. Чтобы передать их ' +
+      'разработчику, нажмите «Скачать файл».'
+    );
+    return;
+  }
+  if (!account && !(await askLogin())) return;
+
+  const btn = $('#publish');
+  btn.disabled = true;
+  btn.textContent = 'Публикую…';
+  try {
+    await api.publish(site);
+    // Опубликованное становится новой точкой отсчёта: иначе «Вернуть как на
+    // сайте» откатывало бы к тому, что было до публикации.
+    original = structuredClone(site);
+    localStorage.removeItem(DRAFT_KEY);
+    dirty = false;
+    renderAll();
+    alert('Опубликовано. Страница обновится через минуту-другую — сайт пересобирается.');
+  } catch (ex) {
+    if (ex.auth) {
+      account = null;
+      renderAccount();
+      alert('Вход истёк, войдите заново.');
+    } else {
+      alert('Не удалось опубликовать: ' + ex.message);
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Опубликовать';
+  }
 };
 
 $('.preview__widths').onclick = (e) => {
