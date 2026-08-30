@@ -3,7 +3,7 @@
 // (предпросмотр в админке). Именно поэтому предпросмотр не может разойтись
 // с тем, что окажется на сайте, — шаблоны буквально одни и те же.
 
-import { renderBlock } from './blocks.mjs';
+import { renderBlock, renderHeader, renderFooter } from './blocks.mjs';
 
 // Рваные края считаются по фактическому порядку блоков, а не задаются руками.
 // Иначе стоит спрятать блок — и у соседа остаётся край чужого цвета: сиреневый
@@ -43,8 +43,8 @@ function docsScript(blocks) {
 
 /**
  * @param site  разобранный content/site.json
- * @param head  build/partials/head.html
- * @param tail  build/partials/tail.html
+ * @param head  build/partials/doc-head.html — всё до шапки
+ * @param tail  build/partials/doc-tail.html — всё после подвала
  * @param opts.base  значение для <base href>, нужно предпросмотру в админке:
  *                   там страница живёт в /admin/, а ссылки на картинки и
  *                   стили в разметке — относительные
@@ -63,6 +63,16 @@ export function assemble(site, head, tail, opts = {}) {
   const blocks = visibleBlocks(site);
   const body = blocks.map(renderBlock).join('\n\n');
   const t = tail.replace('/*ДОКУМЕНТЫ*/', '\n' + docsScript(blocks) + '\n    ');
+  const nav = site.nav || [];
 
-  return h + body + '\n\n' + t;
+  return [
+    h,
+    renderHeader(site.header || {}, nav),
+    '\n<main>\n\n',
+    body,
+    '\n\n</main>\n\n',
+    renderFooter(site.footer || {}, nav),
+    '\n',
+    t,
+  ].join('');
 }

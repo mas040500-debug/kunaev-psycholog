@@ -25,8 +25,8 @@ const arg = (name, fallback) => {
 export function build(contentPath = 'content/site.json') {
   return assemble(
     JSON.parse(read(contentPath)),
-    read('build/partials/head.html'),
-    read('build/partials/tail.html'),
+    read('build/partials/doc-head.html'),
+    read('build/partials/doc-tail.html'),
   );
 }
 

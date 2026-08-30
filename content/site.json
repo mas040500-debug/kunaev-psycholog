@@ -6,6 +6,40 @@
     "ogDescription": "Создание комфортных условий для вашей терапии.",
     "ogImage": "assets/portrait-about.png"
   },
+  "header": {
+    "name": "Владимир Кунаев",
+    "role": "Психолог",
+    "avatar": "assets/portrait-about.png",
+    "cta": {
+      "label": "Связаться со мной",
+      "href": "#contacts"
+    }
+  },
+  "nav": [
+    {
+      "label": "Обо мне",
+      "href": "#about"
+    },
+    {
+      "label": "Принципы",
+      "href": "#principles"
+    },
+    {
+      "label": "Квалификация",
+      "href": "#education"
+    },
+    {
+      "label": "Контакты",
+      "href": "#contacts"
+    }
+  ],
+  "footer": {
+    "name": "Владимир Кунаев",
+    "role": "Психолог",
+    "copyright": "© 2026 Владимир Кунаев",
+    "policyLabel": "Политика конфиденциальности",
+    "policyHref": "#"
+  },
   "blocks": [
     {
       "id": "hero",

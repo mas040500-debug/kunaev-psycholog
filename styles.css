@@ -285,8 +285,11 @@ a { color: inherit; }
     transition: max-height .28s ease, padding .28s ease;
     border-top: 0 solid var(--border-subtle);
   }
-  .header__drawer a { font: var(--body); color: var(--text-secondary); text-decoration: none; }
-  .header__drawer a:hover { color: var(--action-default); }
+  /* :not(.btn) обязателен: кнопка в шторке — тоже ссылка, и правило для
+     пунктов меню перекрашивало её надпись в серый, потому что оно
+     специфичнее .btn. */
+  .header__drawer a:not(.btn) { font: var(--body); color: var(--text-secondary); text-decoration: none; }
+  .header__drawer a:not(.btn):hover { color: var(--action-default); }
   .header__drawer .btn { align-self: flex-start; }
 
   .header.is-open .header__drawer {
@@ -487,15 +490,47 @@ a { color: inherit; }
    кегли и отступы заданы здесь, а не приходят из контента: что бы в блок
    ни написали, он остаётся в общей сетке и типографике страницы.
    ============================================================ */
-.simple { position: relative; }
+/* Оформление задаётся ступенями, а не произвольными значениями: цвет —
+   из палитры, читаемой на всех трёх фонах, шрифта два, размера три,
+   отступа три. Значения по умолчанию совпадают с прежним видом блоков. */
+.simple {
+  position: relative;
+  --blk-color: var(--text-secondary);
+  --blk-font: var(--font);
+  --blk-base: 18px;      /* кегль текста */
+  --blk-scale: 1;        /* поправка на шрифт */
+  --blk-lh: 1.45;
+  --blk-gap: var(--s16); /* между строками внутри блока */
+  --blk-gap-lg: var(--s64); /* между картинкой и текстом */
+}
+.simple.is-color-primary   { --blk-color: var(--text-primary); }
+.simple.is-color-accent    { --blk-color: var(--text-accent); }
+.simple.is-color-muted     { --blk-color: var(--text-muted); }
+/* Рукописная гарнитура мельче на глаз при том же кегле, поэтому она идёт
+   с поправкой, а не «просто другим шрифтом» — иначе выбор шрифта менял бы
+   ещё и видимый размер. */
+.simple.is-font-script { --blk-font: var(--font-script); --blk-scale: 1.55; --blk-lh: 1.1; }
+.simple.is-size-s { --blk-base: 16px; }
+.simple.is-size-l { --blk-base: 24px; }
+.simple.is-gap-s { --blk-gap: var(--s8);  --blk-gap-lg: var(--s32); }
+.simple.is-gap-l { --blk-gap: var(--s32); --blk-gap-lg: var(--s128); }
+
 .simple__inner {
-  display: flex; flex-direction: column; gap: var(--s16);
+  display: flex; flex-direction: column; gap: var(--blk-gap);
   align-items: flex-start;
   /* мера строки: длинный текст не растягивается на всю ширину экрана */
   max-width: 720px;
 }
 .simple__title { font: var(--h2); color: var(--text-primary); }
-.simple__body  { font: var(--body-lg); color: var(--text-secondary); }
+.simple.is-color-primary .simple__title,
+.simple.is-color-accent  .simple__title,
+.simple.is-color-muted   .simple__title { color: var(--blk-color); }
+.simple__body {
+  font-family: var(--blk-font);
+  font-size: calc(var(--blk-base) * var(--blk-scale));
+  line-height: var(--blk-lh);
+  color: var(--blk-color);
+}
 .simple .btn { margin-top: var(--s8); }
 
 .simple--center .simple__inner {
@@ -519,7 +554,7 @@ a { color: inherit; }
 /* картинка с текстом */
 .simple--media {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--s64); align-items: center;
+  gap: var(--blk-gap-lg); align-items: center;
 }
 .simple--media .simple__inner { max-width: none; }
 /* Потолок в 560px — чтобы небольшой снимок не растягивался на всю колонку
@@ -534,12 +569,21 @@ a { color: inherit; }
 
 /* цитата */
 .simple--quote { display: flex; justify-content: center; }
+.quote { --blk-color: var(--text-primary); }
 .quote {
   margin: 0; max-width: 820px;
-  display: flex; flex-direction: column; gap: var(--s16);
+  display: flex; flex-direction: column; gap: var(--blk-gap);
   text-align: center; align-items: center;
 }
-.quote__text { font: var(--h2); color: var(--text-primary); }
+/* Цитата крупнее обычного текста в 1.6 раза — она держит ту же шкалу,
+   что и остальные блоки, просто со своим множителем. */
+.quote__text {
+  font-family: var(--blk-font); font-weight: 700;
+  font-size: calc(var(--blk-base) * var(--blk-scale) * 1.6);
+  line-height: var(--blk-lh);
+  color: var(--blk-color);
+}
+.simple--quote.is-font-script .quote__text { font-weight: 400; }
 .quote__text::before { content: '«'; }
 .quote__text::after  { content: '»'; }
 .quote__author { font: var(--body); color: var(--text-muted); }
@@ -557,6 +601,7 @@ a { color: inherit; }
 
 @media (max-width: 1024px) {
   .simple--media { grid-template-columns: 1fr; gap: var(--s32); }
+  .simple.is-gap-l { --blk-gap-lg: var(--s48); }
   .simple--media-right .simple__media { order: 0; }
 }
 @media (max-width: 767px) {

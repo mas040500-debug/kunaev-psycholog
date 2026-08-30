@@ -45,6 +45,20 @@ const anchor = (b) => `${b.anchor ? ` id="${b.anchor}"` : ''} data-block="${b.id
 const BG_CLASS = { surface: 'section--surface', 'second-soft': 'section--second', page: 'section--page' };
 const bgClass = (b) => BG_CLASS[b.bg] || 'section--surface';
 
+// Оформление простых блоков. Владелец сайта выбирает не «любой цвет и любой
+// кегль», а ступень из шкалы: цвета — только те, что гарантированно читаются
+// на всех трёх фонах, шрифта два, размеров три. Свободный выбор дал бы через
+// месяц серый текст на сиреневом и восемь разных кеглей на одной странице.
+const styleClass = (s = {}) =>
+  [
+    s.color && s.color !== 'default' ? `is-color-${s.color}` : '',
+    s.font === 'script' ? 'is-font-script' : '',
+    s.size && s.size !== 'm' ? `is-size-${s.size}` : '',
+    s.gap && s.gap !== 'm' ? `is-gap-${s.gap}` : '',
+  ].filter(Boolean).join(' ');
+
+const cls = (...parts) => parts.filter(Boolean).join(' ');
+
 // абзацы: пустая строка в тексте делит его на <p>
 const paras = (text, cls) =>
   String(text || '')
@@ -318,9 +332,9 @@ ${torn('bottom', b.torn.bottom)}
 
   text(b) {
     const d = b.data;
-    const align = d.align === 'center' ? ' simple--center' : '';
+    const align = d.align === 'center' ? 'simple--center' : '';
     return `<!-- ==================== ТЕКСТ ==================== -->
-<section class="section ${bgClass(b)} simple simple--text${align}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--text', align, styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
@@ -332,7 +346,7 @@ ${torn('bottom', b.torn.bottom)}
   image(b) {
     const d = b.data;
     return `<!-- ==================== КАРТИНКА ==================== -->
-<section class="section ${bgClass(b)} simple simple--image"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--image', styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <figure class="simple__figure">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -343,9 +357,9 @@ ${torn('bottom', b.torn.bottom)}
 
   media(b) {
     const d = b.data;
-    const side = d.imageSide === 'right' ? ' simple--media-right' : '';
+    const side = d.imageSide === 'right' ? 'simple--media-right' : '';
     return `<!-- ==================== КАРТИНКА С ТЕКСТОМ ==================== -->
-<section class="section ${bgClass(b)} simple simple--media${side}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--media', side, styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__media">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -361,7 +375,7 @@ ${torn('bottom', b.torn.bottom)}
   quote(b) {
     const d = b.data;
     return `<!-- ==================== ЦИТАТА ==================== -->
-<section class="section ${bgClass(b)} simple simple--quote"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--quote', styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <blockquote class="quote">
     <p class="quote__text">${esc(d.text)}</p>
@@ -373,7 +387,7 @@ ${torn('bottom', b.torn.bottom)}
   cta(b) {
     const d = b.data;
     return `<!-- ==================== ПРИЗЫВ ==================== -->
-<section class="section ${bgClass(b)} simple simple--cta"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--cta', styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
@@ -391,6 +405,67 @@ ${torn('top', b.torn.top)}${torn('bottom', b.torn.bottom)}
 </section>`;
   },
 };
+
+// --- шапка и подвал ---------------------------------------------------------
+// Одно и то же меню выводится трижды: в шапке, в мобильной шторке и в подвале.
+// Все три собираются из одного списка nav — иначе пункт, добавленный в одном
+// месте, тихо не появился бы в двух других.
+
+export function renderHeader(header = {}, nav = []) {
+  const links = (indent) => nav.map((n) => `${indent}<a href="${esc(n.href)}">${esc(n.label)}</a>`).join('\n');
+  return `<!-- ==================== ШАПКА ==================== -->
+<header class="header" id="top">
+  <div class="header__bar">
+    <a class="header__brand" href="#top">
+      <img class="header__avatar" src="${esc(header.avatar)}" alt="" width="48" height="48">
+      <span class="header__ident">
+        <span class="header__name">${esc(header.name)}</span>
+        <span class="header__role">${esc(header.role)}</span>
+      </span>
+    </a>
+
+    <nav class="header__nav" aria-label="Основная навигация">
+${links('      ')}
+    </nav>
+
+    <a class="btn header__cta" href="${esc(header.cta.href)}">${esc(header.cta.label)}</a>
+
+    <button class="header__burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="header__drawer" id="drawer" aria-label="Мобильная навигация">
+${links('    ')}
+    <a class="btn" href="${esc(header.cta.href)}">${esc(header.cta.label)}</a>
+  </nav>
+</header>
+`;
+}
+
+export function renderFooter(footer = {}, nav = []) {
+  return `<!-- ==================== ПОДВАЛ ==================== -->
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__ident">
+      <span class="footer__name">${esc(footer.name)}</span>
+      <span class="footer__role">${esc(footer.role)}</span>
+    </div>
+
+    <nav class="footer__nav" aria-label="Навигация в подвале">
+${nav.map((n) => `      <a href="${esc(n.href)}">${esc(n.label)}</a>`).join('\n')}
+    </nav>
+  </div>
+
+  <hr class="footer__rule">
+
+  <div class="footer__legal">
+    <span>${esc(footer.copyright)}</span>
+    <a href="${esc(footer.policyHref)}">${esc(footer.policyLabel)}</a>
+  </div>
+</footer>
+`;
+}
 
 export function renderBlock(block) {
   const fn = templates[block.type];

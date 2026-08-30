@@ -119,6 +119,32 @@ const UNIQUE = {
   },
 };
 
+// Оформление простых блоков. Ступени, а не произвольные значения: цвета —
+// только читаемые на всех трёх фонах, шрифта два, размера три. Свободный
+// выбор дал бы через месяц серый текст на сиреневом и восемь кеглей на
+// одной странице, а чинить это пришлось бы дизайнеру.
+export const STYLE_FIELDS = [
+  { key: 'style.color', label: 'Цвет текста', type: 'select', options: [
+    { value: 'default', label: 'Обычный' },
+    { value: 'primary', label: 'Тёмный' },
+    { value: 'accent', label: 'Синий' },
+    { value: 'muted', label: 'Приглушённый' } ] },
+  { key: 'style.font', label: 'Шрифт', type: 'select', options: [
+    { value: 'base', label: 'Основной' },
+    { value: 'script', label: 'Рукописный' } ],
+    hint: 'Рукописный — для короткой фразы. Длинный текст им читать тяжело.' },
+  { key: 'style.size', label: 'Размер текста', type: 'select', options: [
+    { value: 's', label: 'Мелкий' },
+    { value: 'm', label: 'Обычный' },
+    { value: 'l', label: 'Крупный' } ] },
+  { key: 'style.gap', label: 'Отступы внутри блока', type: 'select', options: [
+    { value: 's', label: 'Плотно' },
+    { value: 'm', label: 'Обычно' },
+    { value: 'l', label: 'Просторно' } ] },
+];
+
+const STYLE_DEFAULTS = { color: 'default', font: 'base', size: 'm', gap: 'm' };
+
 // --- простые блоки: их можно добавлять сколько угодно и куда угодно ---------
 export const SIMPLE = {
   text: {
@@ -182,12 +208,58 @@ export const SIMPLE = {
   },
 };
 
+// Оформление доступно у блоков с текстом. У «Картинки» и «Отступа» настраивать
+// нечего, а у семи блоков страницы типографика — часть макета, а не контент.
+const STYLED = ['text', 'media', 'quote', 'cta'];
+
 export const SCHEMA = {
   ...Object.fromEntries(Object.entries(UNIQUE).map(([t, d]) => [t, { ...d, unique: true }])),
-  ...Object.fromEntries(Object.entries(SIMPLE).map(([t, d]) => [t, { ...d, unique: false }])),
+  ...Object.fromEntries(Object.entries(SIMPLE).map(([t, d]) => [t, {
+    ...d,
+    unique: false,
+    fields: STYLED.includes(t) ? [...d.fields, ...STYLE_FIELDS] : d.fields,
+    defaults: STYLED.includes(t) ? { ...d.defaults, style: { ...STYLE_DEFAULTS } } : d.defaults,
+  }])),
 };
 
 export const addableTypes = Object.keys(SIMPLE);
+
+// --- сквозные части страницы -----------------------------------------------
+// Меню одно на всю страницу: из него собираются и верхнее меню, и мобильная
+// шторка, и подвал. Поэтому оно правится в одном месте, а не в трёх.
+export const SITE_PARTS = {
+  header: {
+    label: 'Шапка',
+    at: 'header',
+    fields: [
+      { key: 'name', label: 'Имя', type: 'text' },
+      { key: 'role', label: 'Подпись под именем', type: 'text' },
+      { key: 'avatar', label: 'Фото в кружке', type: 'image' },
+      { key: 'cta.label', label: 'Надпись на кнопке', type: 'text' },
+      { key: 'cta.href', label: 'Куда ведёт кнопка', type: 'link' },
+    ],
+  },
+  nav: {
+    label: 'Меню',
+    at: 'nav',
+    asList: { key: '', label: 'Пункты меню', type: 'list', itemLabel: 'Пункт', of: [
+      { key: 'label', label: 'Название', type: 'text' },
+      { key: 'href', label: 'Куда ведёт', type: 'link', hint: 'Якорь вида #about или полная ссылка.' },
+    ] },
+    hint: 'Эти пункты выводятся и в шапке, и в меню-гамбургере на телефоне, и в подвале.',
+  },
+  footer: {
+    label: 'Подвал',
+    at: 'footer',
+    fields: [
+      { key: 'name', label: 'Имя', type: 'text' },
+      { key: 'role', label: 'Подпись под именем', type: 'text' },
+      { key: 'copyright', label: 'Строка об авторстве', type: 'text' },
+      { key: 'policyLabel', label: 'Название ссылки на политику', type: 'text' },
+      { key: 'policyHref', label: 'Ссылка на политику', type: 'link' },
+    ],
+  },
+};
 
 // доступ к вложенным полям по ключу с точкой: 'button.label'
 export const getAt = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
