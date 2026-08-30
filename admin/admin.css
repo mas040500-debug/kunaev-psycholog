@@ -177,3 +177,5 @@ textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
   .app { grid-template-columns: 260px 1fr; }
   .pane--preview { display: none; }
 }
+
+.pane__title--spaced { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }

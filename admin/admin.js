@@ -10,7 +10,7 @@
 // скрытие, удаление, добавление и предпросмотр.
 
 import { assemble } from '../build/assemble.mjs';
-import { SCHEMA, BACKGROUNDS, SIMPLE, addableTypes, getAt, setAt } from '../build/schema.mjs';
+import { SCHEMA, BACKGROUNDS, SIMPLE, SITE_PARTS, addableTypes, getAt, setAt } from '../build/schema.mjs';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, cls, text) => {
@@ -26,7 +26,7 @@ let site = null;       // текущий контент
 let original = null;   // как на сайте, для кнопки «вернуть»
 let head = '', tail = '';
 let assets = [];
-let selectedId = null;
+let selectedId = null;   // id блока либо 'part:header' / 'part:nav' / 'part:footer'
 let dirty = false;
 
 // ---------------------------------------------------------------- загрузка
@@ -34,8 +34,8 @@ async function boot() {
   const bust = `?_=${Date.now()}`;   // черновик не должен спорить с кэшем
   const [siteText, headText, tailText, assetsText] = await Promise.all([
     fetch('../content/site.json' + bust).then((r) => r.text()),
-    fetch('../build/partials/head.html' + bust).then((r) => r.text()),
-    fetch('../build/partials/tail.html' + bust).then((r) => r.text()),
+    fetch('../build/partials/doc-head.html' + bust).then((r) => r.text()),
+    fetch('../build/partials/doc-tail.html' + bust).then((r) => r.text()),
     fetch('../content/assets.json' + bust).then((r) => r.text()).catch(() => '[]'),
   ]);
 
@@ -60,6 +60,21 @@ function blockName(b) {
   const d = b.data || {};
   const own = d.title || d.eyebrow || d.text || (d.words && d.words[0]);
   return own ? String(own).slice(0, 42) : def?.label || b.type;
+}
+
+function renderParts() {
+  const list = $('#parts');
+  list.replaceChildren();
+  Object.entries(SITE_PARTS).forEach(([key, def]) => {
+    const id = 'part:' + key;
+    const li = el('li', 'block' + (id === selectedId ? ' is-active' : ''));
+    const body = el('div', 'block__body');
+    body.append(el('span', 'block__name', def.label));
+    body.append(el('span', 'block__type', key === 'nav' ? 'шапка, гамбургер и подвал' : 'сквозная часть'));
+    li.append(body);
+    li.onclick = () => { selectedId = id; renderList(); renderParts(); renderForm(); };
+    list.append(li);
+  });
 }
 
 function renderList() {
@@ -139,8 +154,10 @@ function wireDrag(li) {
 function renderForm() {
   const box = $('#form');
   const empty = $('#form-empty');
-  const b = site.blocks.find((x) => x.id === selectedId);
 
+  if (String(selectedId).startsWith('part:')) return renderPartForm(box, empty);
+
+  const b = site.blocks.find((x) => x.id === selectedId);
   if (!b) { box.hidden = true; empty.hidden = false; return; }
   empty.hidden = true;
   box.hidden = false;
@@ -158,6 +175,30 @@ function renderForm() {
     'От фона зависит, где страница «рвётся» между блоками. Края считаются сами.'));
 
   (def.fields || []).forEach((f) => box.append(fieldFor(f, b.data ??= {})));
+}
+
+function renderPartForm(box, empty) {
+  const key = selectedId.slice('part:'.length);
+  const def = SITE_PARTS[key];
+  empty.hidden = true;
+  box.hidden = false;
+  box.replaceChildren();
+
+  const head = el('div', 'form__head');
+  head.append(el('h2', 'form__title', def.label));
+  head.append(el('span', 'form__type', 'сквозная часть'));
+  box.append(head);
+  if (def.hint) box.append(el('p', 'field__hint', def.hint));
+
+  // Меню — это массив, а не объект с полями, поэтому оно правится как
+  // список; остальные части — обычный набор полей.
+  if (def.asList) {
+    const holder = { [def.at]: (site[def.at] ??= []) };
+    box.append(listField({ ...def.asList, key: def.at }, holder, holder[def.at]));
+  } else {
+    const data = (site[def.at] ??= {});
+    def.fields.forEach((f) => box.append(fieldFor(f, data)));
+  }
 }
 
 function labelled(labelText, control, hint) {
@@ -347,6 +388,7 @@ function setPreviewWidth(w) {
 // ------------------------------------------------------------------- прочее
 function renderAll({ keepFocus = false } = {}) {
   if (!keepFocus) renderForm();
+  renderParts();
   renderList();
   renderPreview();
   $('#dirty').hidden = !dirty;
