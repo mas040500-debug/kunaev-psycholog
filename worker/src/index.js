@@ -162,7 +162,44 @@ async function handle(request, env) {
 
   if (request.method === 'OPTIONS') return new Response(null, { status: 204 });
 
-  if (path === '/health') return json({ ok: true });
+  // Самопроверка настроек. Нужна ровно при первой выкладке: без неё
+  // ошибка в одном секрете выглядит как «что-то пошло не так», и её
+  // приходится угадывать. Значения секретов не показываются — только
+  // «задан / не задан» и разбирается ли содержимое.
+  if (path === '/health') {
+    const users = (() => {
+      if (!env.AUTH_USERS) return 'НЕ ЗАДАН';
+      try {
+        const list = JSON.parse(env.AUTH_USERS);
+        if (!Array.isArray(list)) return 'НЕ СПИСОК — нужен массив в квадратных скобках';
+        if (!list.length) return 'СПИСОК ПУСТ';
+        const broken = list.findIndex((u) => !u?.email || !u?.salt || !u?.hash);
+        if (broken >= 0) return `в записи №${broken + 1} нет email, salt или hash`;
+        return `${list.length} шт.: ${list.map((u) => u.email).join(', ')}`;
+      } catch (e) {
+        return `НЕ РАЗБИРАЕТСЯ как JSON (${e.message}). Частая причина — значение вставлено в несколько строк и обрезалось.`;
+      }
+    })();
+
+    const origin = request.headers.get('origin');
+    const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+
+    return json({
+      ok: true,
+      настройки: {
+        REPO: env.REPO || 'НЕ ЗАДАН',
+        BRANCH: env.BRANCH || 'НЕ ЗАДАН',
+        ALLOWED_ORIGINS: allowed.length ? allowed : 'НЕ ЗАДАН',
+        GITHUB_TOKEN: env.GITHUB_TOKEN ? `задан, ${env.GITHUB_TOKEN.length} символов` : 'НЕ ЗАДАН',
+        SESSION_SECRET: env.SESSION_SECRET ? `задан, ${env.SESSION_SECRET.length} символов` : 'НЕ ЗАДАН',
+        AUTH_USERS: users,
+      },
+      этотЗапрос: {
+        origin: origin || 'браузер не прислал',
+        разрешён: origin ? allowed.includes(origin) : null,
+      },
+    });
+  }
 
   if (path === '/login' && request.method === 'POST') {
     const ip = request.headers.get('cf-connecting-ip') || 'local';
