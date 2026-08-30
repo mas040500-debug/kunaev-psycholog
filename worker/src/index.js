@@ -181,6 +181,22 @@ async function handle(request, env) {
       }
     })();
 
+    // Настройки могут быть верными, а вход всё равно падать: отпечаток
+    // пароля считается тяжёлой функцией, и она способна упереться в
+    // ограничения площадки или в испорченную соль. Поэтому проверка не
+    // верит глазам, а честно пробует посчитать — и показывает, что вышло.
+    let проверкаОтпечатка = 'не проверялась: список пользователей не разобран';
+    try {
+      const list = JSON.parse(env.AUTH_USERS || '[]');
+      if (list.length) {
+        const t0 = Date.now();
+        await pbkdf2('проверка', list[0].salt, list[0].iterations || 210000);
+        проверкаОтпечатка = `считается, ${Date.now() - t0} мс, повторений ${list[0].iterations || 210000}`;
+      }
+    } catch (e) {
+      проверкаОтпечатка = `НЕ СЧИТАЕТСЯ: ${e.name}: ${e.message}`;
+    }
+
     const origin = request.headers.get('origin');
     const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
 
@@ -194,6 +210,7 @@ async function handle(request, env) {
         SESSION_SECRET: env.SESSION_SECRET ? `задан, ${env.SESSION_SECRET.length} символов` : 'НЕ ЗАДАН',
         AUTH_USERS: users,
       },
+      отпечатокПароля: проверкаОтпечатка,
       этотЗапрос: {
         origin: origin || 'браузер не прислал',
         разрешён: origin ? allowed.includes(origin) : null,
