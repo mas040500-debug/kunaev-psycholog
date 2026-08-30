@@ -341,11 +341,13 @@ a { color: inherit; }
   width: 100%; aspect-ratio: 1;
   border-radius: 50%; background: var(--bg-surface);
 }
+/* Никакой подложки под снимком: portrait-hero.png несёт собственную
+   скруглённую маску с мягкой тенью и прозрачным полем по краю. Заливка
+   под ним просвечивала сквозь это поле голубой плашкой — в макете её нет. */
 .photo-card__img {
   position: absolute; left: 14%; top: 3.1%;
   width: 82.4%; height: 93.8%;
   object-fit: cover;
-  background: var(--bg-accent);
 }
 .photo-card__plate {
   position: absolute; left: 50.7%; top: 79.8%; width: 46.7%;

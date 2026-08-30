@@ -93,11 +93,12 @@
   width: 100%; aspect-ratio: 1;
   border-radius: 50%; background: var(--vk-bg-surface);
 }
+/* Без подложки: снимок несёт собственную скруглённую маску с мягкой тенью,
+   и заливка просвечивала сквозь прозрачное поле по краю голубой плашкой. */
 .vk-photo-card__img {
   position: absolute; left: 14%; top: 3.1%;
   width: 82.4%; height: 93.8%;
   object-fit: cover;
-  background: var(--vk-bg-accent);
 }
 /* подпись на «рваной» плашке */
 .vk-photo-card__plate {
