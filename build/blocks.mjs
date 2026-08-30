@@ -40,6 +40,17 @@ const CONTACT_ICONS = {
 
 const anchor = (b) => (b.anchor ? ` id="${b.anchor}"` : '');
 
+const BG_CLASS = { surface: 'section--surface', 'second-soft': 'section--second', page: 'section--page' };
+const bgClass = (b) => BG_CLASS[b.bg] || 'section--surface';
+
+// абзацы: пустая строка в тексте делит его на <p>
+const paras = (text, cls) =>
+  String(text || '')
+    .split(/\n\s*\n/)
+    .filter(Boolean)
+    .map((p) => `      <p class="${cls}">${esc(p.trim())}</p>`)
+    .join('\n');
+
 // --- блоки -----------------------------------------------------------------
 const templates = {
   hero(b) {
@@ -202,6 +213,9 @@ ${torn('bottom', b.torn.bottom)}
 
   education(b) {
     const d = b.data;
+    // первый документ попадает прямо в разметку, чтобы папка была видна
+    // до того, как отработает скрипт карусели
+    const first = d.docs[0];
     return `<!-- ==================== ОБРАЗОВАНИЕ ==================== -->
 <section class="edu"${anchor(b)}>
 ${torn('top', b.torn.top)}
@@ -223,10 +237,10 @@ ${torn('top', b.torn.top)}
 
       <span class="edu__sheet" aria-hidden="true"></span>
 
-      <a class="edu__doc" id="edu-link" href="assets/docs/01-msu-diploma.jpg" target="_blank" rel="noopener"
+      <a class="edu__doc" id="edu-link" href="assets/docs/${esc(first.src)}" target="_blank" rel="noopener"
          title="Открыть документ в полном размере">
-        <img class="edu__doc-img" id="edu-img" src="assets/docs/01-msu-diploma.jpg"
-             alt="Диплом магистра МГУ по направлению «Психология»" width="393" height="556">
+        <img class="edu__doc-img" id="edu-img" src="assets/docs/${esc(first.src)}"
+             alt="${esc(first.alt)}" width="393" height="556">
       </a>
 
       <!-- Бумажка — обёртка вокруг подписи, а не отдельный прямоугольник
@@ -234,8 +248,8 @@ ${torn('top', b.torn.top)}
            строк, и бумажка должна расти под них, а не обрезать текст. -->
       <div class="edu__note">
         <div class="edu__label" aria-live="polite">
-          <span class="edu__label-script" id="edu-note-title">Диплом МГУ</span>
-          <span class="edu__label-sub" id="edu-note-sub">Факультет психологии</span>
+          <span class="edu__label-script" id="edu-note-title">${esc(first.note)}</span>
+          <span class="edu__label-sub" id="edu-note-sub">${esc(first.sub)}</span>
         </div>
       </div>
 
@@ -290,6 +304,86 @@ ${torn('top', b.torn.top)}
 ${items}
   </div>
 ${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  // ---- простые блоки: их владелец сайта добавляет сам ----------------------
+  // Все они держат общую сетку и типографику страницы, поэтому что бы в них
+  // ни написали, вёрстка не поедет: ширина текста, кегли и отступы заданы
+  // здесь, а не в контенте.
+
+  text(b) {
+    const d = b.data;
+    const align = d.align === 'center' ? ' simple--center' : '';
+    return `<!-- ==================== ТЕКСТ ==================== -->
+<section class="section ${bgClass(b)} simple simple--text${align}"${anchor(b)}>
+${torn('top', b.torn.top)}
+  <div class="simple__inner">
+${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+  </div>
+${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  image(b) {
+    const d = b.data;
+    return `<!-- ==================== КАРТИНКА ==================== -->
+<section class="section ${bgClass(b)} simple simple--image"${anchor(b)}>
+${torn('top', b.torn.top)}
+  <figure class="simple__figure">
+    <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
+${d.caption ? `    <figcaption class="simple__caption">${esc(d.caption)}</figcaption>\n` : ''}  </figure>
+${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  media(b) {
+    const d = b.data;
+    const side = d.imageSide === 'right' ? ' simple--media-right' : '';
+    return `<!-- ==================== КАРТИНКА С ТЕКСТОМ ==================== -->
+<section class="section ${bgClass(b)} simple simple--media${side}"${anchor(b)}>
+${torn('top', b.torn.top)}
+  <div class="simple__media">
+    <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
+  </div>
+
+  <div class="simple__inner">
+${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+  </div>
+${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  quote(b) {
+    const d = b.data;
+    return `<!-- ==================== ЦИТАТА ==================== -->
+<section class="section ${bgClass(b)} simple simple--quote"${anchor(b)}>
+${torn('top', b.torn.top)}
+  <blockquote class="quote">
+    <p class="quote__text">${esc(d.text)}</p>
+${d.author ? `    <footer class="quote__author">${esc(d.author)}</footer>\n` : ''}  </blockquote>
+${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  cta(b) {
+    const d = b.data;
+    return `<!-- ==================== ПРИЗЫВ ==================== -->
+<section class="section ${bgClass(b)} simple simple--cta"${anchor(b)}>
+${torn('top', b.torn.top)}
+  <div class="simple__inner">
+${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+    <a class="btn" href="${esc(d.button.href)}">${esc(d.button.label)}</a>
+  </div>
+${torn('bottom', b.torn.bottom)}
+</section>`;
+  },
+
+  spacer(b) {
+    const size = ['s', 'm', 'l'].includes(b.data?.size) ? b.data.size : 'm';
+    return `<!-- ==================== ОТСТУП ==================== -->
+<section class="${bgClass(b)} spacer spacer--${size}"${anchor(b)} aria-hidden="true">
+${torn('top', b.torn.top)}${torn('bottom', b.torn.bottom)}
 </section>`;
   },
 };
