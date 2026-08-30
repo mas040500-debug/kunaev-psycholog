@@ -392,15 +392,24 @@ a { color: inherit; }
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: var(--s24); width: 100%; text-align: left;
 }
+/* Форма карточки — в .card__bg, а не в border-radius: верхний край рваный.
+   Поэтому фона и рамки у самой .card нет, а сверху добавлено 8px, чтобы
+   заголовок не подходил вплотную к впадинам кривой. */
 .card {
-  background: var(--bg-surface);
-  border: var(--bw-default) solid transparent;
-  border-radius: var(--radius-lg);
-  padding: var(--pad-container);
+  position: relative;
+  padding: calc(var(--pad-container) + 8px) var(--pad-container) var(--pad-container);
   display: flex; flex-direction: column; gap: var(--s12);
-  transition: border-color .18s ease, box-shadow .18s ease;
 }
-.card:hover { border-color: var(--action-default); box-shadow: var(--shadow-card); }
+.card__bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  fill: var(--bg-surface);
+  transition: filter .18s ease;
+}
+.card:hover .card__bg {
+  filter: drop-shadow(0 1px 2px rgba(22, 29, 33, .04))
+          drop-shadow(0 12px 24px rgba(22, 29, 33, .10));
+}
+.card__title, .card__list { position: relative; }
 .card__title { font: var(--h4); color: var(--text-primary); }
 .card__list { display: flex; flex-direction: column; gap: var(--s4); }
 .card__list li {
@@ -565,26 +574,36 @@ a { color: inherit; }
 
 /* бумажка под зажимом + подпись, которая меняется вместе с документом */
 .edu__note {
-  left: 24.35%; top: 4.74%; width: 30.29%; height: 17.89%;
+  left: 24.35%; top: 4.74%; width: 30.29%; min-height: 17.89%;
   background: var(--bg-surface);
   border-radius: 0.29cqw;
   box-shadow: 0 6px 16px rgba(22, 29, 33, .10);
+  /* Сверху — отступ ровно на ту часть бумажки, которую перекрывает зажим,
+     чтобы подпись стояла под ним, а не заезжала под него. */
+  padding: 4.35cqw 1.5cqw 1.5cqw;
+  display: flex; align-items: center; justify-content: center;
 }
 .edu__label {
-  left: 27.25%; top: 12.39%; width: 23.77%;
-  display: flex; flex-direction: column;
+  width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 0.3cqw;
+  text-align: center;
 }
 .edu__label-script {
-  font: 400 3.478cqw/2.899cqw var(--font-script);
+  font: 400 3.478cqw/1.15 var(--font-script);
   color: var(--text-primary);
-  text-align: center;
-  white-space: nowrap;
 }
+/* Длинное название не влезает крупным кеглем — набирается мельче. */
+.edu__label.is-long .edu__label-script { font-size: 2.9cqw; }
+/* Совсем длинному вдобавок сужается мера строки: поля по бокам задают
+   те же места переноса, что в макете, — «Диплом о / профессиональной /
+   переподготовке», «Повышение / квалификации». */
+.edu__label.is-wrapped { padding: 0 2.8cqw; }
 .edu__label-sub {
-  font: 400 2.319cqw/3.478cqw var(--font);
+  font: 400 2.319cqw/1.3 var(--font);
   color: var(--text-muted);
-  white-space: nowrap;
 }
+/* у части документов подзаголовка нет — пустой узел не должен занимать место */
+.edu__label-sub:empty { display: none; }
 
 .edu__clip-wire {
   left: 35.94%; top: 0; width: 6.67%; height: 4.59%;
@@ -634,9 +653,13 @@ a { color: inherit; }
   /* На мобильном папка сжимается до ширины экрана, и пропорциональная
      подпись стала бы 13px — нечитаемо. Поэтому бумажка увеличивается,
      а кегль фиксируется, как и сделано в мобильном кадре Figma. */
-  .edu__note  { left: 26.1%; top: 3.38%; width: 48%; height: 18.87%; }
-  .edu__label { left: 30.9%; top: 7.32%; width: 40%; }
-  .edu__label-script { font: var(--script-note); text-align: left; }
+  .edu__note {
+    left: 26.1%; top: 3.38%; width: 48%; min-height: 18.87%;
+    padding: 5.64cqw 2cqw 2cqw;
+  }
+  .edu__label.is-wrapped { padding: 0 4cqw; }
+  .edu__label-script { font: var(--script-note); line-height: 1.15; }
+  .edu__label.is-long .edu__label-script { font-size: 20px; }
   .edu__label-sub    { font: var(--body-sm); }
 }
 

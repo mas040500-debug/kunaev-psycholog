@@ -106,8 +106,15 @@
     <span class="dir__accent">и находим точки опоры</span>
   </h2>
 
+  <!-- Силуэт карточки нарисован SVG, а не border-radius: сверху у неё
+       рваный край — тот же бумажный мотив, что у разделителей секций.
+       У каждой карточки своя кривая, чтобы три «оторванных» листа
+       не выглядели штампованными. -->
   <div class="dir__cards">
     <article class="card">
+      <svg class="card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 38A24 24 0 0 1 24 14L54 2L84 16L114 5L144 18L174 3L204 15L234 6L264 17L294 4L324 14L354 8A24 24 0 0 1 378 32L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="card__title">Кризис в отношениях</h3>
       <ul class="card__list">
         <li>Разбор конфликтов</li>
@@ -117,6 +124,9 @@
     </article>
 
     <article class="card">
+      <svg class="card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 39A24 24 0 0 1 24 15L54 15L84 4L114 17L144 6L174 16L204 2L234 13L264 5L294 18L324 7L354 15A24 24 0 0 1 378 39L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="card__title">Выгорание</h3>
       <ul class="card__list">
         <li>Преодоление профессионального выгорания</li>
@@ -126,6 +136,9 @@
     </article>
 
     <article class="card">
+      <svg class="card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 32A24 24 0 0 1 24 8L54 8L84 18L114 3L144 14L174 7L204 17L234 4L264 12L294 6L324 16L354 5A24 24 0 0 1 378 29L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="card__title">Прокрастинация</h3>
       <ul class="card__list">
         <li>Преодоление прокрастинации</li>
@@ -244,11 +257,14 @@
              alt="Диплом магистра МГУ по направлению «Психология»" width="393" height="556">
       </a>
 
-      <span class="edu__note" aria-hidden="true"></span>
-
-      <div class="edu__label" aria-live="polite">
-        <span class="edu__label-script" id="edu-note-title">Диплом МГУ</span>
-        <span class="edu__label-sub" id="edu-note-sub">Факультет психологии</span>
+      <!-- Бумажка — обёртка вокруг подписи, а не отдельный прямоугольник
+           фиксированной высоты: подписи у документов от одной до трёх
+           строк, и бумажка должна расти под них, а не обрезать текст. -->
+      <div class="edu__note">
+        <div class="edu__label" aria-live="polite">
+          <span class="edu__label-script" id="edu-note-title">Диплом МГУ</span>
+          <span class="edu__label-sub" id="edu-note-sub">Факультет психологии</span>
+        </div>
       </div>
 
       <span class="edu__clip-wire" aria-hidden="true"></span>
@@ -381,28 +397,32 @@
   // Карусель документов в блоке «Образование».
   // Подпись живёт на бумажке, приколотой к папке, — как в макете.
   (function () {
+    // Подписи — как в макете: на бумажке стоит название самого документа,
+    // а не выжимка из него. Разворот несёт ту же подпись, что и обложка.
+    // sub может быть пустым — тогда на бумажке только рукописная строка.
     var docs = [
       { src: '01-msu-diploma.jpg',           note: 'Диплом МГУ',      sub: 'Факультет психологии',
         alt: 'Диплом магистра МГУ по направлению «Психология»' },
-      { src: '02-retraining-cover.jpg',      note: 'Переподготовка',  sub: 'НАДПО, 2022',
+      { src: '02-retraining-cover.jpg',      note: 'Диплом о профессиональной переподготовке', sub: '',
         alt: 'Диплом о профессиональной переподготовке, НАДПО' },
-      { src: '03-retraining-inner.jpg',      note: '640 часов',       sub: 'КПТ в практике психолога',
-        alt: 'Приложение к диплому: программа 640 часов' },
-      { src: '04-upgrade-cover.jpg',         note: 'Повышение',       sub: 'квалификации, 2022',
+      { src: '03-retraining-inner.jpg',      note: 'Диплом о профессиональной переподготовке', sub: '',
+        alt: 'Разворот диплома о переподготовке: КПП в практике психолога, 640 часов' },
+      { src: '04-upgrade-cover.jpg',         note: 'Повышение квалификации', sub: 'Практикум по КПП',
         alt: 'Удостоверение о повышении квалификации, НАДПО' },
-      { src: '05-upgrade-inner.jpg',         note: 'Практикум КПТ',   sub: 'Ступень 1, 32 часа',
-        alt: 'Приложение к удостоверению: практикум по КПТ' },
-      { src: '06-msu-certificate-cover.jpg', note: 'Сертификат МГУ',  sub: '2021',
+      { src: '05-upgrade-inner.jpg',         note: 'Повышение квалификации', sub: 'Практикум по КПП',
+        alt: 'Разворот удостоверения о повышении квалификации' },
+      { src: '06-msu-certificate-cover.jpg', note: 'Сертификат МГУ',  sub: 'Основы психологии',
         alt: 'Сертификат МГУ' },
-      { src: '07-msu-certificate-inner.jpg', note: '704 часа',        sub: 'Основы психологии',
-        alt: 'Сертификат МГУ: программа «Основы психологии»' }
+      { src: '07-msu-certificate-inner.jpg', note: 'Сертификат МГУ',  sub: 'Основы психологии',
+        alt: 'Разворот сертификата МГУ: программа «Основы психологии»' }
     ];
     var BASE = 'assets/docs/';
 
     var img  = document.getElementById('edu-img');
     var link = document.getElementById('edu-link');
-    var note = document.getElementById('edu-note-title');
-    var sub  = document.getElementById('edu-note-sub');
+    var note  = document.getElementById('edu-note-title');
+    var sub   = document.getElementById('edu-note-sub');
+    var label = document.querySelector('.edu__label');
     var prev = document.getElementById('edu-prev');
     var next = document.getElementById('edu-next');
     if (!img || !prev || !next) return;
@@ -426,6 +446,9 @@
 
       note.textContent = d.note;
       sub.textContent = d.sub;
+      // длинное название набирается мельче, совсем длинное — ещё и переносится
+      label.classList.toggle('is-long', d.note.length > 11);
+      label.classList.toggle('is-wrapped', d.note.length > 18);
     }
 
     prev.addEventListener('click', function () { show(i - 1); });

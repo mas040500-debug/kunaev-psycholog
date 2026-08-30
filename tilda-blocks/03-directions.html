@@ -16,6 +16,9 @@
 
   <div class="vk-dir__cards">
     <article class="vk-card">
+      <svg class="vk-card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 38A24 24 0 0 1 24 14L54 2L84 16L114 5L144 18L174 3L204 15L234 6L264 17L294 4L324 14L354 8A24 24 0 0 1 378 32L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="vk-card__title">Кризис в отношениях</h3>
       <ul class="vk-card__list">
         <li>Разбор конфликтов</li>
@@ -25,6 +28,9 @@
     </article>
 
     <article class="vk-card">
+      <svg class="vk-card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 39A24 24 0 0 1 24 15L54 15L84 4L114 17L144 6L174 16L204 2L234 13L264 5L294 18L324 7L354 15A24 24 0 0 1 378 39L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="vk-card__title">Выгорание</h3>
       <ul class="vk-card__list">
         <li>Преодоление профессионального выгорания</li>
@@ -34,6 +40,9 @@
     </article>
 
     <article class="vk-card">
+      <svg class="vk-card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 32A24 24 0 0 1 24 8L54 8L84 18L114 3L144 14L174 7L204 17L234 4L264 12L294 6L324 16L354 5A24 24 0 0 1 378 29L378 186A24 24 0 0 1 354 210L24 210A24 24 0 0 1 0 186Z"/>
+      </svg>
       <h3 class="vk-card__title">Прокрастинация</h3>
       <ul class="vk-card__list">
         <li>Преодоление прокрастинации</li>
@@ -62,18 +71,25 @@
   width: 100%; text-align: left;
 }
 
+/* Форма карточки — в .vk-card__bg, а не в border-radius: сверху у неё
+   рваный край, тот же бумажный мотив, что у разделителей секций. Поэтому
+   фона и рамки у самой карточки нет, а сверху добавлено 8px, чтобы
+   заголовок не подходил вплотную к впадинам кривой. */
 .vk-card {
-  background: var(--vk-bg-surface);
-  border: var(--vk-bw-default) solid transparent;
-  border-radius: var(--vk-radius-lg);
-  padding: var(--vk-pad-container);
+  position: relative;
+  padding: calc(var(--vk-pad-container) + 8px) var(--vk-pad-container) var(--vk-pad-container);
   display: flex; flex-direction: column; gap: var(--vk-s12);
-  transition: border-color .18s ease, box-shadow .18s ease;
 }
-.vk-card:hover {
-  border-color: var(--vk-action-default);
-  box-shadow: var(--vk-shadow-card);
+.vk-card__bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  fill: var(--vk-bg-surface);
+  transition: filter .18s ease;
 }
+.vk-card:hover .vk-card__bg {
+  filter: drop-shadow(0 1px 2px rgba(22, 29, 33, .04))
+          drop-shadow(0 12px 24px rgba(22, 29, 33, .10));
+}
+.vk-card__title, .vk-card__list { position: relative; }
 .vk-card__title { font: var(--vk-h4); color: var(--vk-text-primary); }
 .vk-card__list { display: flex; flex-direction: column; gap: var(--vk-s4); }
 .vk-card__list li {
