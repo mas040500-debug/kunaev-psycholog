@@ -5,8 +5,9 @@
      ЧТО НУЖНО ПОМЕНЯТЬ (ищите CHANGE-ME):
      1. Телефон — в тексте И в href="tel:". Два места.
      2. Telegram — ник в тексте и в href="https://t.me/...".
-     3. WhatsApp — номер в тексте и в href="https://wa.me/...".
-        В wa.me номер пишется без плюса и скобок: 79000000000.
+     3. WhatsApp — номер только в href="https://wa.me/...".
+        В wa.me номер пишется без плюса и скобок: 79175154012.
+        В тексте карточки номер не показывается.
 
      В макете в кружках стояли заглушки «тел / tg / wa» — здесь на их
      месте настоящие иконки в том же стиле обводки, что и остальные.
@@ -52,14 +53,15 @@
       </span>
     </a>
 
-    <!-- CHANGE-ME: номер в тексте и в href (в wa.me — без плюса и скобок) -->
-    <a class="vk-contact" href="https://wa.me/79000000000" target="_blank" rel="noopener">
+    <!-- CHANGE-ME: номер только в href (в wa.me — без плюса и скобок).
+         В тексте номер намеренно не показывается — карточка ведёт в чат. -->
+    <a class="vk-contact" href="https://wa.me/79175154012" target="_blank" rel="noopener">
       <span class="vk-contact__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9c0 3 3 6 6 6l1.2-1.6-2-1-1 1a6.6 6.6 0 0 1-2.6-2.6l1-1-1-2L9 9Z"/></svg>
       </span>
       <span class="vk-contact__body">
         <span class="vk-contact__label">WhatsApp</span>
-        <span class="vk-contact__value">+7 (900) 000-00-00</span>
+        <span class="vk-contact__value">Написать в WhatsApp</span>
       </span>
     </a>
   </div>
