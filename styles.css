@@ -533,12 +533,18 @@ a { color: inherit; }
 }
 .simple .btn { margin-top: var(--s8); }
 
-.simple--center .simple__inner {
-  align-items: center; text-align: center; margin: 0 auto;
-}
+/* Выравнивание. Класс на секции ведёт сразу три вещи: сторону текста, сторону
+   колонки в общей ширине и сторону картинки. Иначе центрированный заголовок
+   остался бы висеть над колонкой, прижатой влево. */
+.simple.is-align-left   .simple__inner { align-items: flex-start; text-align: left; }
+.simple.is-align-center .simple__inner { align-items: center;   text-align: center; margin: 0 auto; }
+.simple.is-align-right  .simple__inner { align-items: flex-end; text-align: right;  margin-left: auto; }
 
 /* картинка */
-.simple--image { display: flex; justify-content: center; }
+.simple--image { display: flex; }
+.simple--image.is-align-left   { justify-content: flex-start; }
+.simple--image.is-align-center { justify-content: center; }
+.simple--image.is-align-right  { justify-content: flex-end; }
 .simple__figure {
   margin: 0; display: flex; flex-direction: column; gap: var(--s12);
   max-width: 960px; width: 100%;
@@ -547,9 +553,10 @@ a { color: inherit; }
   width: 100%; height: auto;
   border-radius: var(--radius-md);
 }
-.simple__caption {
-  font: var(--body-sm); color: var(--text-muted); text-align: center;
-}
+.simple__caption { font: var(--body-sm); color: var(--text-muted); }
+.simple--image.is-align-left   .simple__caption { text-align: left; }
+.simple--image.is-align-center .simple__caption { text-align: center; }
+.simple--image.is-align-right  .simple__caption { text-align: right; }
 
 /* картинка с текстом */
 .simple--media {
@@ -568,13 +575,18 @@ a { color: inherit; }
 .simple--media-right .simple__media { order: 2; }
 
 /* цитата */
-.simple--quote { display: flex; justify-content: center; }
+.simple--quote { display: flex; }
+.simple--quote.is-align-left   { justify-content: flex-start; }
+.simple--quote.is-align-center { justify-content: center; }
+.simple--quote.is-align-right  { justify-content: flex-end; }
 .quote { --blk-color: var(--text-primary); }
 .quote {
   margin: 0; max-width: 820px;
   display: flex; flex-direction: column; gap: var(--blk-gap);
-  text-align: center; align-items: center;
 }
+.simple--quote.is-align-left   .quote { text-align: left;   align-items: flex-start; }
+.simple--quote.is-align-center .quote { text-align: center; align-items: center; }
+.simple--quote.is-align-right  .quote { text-align: right;  align-items: flex-end; }
 /* Цитата крупнее обычного текста в 1.6 раза — она держит ту же шкалу,
    что и остальные блоки, просто со своим множителем. */
 .quote__text {
@@ -587,11 +599,6 @@ a { color: inherit; }
 .quote__text::before { content: '«'; }
 .quote__text::after  { content: '»'; }
 .quote__author { font: var(--body); color: var(--text-muted); }
-
-/* призыв к действию */
-.simple--cta .simple__inner {
-  align-items: center; text-align: center; margin: 0 auto;
-}
 
 /* отступ — пустая полоса заданной высоты, нужна ради смены фона и края */
 .spacer { position: relative; }

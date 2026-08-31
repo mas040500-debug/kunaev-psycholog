@@ -71,6 +71,17 @@ const styleClass = (s = {}) =>
     s.gap && s.gap !== 'm' ? `is-gap-${s.gap}` : '',
   ].filter(Boolean).join(' ');
 
+// Выравнивание — тоже ступень, но с оговоркой: у каждого типа блока своя
+// заготовка. Цитата и призыв задуманы по центру, текст — от левого края.
+// Поэтому класс ставится всегда, а «по умолчанию» у каждого своё: иначе
+// блок, которому выравнивание не трогали, поехал бы при первой же правке.
+const ALIGNS = ['left', 'center', 'right'];
+const alignClass = (d = {}, fallback = 'left') => {
+  // d.align — прежний формат блока «Заголовок с текстом», до переезда в style
+  const a = d.style?.align || d.align || fallback;
+  return `is-align-${ALIGNS.includes(a) ? a : fallback}`;
+};
+
 const cls = (...parts) => parts.filter(Boolean).join(' ');
 
 // абзацы: пустая строка в тексте делит его на <p>
@@ -346,9 +357,8 @@ ${torn('bottom', b.torn.bottom)}
 
   text(b) {
     const d = b.data;
-    const align = d.align === 'center' ? 'simple--center' : '';
     return `<!-- ==================== ТЕКСТ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--text', align, styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--text', alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
@@ -360,7 +370,7 @@ ${torn('bottom', b.torn.bottom)}
   image(b) {
     const d = b.data;
     return `<!-- ==================== КАРТИНКА ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--image', styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--image', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <figure class="simple__figure">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -373,7 +383,7 @@ ${torn('bottom', b.torn.bottom)}
     const d = b.data;
     const side = d.imageSide === 'right' ? 'simple--media-right' : '';
     return `<!-- ==================== КАРТИНКА С ТЕКСТОМ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--media', side, styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--media', side, alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__media">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -389,7 +399,7 @@ ${torn('bottom', b.torn.bottom)}
   quote(b) {
     const d = b.data;
     return `<!-- ==================== ЦИТАТА ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--quote', styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--quote', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <blockquote class="quote">
     <p class="quote__text">${esc(d.text)}</p>
@@ -401,7 +411,7 @@ ${torn('bottom', b.torn.bottom)}
   cta(b) {
     const d = b.data;
     return `<!-- ==================== ПРИЗЫВ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--cta', styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', bgClass(b), 'simple simple--cta', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
