@@ -33,6 +33,22 @@ let account = null;   // почта вошедшего, либо null
 
 // ---------------------------------------------------------------- загрузка
 async function boot() {
+  // Сначала вход, потом интерфейс. Раньше редактор показывался всем, кто знает
+  // адрес: испортить он ничего не мог (публикация всё равно требует пароля),
+  // но выглядело это так, будто внутрь пустили постороннего.
+  //
+  // Это не замок, а ширма: страница редактора лежит на статическом хостинге,
+  // и её разметку при желании достанут и без входа. Настоящая защита —
+  // по-прежнему пароль на публикации. Ширма просто убирает случайного зрителя.
+  if (api.configured()) {
+    await restoreSession();
+    if (!account) {
+      $('#loading').textContent = 'Редактор сайта. Нужен вход.';
+      await askLogin({ required: true });
+    }
+    $('#loading').textContent = 'Загружаю страницу…';
+  }
+
   const bust = `?_=${Date.now()}`;   // черновик не должен спорить с кэшем
   const [siteText, headText, tailText, assetsText] = await Promise.all([
     fetch('../content/site.json' + bust).then((r) => r.text()),
@@ -52,6 +68,7 @@ async function boot() {
 
   $('#loading').hidden = true;
   $('#app').hidden = false;
+  $('#bar-actions').hidden = false;
   fillAddMenu();
   renderAll();
   await restoreSession();
@@ -538,7 +555,7 @@ function openPicker(f, onPick) {
   file.onchange = async () => {
     const chosen = file.files[0];
     if (!chosen) return;
-    if (!account && !(await askLogin())) return;
+    if (!account && !(await askLogin({}))) return;
 
     status.textContent = 'Уменьшаю…';
     try {
@@ -591,13 +608,18 @@ $('#download').onclick = () => {
 };
 
 // ---------------------------------------------------------------- вход
-function askLogin() {
+/** @param required  вход при запуске: отменить его нельзя — отменять некуда,
+ *                    за окном пусто. При публикации, наоборот, отмена нужна. */
+function askLogin({ required = false } = {}) {
   return new Promise((resolve) => {
     const dlg = $('#login');
     const form = $('#login-form');
     const err = $('#login-error');
     const submit = $('#login-submit');
     err.hidden = true;
+    $('#login-cancel').hidden = required;
+    // Esc закрывает диалог мимо кнопок — при обязательном входе не даём
+    dlg.oncancel = (e) => { if (required) e.preventDefault(); };
 
     form.onsubmit = async (e) => {
       e.preventDefault();
@@ -616,7 +638,7 @@ function askLogin() {
         submit.textContent = 'Войти';
       }
     };
-    $('#login-cancel').onclick = () => { dlg.close(); resolve(false); };
+    $('#login-cancel').onclick = () => { if (!required) { dlg.close(); resolve(false); } };
     dlg.showModal();
   });
 }
@@ -630,7 +652,7 @@ $('#publish').onclick = async () => {
     );
     return;
   }
-  if (!account && !(await askLogin())) return;
+  if (!account && !(await askLogin({}))) return;
 
   const btn = $('#publish');
   btn.disabled = true;
