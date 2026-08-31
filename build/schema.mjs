@@ -123,6 +123,13 @@ const UNIQUE = {
 // только читаемые на всех трёх фонах, шрифта два, размера три. Свободный
 // выбор дал бы через месяц серый текст на сиреневом и восемь кеглей на
 // одной странице, а чинить это пришлось бы дизайнеру.
+export const ALIGN_FIELD = {
+  key: 'style.align', label: 'Выравнивание', type: 'select', options: [
+    { value: 'left', label: 'По левому краю' },
+    { value: 'center', label: 'По центру' },
+    { value: 'right', label: 'По правому краю' } ],
+};
+
 export const STYLE_FIELDS = [
   { key: 'style.color', label: 'Цвет текста', type: 'select', options: [
     { value: 'default', label: 'Обычный' },
@@ -137,6 +144,7 @@ export const STYLE_FIELDS = [
     { value: 's', label: 'Мелкий' },
     { value: 'm', label: 'Обычный' },
     { value: 'l', label: 'Крупный' } ] },
+  ALIGN_FIELD,
   { key: 'style.gap', label: 'Отступы внутри блока', type: 'select', options: [
     { value: 's', label: 'Плотно' },
     { value: 'm', label: 'Обычно' },
@@ -145,17 +153,20 @@ export const STYLE_FIELDS = [
 
 const STYLE_DEFAULTS = { color: 'default', font: 'base', size: 'm', gap: 'm' };
 
+// Заготовка выравнивания у каждого типа своя: цитата, призыв и картинка
+// задуманы по центру, текст — от левого края. Общее значение сдвинуло бы
+// половину блоков при первом же открытии формы.
+const ALIGN_DEFAULTS = { text: 'left', image: 'center', media: 'left', quote: 'center', cta: 'center' };
+
 // --- простые блоки: их можно добавлять сколько угодно и куда угодно ---------
 export const SIMPLE = {
   text: {
     label: 'Заголовок с текстом',
-    defaults: { eyebrow: '', title: 'Заголовок', body: 'Текст блока.', align: 'left' },
+    defaults: { eyebrow: '', title: 'Заголовок', body: 'Текст блока.' },
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text', hint: 'Можно оставить пустым.' },
       { key: 'title', label: 'Заголовок', type: 'text' },
       { key: 'body', label: 'Текст', type: 'textarea', hint: 'Пустая строка разделяет абзацы.' },
-      { key: 'align', label: 'Выравнивание', type: 'select', options: [
-        { value: 'left', label: 'По левому краю' }, { value: 'center', label: 'По центру' } ] },
     ],
   },
   image: {
@@ -208,17 +219,24 @@ export const SIMPLE = {
   },
 };
 
-// Оформление доступно у блоков с текстом. У «Картинки» и «Отступа» настраивать
-// нечего, а у семи блоков страницы типографика — часть макета, а не контент.
+// Оформление целиком доступно у блоков с текстом. «Картинке» из него нужно
+// только выравнивание: красить и укрупнять ей нечего, кроме подписи, и
+// показывать ради этого четыре бесполезные ступени — обманывать. У «Отступа»
+// нет и этого. У семи блоков страницы типографика — часть макета, а не контент.
 const STYLED = ['text', 'media', 'quote', 'cta'];
+const ALIGNABLE = ['image'];
 
 export const SCHEMA = {
   ...Object.fromEntries(Object.entries(UNIQUE).map(([t, d]) => [t, { ...d, unique: true }])),
   ...Object.fromEntries(Object.entries(SIMPLE).map(([t, d]) => [t, {
     ...d,
     unique: false,
-    fields: STYLED.includes(t) ? [...d.fields, ...STYLE_FIELDS] : d.fields,
-    defaults: STYLED.includes(t) ? { ...d.defaults, style: { ...STYLE_DEFAULTS } } : d.defaults,
+    fields: STYLED.includes(t) ? [...d.fields, ...STYLE_FIELDS]
+      : ALIGNABLE.includes(t) ? [...d.fields, ALIGN_FIELD]
+      : d.fields,
+    defaults: STYLED.includes(t) ? { ...d.defaults, style: { ...STYLE_DEFAULTS, align: ALIGN_DEFAULTS[t] } }
+      : ALIGNABLE.includes(t) ? { ...d.defaults, style: { align: ALIGN_DEFAULTS[t] } }
+      : d.defaults,
   }])),
 };
 
