@@ -97,7 +97,7 @@ const templates = {
   hero(b) {
     const d = b.data;
     return `<!-- ==================== ГЕРОЙ ==================== -->
-<section class="section section--surface hero"${anchor(b)}>
+<section class="${cls('section', 'section--surface hero', alignClass(d, 'left'))}"${anchor(b)}>
   <div class="hero__inner">
     <div class="hero__text">
       <p class="eyebrow">${esc(d.eyebrow)}</p>
@@ -146,7 +146,7 @@ ${c.items.map((it) => `        <li>${esc(it)}</li>`).join('\n')}
     </article>`).join('\n\n');
 
     return `<!-- ==================== НАПРАВЛЕНИЯ ==================== -->
-<section class="section section--second dir"${anchor(b)}>
+<section class="${cls('section', 'section--second dir', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <p class="eyebrow">${esc(d.eyebrow)}</p>
 
@@ -169,7 +169,7 @@ ${torn('bottom', b.torn.bottom)}
   about(b) {
     const d = b.data;
     return `<!-- ==================== ОБО МНЕ ==================== -->
-<section class="section section--surface about"${anchor(b)}>
+<section class="${cls('section', 'section--surface about', alignClass(d, 'left'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <p class="eyebrow">${esc(d.eyebrow)}</p>
 
@@ -230,7 +230,7 @@ ${torn('bottom', b.torn.bottom)}
     }).join('\n\n');
 
     return `<!-- ==================== ПОДХОД ==================== -->
-<section class="section section--surface appr"${anchor(b)}>
+<section class="${cls('section', 'section--surface appr', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="appr__head">
     <p class="eyebrow">${esc(d.eyebrow)}</p>
@@ -258,7 +258,7 @@ ${torn('bottom', b.torn.bottom)}
     // до того, как отработает скрипт карусели
     const first = d.docs[0];
     return `<!-- ==================== ОБРАЗОВАНИЕ ==================== -->
-<section class="edu"${anchor(b)}>
+<section class="${cls('edu', alignClass(d, 'left'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <!-- Папка собрана вёрсткой, а не картинкой: так бумажка с подписью
        масштабируется вместе с ней на всех экранах. Геометрия — из макета,
@@ -335,7 +335,7 @@ ${torn('bottom', b.torn.bottom)}
     }).join('\n\n');
 
     return `<!-- ==================== КОНТАКТЫ ==================== -->
-<section class="section section--surface contacts"${anchor(b)}>
+<section class="${cls('section', 'section--surface contacts', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="contacts__head">
     <p class="eyebrow">${esc(d.eyebrow)}</p>

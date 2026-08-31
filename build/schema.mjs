@@ -226,8 +226,18 @@ export const SIMPLE = {
 const STYLED = ['text', 'media', 'quote', 'cta'];
 const ALIGNABLE = ['image'];
 
+// Выравнивание доступно и у блоков макета — но только там, где ему есть что
+// двигать: заголовок с текстом рядом с картинкой или над карточками. У бегущей
+// строки выравнивать нечего, она едет через весь экран.
+const UNIQUE_ALIGN = { hero: 'left', cards: 'center', about: 'left', principles: 'center', education: 'left', contacts: 'center' };
+
 export const SCHEMA = {
-  ...Object.fromEntries(Object.entries(UNIQUE).map(([t, d]) => [t, { ...d, unique: true }])),
+  ...Object.fromEntries(Object.entries(UNIQUE).map(([t, d]) => [t, {
+    ...d,
+    unique: true,
+    fields: UNIQUE_ALIGN[t] ? [...d.fields, ALIGN_FIELD] : d.fields,
+    defaults: UNIQUE_ALIGN[t] ? { ...(d.defaults || {}), style: { align: UNIQUE_ALIGN[t] } } : d.defaults,
+  }])),
   ...Object.fromEntries(Object.entries(SIMPLE).map(([t, d]) => [t, {
     ...d,
     unique: false,
