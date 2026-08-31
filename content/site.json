@@ -44,7 +44,7 @@
     {
       "id": "hero",
       "type": "hero",
-      "visible": false,
+      "visible": true,
       "bg": "surface",
       "data": {
         "eyebrow": "Мой приоритет",
