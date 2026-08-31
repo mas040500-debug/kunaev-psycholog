@@ -43,6 +43,8 @@ jobs:
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html content/assets.json
+          # robots.txt и карта сайта тоже собираются: в карте стоит дата
+          # последней правки, и без них она застыла бы на дне первой сборки
+          git add index.html content/assets.json robots.txt sitemap.xml
           git commit -m "Пересобрать страницу после правки контента"
           git push
