@@ -279,6 +279,8 @@ function fieldFor(f, data) {
     return labelled(f.label, t, f.hint || 'По одному пункту на строку.');
   }
 
+  if (f.type === 'target') return targetField(f, data, value);
+
   if (f.type === 'image') return imageField(f, data, value);
 
   if (f.type === 'list') return listField(f, data, value);
@@ -288,6 +290,69 @@ function fieldFor(f, data) {
   i.value = value ?? '';
   i.oninput = () => { setAt(data, f.key, i.value); touched({ keepFocus: true }); };
   return labelled(f.label, i, f.hint);
+}
+
+/** «Куда ведёт»: список блоков этой страницы плюс «своя ссылка».
+ *  Раньше здесь было обычное поле ввода, и чтобы завести пункт меню, нужно
+ *  было знать, что писать «#about» — а откуда взялось это слово, не видно
+ *  нигде. Теперь якорь выбирается из блоков, которые есть на странице. */
+function blockTitle(b) {
+  const label = SCHEMA[b.type]?.label || b.type;
+  const own = String(b.data?.title || b.data?.titleTop || b.data?.label || '').trim().slice(0, 40);
+  // «Принципы работы: Принципы работы» — заголовок блока часто совпадает с
+  // названием типа, и повторять его дважды ни к чему
+  if (!own || own.toLowerCase() === label.toLowerCase()) return label;
+  return `${label}: ${own}`;
+}
+
+function targetField(f, data, value) {
+  const v = String(value ?? '');
+  const targets = (site?.blocks || []).map((b) => ({ value: '#' + (b.anchor || b.id), label: blockTitle(b) }));
+  const known = targets.some((t) => t.value === v);
+  const OWN = 'свой';
+
+  const wrap = el('div');
+  const box = el('div');
+
+  const draw = (mode) => {
+    box.textContent = '';
+    if (mode === OWN) {
+      const i = el('input');
+      i.type = 'text';
+      i.value = known ? '' : v;
+      i.placeholder = 'https://t.me/… или tel:+7…';
+      i.oninput = () => { setAt(data, f.key, i.value); touched({ keepFocus: true }); };
+      box.append(labelled(f.label, i, 'Полная ссылка: сайт, мессенджер или телефон.'));
+    } else {
+      box.append(selectField(f.label, targets, known ? v : targets[0]?.value,
+        (x) => { setAt(data, f.key, x); touched(); },
+        'Нажатие прокрутит страницу к этому блоку.'));
+    }
+  };
+
+  const startMode = known || v === '' ? 'block' : OWN;
+
+  const mode = el('div', 'field');
+  const sel = el('select');
+  [{ value: 'block', label: 'Блок на этой странице' }, { value: OWN, label: 'Своя ссылка' }]
+    .forEach((o) => {
+      const opt = el('option', null, o.label);
+      opt.value = o.value;
+      if (o.value === startMode) opt.selected = true;
+      sel.append(opt);
+    });
+  // Переключатель НЕ вызывает touched: это выбор способа ввода, а не правка
+  // контента. Перерисовка формы здесь возвращала поле обратно в режим
+  // «блок» — по пустому значению режим было не отличить от нового пункта.
+  sel.onchange = () => {
+    setAt(data, f.key, sel.value === OWN ? '' : (targets[0]?.value || ''));
+    draw(sel.value);
+  };
+  mode.append(el('label', 'field__label', 'Тип ссылки'), sel);
+
+  draw(startMode);
+  wrap.append(mode, box);
+  return wrap;
 }
 
 function imageField(f, data, value) {
