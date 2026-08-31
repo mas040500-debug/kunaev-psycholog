@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://mas040500-debug.github.io/kunaev-psycholog/sitemap.xml
+Sitemap: https://vladimirkunaev.ru/sitemap.xml
