@@ -150,6 +150,27 @@
     prev.addEventListener('click', function () { show(i - 1); });
     next.addEventListener('click', function () { show(i + 1); });
 
+    // Свайп по папке. Люди на телефоне первым делом пробуют листать пальцем,
+    // и без этого карусель выглядит сломанной. Порог в 40px — чтобы обычная
+    // прокрутка страницы пальцем по документу не считалась листанием.
+    var art = document.querySelector('.edu__art');
+    if (art) {
+      var x0 = null, y0 = null;
+      art.addEventListener('touchstart', function (e) {
+        x0 = e.changedTouches[0].clientX;
+        y0 = e.changedTouches[0].clientY;
+      }, { passive: true });
+      art.addEventListener('touchend', function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0;
+        var dy = e.changedTouches[0].clientY - y0;
+        // горизонтальное движение должно быть заметно длиннее вертикального,
+        // иначе это прокрутка, а не свайп
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) show(dx < 0 ? i + 1 : i - 1);
+        x0 = y0 = null;
+      }, { passive: true });
+    }
+
     // стрелки на клавиатуре — когда фокус внутри блока
     document.querySelector('.edu').addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft')  { show(i - 1); }

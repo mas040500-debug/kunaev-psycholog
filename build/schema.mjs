@@ -147,6 +147,11 @@ export const STYLE_FIELDS = [
     { value: 's', label: 'Мелкий' },
     { value: 'm', label: 'Обычный' },
     { value: 'l', label: 'Крупный' } ] },
+  { key: 'style.weight', label: 'Начертание', type: 'select', options: [
+    { value: 'normal', label: 'Обычное' },
+    { value: 'bold', label: 'Жирный текст' },
+    { value: 'light', label: 'Лёгкий заголовок' } ],
+    hint: 'Жирный — для текста, лёгкий — для заголовка. Оба сразу делать не стоит: пропадёт разница между ними.' },
   ALIGN_FIELD,
   { key: 'style.gap', label: 'Отступы внутри блока', type: 'select', options: [
     { value: 's', label: 'Плотно' },
@@ -154,7 +159,7 @@ export const STYLE_FIELDS = [
     { value: 'l', label: 'Просторно' } ] },
 ];
 
-const STYLE_DEFAULTS = { color: 'default', font: 'base', size: 'm', gap: 'm' };
+const STYLE_DEFAULTS = { color: 'default', font: 'base', size: 'm', gap: 'm', weight: 'normal' };
 
 // Заготовка выравнивания у каждого типа своя: цитата, призыв и картинка
 // задуманы по центру, текст — от левого края. Общее значение сдвинуло бы
@@ -259,6 +264,28 @@ export const addableTypes = Object.keys(SIMPLE);
 // Меню одно на всю страницу: из него собираются и верхнее меню, и мобильная
 // шторка, и подвал. Поэтому оно правится в одном месте, а не в трёх.
 export const SITE_PARTS = {
+  theme: {
+    label: 'Оформление сайта',
+    at: 'theme',
+    fields: [
+      { key: 'textSize', label: 'Размер текста', type: 'select', options: [
+        { value: 'm', label: 'Обычный' },
+        { value: 'l', label: 'Крупнее' } ],
+        hint: 'Меняется основной текст, сильнее всего на телефоне. Заголовки не трогаются: они и так крупные, а от роста начинают переноситься.' },
+      { key: 'script', label: 'Рукописный шрифт', type: 'select', options: [
+        { value: 'decor', label: 'Только как украшение' },
+        { value: 'full', label: 'Везде, как задумано' } ],
+        hint: '«Как украшение» — рукописный остаётся на водяном знаке и на подписи к фотографии, а в строке первого экрана и на бирке диплома текст обычный: там его нужно прочитать.' },
+      { key: 'heroAccent', label: 'Выделение в первом экране', type: 'select', options: [
+        { value: 'accent', label: 'Синим' },
+        { value: 'ink', label: 'Чёрным' } ] },
+      { key: 'floatingContact', label: 'Кнопка связи на телефоне', type: 'select', options: [
+        { value: 'on', label: 'Показывать' },
+        { value: 'off', label: 'Не показывать' } ],
+        hint: 'Круглая кнопка в углу экрана, которая всегда на виду и ведёт к контактам. Только на телефоне: на компьютере кнопка есть в шапке.' },
+    ],
+    hint: 'Общие настройки для всей страницы. Ступени подобраны заранее — что ни выберите, вёрстка не поедет.',
+  },
   meta: {
     label: 'Сайт в поиске',
     at: 'meta',
