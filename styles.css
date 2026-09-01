@@ -157,6 +157,79 @@
   }
 }
 
+/* ============ ОФОРМЛЕНИЕ, УПРАВЛЯЕМОЕ ИЗ АДМИНКИ ============
+   Три ступени, которые владелец сайта переключает сам. Значения по-прежнему
+   заданы здесь: меняется выбранная ступень, а не произвольное число.
+
+   is-script-decor — рукописный шрифт остаётся только там, где он украшение:
+   водяной знак «комфорт» и подпись на фотографии. В строке героя и на бирке
+   диплома он читался плохо (в «МГУ» буквы слипались), а это как раз места,
+   где текст нужно прочитать, а не разглядывать.
+
+   is-text-l — крупнее основной текст. Сильнее всего на телефоне: именно там
+   читатели жаловались на мелкий кегль. Заголовки не трогаем — они и так
+   крупные, и от их роста строки начинают переноситься.
+
+   is-hero-ink — выделение в первом экране не синим, а чёрным. */
+
+/* Обычный шрифт шире рукописного, и на десктопе строка «комфортных условий»
+   переставала помещаться в колонку — заголовок разъезжался на четыре строки
+   вместо трёх. Поэтому размер тут свой, подобранный по самой длинной фразе,
+   и перенос запрещён. */
+.is-script-decor .hero__script {
+  font: 700 clamp(28px, 3.9vw, 56px)/1.15 var(--font);
+  color: var(--text-accent);
+  white-space: nowrap;
+  display: inline-block;
+}
+.is-hero-ink .hero__script { color: var(--text-primary); }
+
+.is-script-decor .edu__label-script {
+  font: 700 2.6cqw/1.2 var(--font);
+}
+
+@media (max-width: 767px) {
+  .is-text-l {
+    --body:    400 17px/26px var(--font);
+    --body-sm: 400 15px/22px var(--font);
+    --body-lg: 400 18px/28px var(--font);
+    --h4:      700 19px/28px var(--font);
+    --caption: 700 16px/22px var(--font);
+    --button:  700 17px/24px var(--font);
+  }
+}
+@media (min-width: 768px) {
+  .is-text-l {
+    --body:    400 17px/26px var(--font);
+    --body-sm: 400 15px/22px var(--font);
+    --body-lg: 400 19px/28px var(--font);
+  }
+}
+
+/* ---------- плавающая кнопка к контактам ----------
+   Только на телефоне: на десктопе кнопка и так стоит в шапке, а вторая была
+   бы лишней. Маленькая и одна — рядом с бургером экран не должен состоять
+   из кнопок. Отступ снизу учитывает панель жестов на телефонах. */
+.floating-cta { display: none; }
+
+@media (max-width: 767px) {
+  .floating-cta {
+    display: grid; place-items: center;
+    position: fixed; z-index: 40;
+    right: var(--s16); bottom: calc(var(--s16) + env(safe-area-inset-bottom, 0px));
+    width: 52px; height: 52px;
+    border-radius: var(--radius-pill);
+    background: var(--action-default);
+    color: var(--text-on-accent);
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .floating-cta:active { transform: scale(.94); }
+  .floating-cta svg { width: 24px; height: 24px; fill: currentColor; }
+  .floating-cta:focus-visible { outline: var(--bw-emphasis) solid var(--border-focus); outline-offset: 3px; }
+}
+
 /* ============================================================
    БАЗА
    ============================================================ */
@@ -517,6 +590,9 @@ a { color: inherit; }
    с поправкой, а не «просто другим шрифтом» — иначе выбор шрифта менял бы
    ещё и видимый размер. */
 .simple.is-font-script { --blk-font: var(--font-script); --blk-scale: 1.55; --blk-lh: 1.1; }
+.simple.is-weight-bold .simple__body,
+.simple.is-weight-bold .quote__author { font-weight: 700; }
+.simple.is-weight-light .simple__title { font-weight: 400; }
 .simple.is-size-s { --blk-base: 16px; }
 .simple.is-size-l { --blk-base: 24px; }
 .simple.is-gap-s { --blk-gap: var(--s8);  --blk-gap-lg: var(--s32); }
@@ -720,12 +796,20 @@ a { color: inherit; }
    ============================================================ */
 .edu {
   background: var(--bg-page);
-  display: flex; align-items: center; gap: var(--s48);
+  /* сетка, а не строка флексбокса: стрелки лежат отдельным элементом секции,
+     и только сетка позволяет им стоять под текстом на десктопе и сразу под
+     папкой на телефоне — без дублирования кнопок в разметке */
+  display: grid; gap: 0 var(--s48);
+  grid-template-columns: minmax(0, 690px) minmax(0, 1fr);
+  grid-template-areas: 'art text' 'art nav';
+  align-content: center;
   /* слева поля нет: папка намеренно свисает за край, как в макете */
   padding: var(--section-py) var(--margin) var(--section-py) 0;
   position: relative;
 }
-.edu__art { flex: 0 1 690px; min-width: 0; }
+.edu__art  { grid-area: art; align-self: center; min-width: 0; }
+.edu__text { grid-area: text; align-self: end; }
+.edu__nav  { grid-area: nav; align-self: start; }
 
 /* ---------- папка с документами ----------
    Собрана вёрсткой, а не картинкой: скан внутри меняется, а бумажка
@@ -852,8 +936,18 @@ a { color: inherit; }
 }
 
 @media (max-width: 1024px) {
-  .edu { flex-direction: column; align-items: stretch; gap: var(--s32); }
-  .edu__art { flex: none; max-width: 100%; }
+  .edu {
+    grid-template-columns: minmax(0, 1fr);
+    /* стрелки идут сразу под папкой: в колонке они оказывались ниже всего
+       текста, за краем экрана, и листалку просто не находили */
+    grid-template-areas: 'art' 'nav' 'text';
+    gap: var(--s24) 0;
+  }
+  .edu__art  { max-width: 100%; }
+  .edu__text { align-self: start; }
+  /* у секции нет левого поля — папка намеренно свисает за край, поэтому
+     отступ стрелкам задаём отдельно, иначе левая упирается в край экрана */
+  .edu__nav  { padding-left: var(--margin); }
   .edu__text { padding-left: var(--margin); }
 }
 @media (max-width: 767px) {

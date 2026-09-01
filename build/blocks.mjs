@@ -75,6 +75,7 @@ const styleClass = (s = {}) =>
     s.font === 'script' ? 'is-font-script' : '',
     s.size && s.size !== 'm' ? `is-size-${s.size}` : '',
     s.gap && s.gap !== 'm' ? `is-gap-${s.gap}` : '',
+    s.weight && s.weight !== 'normal' ? `is-weight-${s.weight}` : '',
   ].filter(Boolean).join(' ');
 
 // Выравнивание — тоже ступень, но с оговоркой: у каждого типа блока своя
@@ -309,15 +310,19 @@ ${torn('top', b.torn.top)}
     <p class="eyebrow">${esc(d.eyebrow)}</p>
     <h2 class="edu__title">${esc(d.title)}</h2>
     <p class="edu__body">${esc(d.body)}</p>
+  </div>
 
-    <div class="edu__nav">
-      <button class="edu__arrow" type="button" id="edu-prev" aria-label="Предыдущий документ">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <button class="edu__arrow" type="button" id="edu-next" aria-label="Следующий документ">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
+  <!-- Стрелки — отдельный элемент секции, а не часть текстовой колонки:
+       на телефоне блок становится колонкой, и стрелки должны идти сразу
+       под папкой. Внутри текста они уезжали за нижний край экрана, и люди
+       просто не находили, чем листать. Раскладку задаёт сетка ниже. -->
+  <div class="edu__nav">
+    <button class="edu__arrow" type="button" id="edu-prev" aria-label="Предыдущий документ">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button class="edu__arrow" type="button" id="edu-next" aria-label="Следующий документ">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
