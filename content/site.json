@@ -72,7 +72,10 @@
           "signature": "Владимир Кунаев",
           "caption": "психолог"
         },
-        "title": "Создание <span class=\"t-color-accent\">комфортных условий</span> для вашей терапии"
+        "title": "Создание <span class=\"t-color-accent\">комфортных условий</span> для вашей терапии",
+        "style": {
+          "align": "center"
+        }
       },
       "tearInto": "next"
     },
