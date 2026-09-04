@@ -148,7 +148,7 @@ const templates = {
 <section class="${cls('section', 'section--surface hero', alignClass(d, 'left'))}"${anchor(b)}>
   <div class="hero__inner">
     <div class="hero__text">
-      <p class="eyebrow">${esc(d.eyebrow)}</p>
+      <p class="eyebrow">${rich(d.eyebrow)}</p>
       <!-- Заголовок — один текст, а не три строки: сколько строк получится,
            решает ширина экрана, а не вёрстка. Выделения внутри задаются
            разметкой из редактора. -->
@@ -186,7 +186,7 @@ ${torn('bottom', b.torn.bottom)}
       <svg class="card__bg" viewBox="0 0 378 210" preserveAspectRatio="none" aria-hidden="true">
         <path fill="#FFFFFF" d="${CARD_SHAPES[i % CARD_SHAPES.length]}"/>
       </svg>
-      <h3 class="card__title">${esc(c.title)}</h3>
+      <h3 class="card__title">${rich(c.title)}</h3>
       <ul class="card__list">
 ${c.items.map((it) => `        <li>${esc(it)}</li>`).join('\n')}
       </ul>
@@ -195,7 +195,7 @@ ${c.items.map((it) => `        <li>${esc(it)}</li>`).join('\n')}
     return `<!-- ==================== НАПРАВЛЕНИЯ ==================== -->
 <section class="${cls('section', 'section--second dir', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
-  <p class="eyebrow">${esc(d.eyebrow)}</p>
+  <p class="eyebrow">${rich(d.eyebrow)}</p>
 
   <h2 class="dir__title">${rich(d.title)}</h2>
 
@@ -215,7 +215,7 @@ ${torn('bottom', b.torn.bottom)}
     return `<!-- ==================== ОБО МНЕ ==================== -->
 <section class="${cls('section', 'section--surface about', alignClass(d, 'left'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
-  <p class="eyebrow">${esc(d.eyebrow)}</p>
+  <p class="eyebrow">${rich(d.eyebrow)}</p>
 
   <div class="about__stage">
     <span class="about__watermark" aria-hidden="true">${esc(d.watermark)}</span>
@@ -226,7 +226,7 @@ ${torn('top', b.torn.top)}
     <h2 class="about__lead">${rich(d.lead)}</h2>
     <div class="about__col">
       <p class="about__body">${rich(d.body)}</p>
-      <p class="about__tags">${esc(d.tags)}</p>
+      <p class="about__tags">${rich(d.tags)}</p>
     </div>
   </div>
 ${torn('bottom', b.torn.bottom)}
@@ -264,7 +264,7 @@ ${torn('bottom', b.torn.bottom)}
         <path d="${s.d}"/>
       </svg>
       <div class="note__body">
-        <h3 class="note__title">${esc(n.title)}</h3>
+        <h3 class="note__title">${rich(n.title)}</h3>
         <p class="note__text">${esc(n.text)}</p>
       </div>
     </article>`;
@@ -274,7 +274,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', 'section--surface appr', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="appr__head">
-    <p class="eyebrow">${esc(d.eyebrow)}</p>
+    <p class="eyebrow">${rich(d.eyebrow)}</p>
     <h2 class="appr__title">${rich(d.title)}</h2>
     <p class="appr__sub">${rich(d.sub)}</p>
   </div>
@@ -341,7 +341,7 @@ ${torn('top', b.torn.top)}
   </div>
 
   <div class="edu__text">
-    <p class="eyebrow">${esc(d.eyebrow)}</p>
+    <p class="eyebrow">${rich(d.eyebrow)}</p>
     <h2 class="edu__title">${rich(d.title)}</h2>
     <p class="edu__body">${rich(d.body)}</p>
   </div>
@@ -373,8 +373,8 @@ ${torn('bottom', b.torn.bottom)}
         ${CONTACT_ICONS[c.icon]}
       </span>
       <span class="contact__body">
-        <span class="contact__label">${esc(c.label)}</span>
-        <span class="contact__value">${esc(c.value)}</span>
+        <span class="contact__label">${rich(c.label)}</span>
+        <span class="contact__value">${rich(c.value)}</span>
       </span>
     </a>`;
     }).join('\n\n');
@@ -383,7 +383,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', 'section--surface contacts', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="contacts__head">
-    <p class="eyebrow">${esc(d.eyebrow)}</p>
+    <p class="eyebrow">${rich(d.eyebrow)}</p>
     <h2 class="contacts__title">${rich(d.title)}</h2>
     <p class="contacts__sub">${rich(d.sub)}</p>
   </div>
@@ -406,7 +406,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', bgClass(b), 'simple simple--text', alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
-${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+${d.eyebrow ? `      <p class="eyebrow">${rich(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -419,7 +419,7 @@ ${torn('bottom', b.torn.bottom)}
 ${torn('top', b.torn.top)}
   <figure class="simple__figure">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
-${d.caption ? `    <figcaption class="simple__caption">${esc(d.caption)}</figcaption>\n` : ''}  </figure>
+${d.caption ? `    <figcaption class="simple__caption">${rich(d.caption)}</figcaption>\n` : ''}  </figure>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
   },
@@ -435,7 +435,7 @@ ${torn('top', b.torn.top)}
   </div>
 
   <div class="simple__inner">
-${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+${d.eyebrow ? `      <p class="eyebrow">${rich(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -448,7 +448,7 @@ ${torn('bottom', b.torn.bottom)}
 ${torn('top', b.torn.top)}
   <blockquote class="quote">
     <p class="quote__text">${rich(d.text)}</p>
-${d.author ? `    <footer class="quote__author">${esc(d.author)}</footer>\n` : ''}  </blockquote>
+${d.author ? `    <footer class="quote__author">${rich(d.author)}</footer>\n` : ''}  </blockquote>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
   },
@@ -488,8 +488,8 @@ export function renderHeader(header = {}, nav = []) {
     <a class="header__brand" href="#top">
       <img class="header__avatar" src="${esc(header.avatar)}" alt="" width="48" height="48">
       <span class="header__ident">
-        <span class="header__name">${esc(header.name)}</span>
-        <span class="header__role">${esc(header.role)}</span>
+        <span class="header__name">${rich(header.name)}</span>
+        <span class="header__role">${rich(header.role)}</span>
       </span>
     </a>
 
@@ -517,8 +517,8 @@ export function renderFooter(footer = {}, nav = []) {
 <footer class="footer">
   <div class="footer__top">
     <div class="footer__ident">
-      <span class="footer__name">${esc(footer.name)}</span>
-      <span class="footer__role">${esc(footer.role)}</span>
+      <span class="footer__name">${rich(footer.name)}</span>
+      <span class="footer__role">${rich(footer.role)}</span>
     </div>
 
     <nav class="footer__nav" aria-label="Навигация в подвале">
@@ -529,7 +529,7 @@ ${nav.map((n) => `      <a href="${href(n.href)}">${esc(n.label)}</a>`).join('\n
   <hr class="footer__rule">
 
   <div class="footer__legal">
-    <span>${esc(footer.copyright)}</span>
+    <span>${rich(footer.copyright)}</span>
     <a href="${href(footer.policyHref)}">${esc(footer.policyLabel)}</a>
   </div>
 </footer>
