@@ -22,7 +22,7 @@ const UNIQUE = {
   hero: {
     label: 'Первый экран',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich',
         hint: 'Одна фраза. На сколько строк она ляжет, решает ширина экрана. Выделите кусок и задайте ему цвет, размер или шрифт.' },
       { key: 'cta.label', label: 'Надпись на кнопке', type: 'text' },
@@ -37,10 +37,10 @@ const UNIQUE = {
   cards: {
     label: 'Направления',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'cards', label: 'Карточки', type: 'list', itemLabel: 'Карточка', of: [
-        { key: 'title', label: 'Название', type: 'text' },
+        { key: 'title', label: 'Название', type: 'rich' },
         { key: 'items', label: 'Пункты', type: 'lines' },
       ] },
     ],
@@ -49,13 +49,13 @@ const UNIQUE = {
   about: {
     label: 'Обо мне',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'watermark', label: 'Слово за фотографией', type: 'text' },
       { key: 'photo.src', label: 'Фотография', type: 'image' },
       { key: 'photo.alt', label: 'Описание фотографии', type: 'text' },
       { key: 'lead', label: 'Крупная фраза', type: 'rich' },
       { key: 'body', label: 'Текст', type: 'rich' },
-      { key: 'tags', label: 'Строка через дробь', type: 'text' },
+      { key: 'tags', label: 'Строка через дробь', type: 'rich' },
     ],
   },
 
@@ -70,11 +70,11 @@ const UNIQUE = {
   principles: {
     label: 'Принципы работы',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'sub', label: 'Подзаголовок', type: 'rich' },
       { key: 'notes', label: 'Записки', type: 'list', itemLabel: 'Записка', max: 3, of: [
-        { key: 'title', label: 'Название', type: 'text' },
+        { key: 'title', label: 'Название', type: 'rich' },
         { key: 'text', label: 'Текст', type: 'rich' },
       ] },
     ],
@@ -83,7 +83,7 @@ const UNIQUE = {
   education: {
     label: 'Образование',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'body', label: 'Текст', type: 'rich' },
       { key: 'docs', label: 'Документы', type: 'list', itemLabel: 'Документ', of: [
@@ -98,7 +98,7 @@ const UNIQUE = {
   contacts: {
     label: 'Контакты',
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'sub', label: 'Подзаголовок', type: 'rich' },
       { key: 'items', label: 'Способы связи', type: 'list', itemLabel: 'Способ', of: [
@@ -109,8 +109,8 @@ const UNIQUE = {
           { value: 'mail', label: 'Почта' },
           { value: 'vk', label: 'ВКонтакте' },
           { value: 'site', label: 'Другая ссылка' } ] },
-        { key: 'label', label: 'Название', type: 'text' },
-        { key: 'value', label: 'Что показывать', type: 'text' },
+        { key: 'label', label: 'Название', type: 'rich' },
+        { key: 'value', label: 'Что показывать', type: 'rich' },
         { key: 'href', label: 'Ссылка', type: 'link',
           hint: 'Телефон — tel:+79991234567, почта — mailto:имя@почта.ру, остальное — полный адрес со https://. Номер в wa.me пишется без плюса и скобок.' },
       ] },
@@ -168,7 +168,7 @@ export const SIMPLE = {
     label: 'Заголовок с текстом',
     defaults: { eyebrow: '', title: 'Заголовок', body: 'Текст блока.' },
     fields: [
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text', hint: 'Можно оставить пустым.' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich', hint: 'Можно оставить пустым.' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'body', label: 'Текст', type: 'rich', hint: 'Пустая строка разделяет абзацы.' },
     ],
@@ -179,7 +179,7 @@ export const SIMPLE = {
     fields: [
       { key: 'src', label: 'Картинка', type: 'image', hint: 'Лучше шириной от 1200px.' },
       { key: 'alt', label: 'Описание', type: 'text', hint: 'Что на картинке. Читают незрячие и поисковики.' },
-      { key: 'caption', label: 'Подпись', type: 'text' },
+      { key: 'caption', label: 'Подпись', type: 'rich' },
     ],
   },
   media: {
@@ -190,7 +190,7 @@ export const SIMPLE = {
       { key: 'alt', label: 'Описание картинки', type: 'text' },
       { key: 'imageSide', label: 'Картинка', type: 'select', options: [
         { value: 'left', label: 'Слева' }, { value: 'right', label: 'Справа' } ] },
-      { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
+      { key: 'eyebrow', label: 'Надзаголовок', type: 'rich' },
       { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'body', label: 'Текст', type: 'rich' },
     ],
@@ -200,7 +200,7 @@ export const SIMPLE = {
     defaults: { text: 'Текст цитаты.', author: '' },
     fields: [
       { key: 'text', label: 'Цитата', type: 'rich', hint: 'Кавычки добавятся сами.' },
-      { key: 'author', label: 'Автор', type: 'text' },
+      { key: 'author', label: 'Автор', type: 'rich' },
     ],
   },
   cta: {
@@ -281,8 +281,8 @@ export const SITE_PARTS = {
     label: 'Шапка',
     at: 'header',
     fields: [
-      { key: 'name', label: 'Имя', type: 'text' },
-      { key: 'role', label: 'Подпись под именем', type: 'text' },
+      { key: 'name', label: 'Имя', type: 'rich' },
+      { key: 'role', label: 'Подпись под именем', type: 'rich' },
       { key: 'avatar', label: 'Фото в кружке', type: 'image' },
       { key: 'cta.label', label: 'Надпись на кнопке', type: 'text' },
       { key: 'cta.href', label: 'Куда ведёт кнопка', type: 'target' },
@@ -296,7 +296,7 @@ export const SITE_PARTS = {
     label: 'Меню',
     at: 'nav',
     asList: { key: '', label: 'Пункты меню', type: 'list', itemLabel: 'Пункт', of: [
-      { key: 'label', label: 'Название', type: 'text' },
+      { key: 'label', label: 'Название', type: 'rich' },
       { key: 'href', label: 'Куда ведёт', type: 'target' },
     ] },
     hint: 'Эти пункты выводятся и в шапке, и в меню-гамбургере на телефоне, и в подвале. «Куда ведёт» — выбор блока на этой же странице: нажатие прокручивает к нему.',
@@ -305,9 +305,9 @@ export const SITE_PARTS = {
     label: 'Подвал',
     at: 'footer',
     fields: [
-      { key: 'name', label: 'Имя', type: 'text' },
-      { key: 'role', label: 'Подпись под именем', type: 'text' },
-      { key: 'copyright', label: 'Строка об авторстве', type: 'text' },
+      { key: 'name', label: 'Имя', type: 'rich' },
+      { key: 'role', label: 'Подпись под именем', type: 'rich' },
+      { key: 'copyright', label: 'Строка об авторстве', type: 'rich' },
       { key: 'policyLabel', label: 'Название ссылки на политику', type: 'text' },
       { key: 'policyHref', label: 'Ссылка на политику', type: 'link' },
     ],
