@@ -143,16 +143,16 @@ const GAP_OPTIONS_TEXT = [
 ];
 
 export const SPACE_FIELDS = [
-  { key: 'space.desktop', label: 'Отступы: компьютер', type: 'select', options: GAP_OPTIONS },
-  { key: 'space.tablet', label: 'Отступы: планшет', type: 'select', options: GAP_OPTIONS },
-  { key: 'space.mobile', label: 'Отступы: телефон', type: 'select', options: GAP_OPTIONS,
+  { key: 'space.desktop', label: 'Отступы: компьютер', type: 'select', options: GAP_OPTIONS, default: 'm' },
+  { key: 'space.tablet', label: 'Отступы: планшет', type: 'select', options: GAP_OPTIONS, default: 'm' },
+  { key: 'space.mobile', label: 'Отступы: телефон', type: 'select', options: GAP_OPTIONS, default: 'm',
     hint: 'Расстояния между элементами внутри блока. У каждого экрана своё значение — проверяйте кнопками «Компьютер / Планшет / Телефон» справа.' },
 ];
 
 export const TEXT_SIZE_FIELDS = [
-  { key: 'textSize.desktop', label: 'Размер текста: компьютер', type: 'select', options: GAP_OPTIONS_TEXT },
-  { key: 'textSize.tablet', label: 'Размер текста: планшет', type: 'select', options: GAP_OPTIONS_TEXT },
-  { key: 'textSize.mobile', label: 'Размер текста: телефон', type: 'select', options: GAP_OPTIONS_TEXT,
+  { key: 'textSize.desktop', label: 'Размер текста: компьютер', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm' },
+  { key: 'textSize.tablet', label: 'Размер текста: планшет', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm' },
+  { key: 'textSize.mobile', label: 'Размер текста: телефон', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm',
     hint: 'Масштаб всей типографики блока: заголовок и текст меняются вместе, их соотношение остаётся от дизайна.' },
 ];
 

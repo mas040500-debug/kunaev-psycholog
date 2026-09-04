@@ -279,7 +279,10 @@ function fieldFor(f, data) {
   const value = getAt(data, f.key);
 
   if (f.type === 'select') {
-    return selectField(f.label, f.options, value ?? f.options[0].value,
+    // без явного значения показываем ступень по умолчанию, а не первую в
+    // списке: у шкалы «очень плотно … очень просторно» первая — это край,
+    // и форма врала бы про текущее состояние блока
+    return selectField(f.label, f.options, value ?? f.default ?? f.options[0].value,
       (v) => { setAt(data, f.key, v); touched(); }, f.hint);
   }
 
