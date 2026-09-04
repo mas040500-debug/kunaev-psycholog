@@ -11,6 +11,7 @@
 
 import { assemble } from '../build/assemble.mjs';
 import { SCHEMA, BACKGROUNDS, SIMPLE, SITE_PARTS, addableTypes, getAt, setAt } from '../build/schema.mjs';
+import { rich } from '../build/blocks.mjs';
 import * as api from './api.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -101,11 +102,15 @@ function renderAccount() {
 }
 
 // ------------------------------------------------------------- список блоков
+// В заголовке может лежать разметка — в списке блоков нужен чистый текст,
+// иначе там мелькают куски вроде «<span class=…».
+const plain = (v) => String(v ?? '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
 function blockName(b) {
   const def = SCHEMA[b.type];
   const d = b.data || {};
-  const own = d.title || d.eyebrow || d.text || (d.words && d.words[0]);
-  return own ? String(own).slice(0, 42) : def?.label || b.type;
+  const own = plain(d.title || d.eyebrow || d.text || (d.words && d.words[0]));
+  return own ? own.slice(0, 42) : def?.label || b.type;
 }
 
 function renderParts() {
@@ -296,6 +301,8 @@ function fieldFor(f, data) {
     return labelled(f.label, t, f.hint || 'По одному пункту на строку.');
   }
 
+  if (f.type === 'rich') return richField(f, data, value);
+
   if (f.type === 'target') return targetField(f, data, value);
 
   if (f.type === 'image') return imageField(f, data, value);
@@ -307,6 +314,114 @@ function fieldFor(f, data) {
   i.value = value ?? '';
   i.oninput = () => { setAt(data, f.key, i.value); touched({ keepFocus: true }); };
   return labelled(f.label, i, f.hint);
+}
+
+// Оформление куска текста. Не «любой цвет и любой кегль», а те же ступени,
+// что и везде: иначе через месяц на странице будет восемь кеглей и серый
+// текст на сиреневом. Семейство нужно, чтобы новый выбор вытеснял прежний
+// того же рода: два цвета на одном куске — это не «оба», а спор.
+const RICH_TOOLS = [
+  { family: 't-color-', title: 'Цвет', items: [
+    { cls: '', label: 'Обычный' },
+    { cls: 't-color-primary', label: 'Тёмный' },
+    { cls: 't-color-accent', label: 'Синий' },
+    { cls: 't-color-muted', label: 'Приглушённый' },
+    { cls: 't-color-light', label: 'Белый' },
+  ] },
+  { family: 't-size-', title: 'Размер', items: [
+    { cls: '', label: 'Обычный' },
+    { cls: 't-size-s', label: 'Мельче' },
+    { cls: 't-size-l', label: 'Крупнее' },
+    { cls: 't-size-xl', label: 'Очень крупно' },
+  ] },
+  { family: 't-font-', title: 'Шрифт', items: [
+    { cls: '', label: 'Основной' },
+    { cls: 't-font-script', label: 'Рукописный' },
+  ] },
+  { family: 't-weight-', title: 'Начертание', items: [
+    { cls: '', label: 'Обычное' },
+    { cls: 't-weight-bold', label: 'Жирное' },
+    { cls: 't-weight-normal', label: 'Тонкое' },
+  ] },
+];
+
+/** Оборачивает выделенный кусок в span с классом. Классы того же семейства
+ *  внутри выделения снимаются: иначе «сделать синим» поверх «сделать серым»
+ *  давало бы вложенность, в которой побеждает внутренний, а человек видит
+ *  результат, обратный последнему нажатию. */
+function applyRich(box, cls, family) {
+  const sel = window.getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return false;
+  const range = sel.getRangeAt(0);
+  if (!box.contains(range.commonAncestorContainer)) return false;
+
+  const frag = range.extractContents();
+  frag.querySelectorAll('span').forEach((n) => {
+    [...n.classList].forEach((c) => { if (c.startsWith(family)) n.classList.remove(c); });
+    if (!n.className) n.replaceWith(...n.childNodes);
+  });
+
+  if (cls) {
+    const span = document.createElement('span');
+    span.className = cls;
+    span.appendChild(frag);
+    range.insertNode(span);
+    sel.removeAllRanges();
+    const r = document.createRange();
+    r.selectNodeContents(span);
+    sel.addRange(r);
+  } else {
+    range.insertNode(frag);
+  }
+  return true;
+}
+
+function richField(f, data, value) {
+  const wrap = el('div', 'field');
+  wrap.append(el('label', 'field__label', f.label));
+
+  const bar = el('div', 'rich__bar');
+  const box = el('div', 'rich__box');
+  box.contentEditable = 'true';
+  box.spellcheck = true;
+  // в поле кладём уже очищенную разметку — тем же кодом, что и на сайте,
+  // так что показать можно ровно то, что потом отрисуется
+  box.innerHTML = rich(value ?? '');
+
+  const save = () => {
+    setAt(data, f.key, rich(box.innerHTML));
+    touched({ keepFocus: true });
+  };
+
+  RICH_TOOLS.forEach((group) => {
+    const sel = el('select', 'rich__select');
+    sel.title = group.title;
+    group.items.forEach((it) => {
+      const opt = el('option', null, it.label);
+      opt.value = it.cls;
+      sel.append(opt);
+    });
+    sel.onchange = () => {
+      const ok = applyRich(box, sel.value, group.family);
+      sel.selectedIndex = 0;
+      if (ok) save();
+      else alert('Сначала выделите кусок текста, к которому это применить.');
+    };
+    const cell = el('label', 'rich__tool');
+    cell.append(el('span', 'rich__tool-name', group.title), sel);
+    bar.append(cell);
+  });
+
+  box.oninput = save;
+  // вставка из другого редактора приносит чужую разметку — берём только текст
+  box.addEventListener('paste', (e) => {
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
+  });
+
+  wrap.append(bar, box);
+  if (f.hint) wrap.append(el('p', 'field__hint', f.hint));
+  return wrap;
 }
 
 /** «Куда ведёт»: список блоков этой страницы плюс «своя ссылка».

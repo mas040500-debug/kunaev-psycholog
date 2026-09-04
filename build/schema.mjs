@@ -23,10 +23,8 @@ const UNIQUE = {
     label: 'Первый экран',
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'titleTop', label: 'Заголовок, первая строка', type: 'text' },
-      { key: 'titleScript', label: 'Вторая строка, от руки', type: 'text',
-        hint: 'Набирается рукописным шрифтом. Держите её короткой — она не переносится.' },
-      { key: 'titleBottom', label: 'Третья строка', type: 'text' },
+      { key: 'title', label: 'Заголовок', type: 'rich',
+        hint: 'Одна фраза. На сколько строк она ляжет, решает ширина экрана. Выделите кусок и задайте ему цвет, размер или шрифт.' },
       { key: 'cta.label', label: 'Надпись на кнопке', type: 'text' },
       { key: 'cta.href', label: 'Куда ведёт кнопка', type: 'target' },
       { key: 'photo.src', label: 'Фотография', type: 'image' },
@@ -40,8 +38,7 @@ const UNIQUE = {
     label: 'Направления',
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'titleAccent', label: 'Продолжение цветом', type: 'text' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
       { key: 'cards', label: 'Карточки', type: 'list', itemLabel: 'Карточка', of: [
         { key: 'title', label: 'Название', type: 'text' },
         { key: 'items', label: 'Пункты', type: 'lines' },
@@ -56,9 +53,8 @@ const UNIQUE = {
       { key: 'watermark', label: 'Слово за фотографией', type: 'text' },
       { key: 'photo.src', label: 'Фотография', type: 'image' },
       { key: 'photo.alt', label: 'Описание фотографии', type: 'text' },
-      { key: 'lead', label: 'Крупная фраза', type: 'text' },
-      { key: 'leadAccent', label: 'Её продолжение цветом', type: 'text' },
-      { key: 'body', label: 'Текст', type: 'textarea' },
+      { key: 'lead', label: 'Крупная фраза', type: 'rich' },
+      { key: 'body', label: 'Текст', type: 'rich' },
       { key: 'tags', label: 'Строка через дробь', type: 'text' },
     ],
   },
@@ -75,11 +71,11 @@ const UNIQUE = {
     label: 'Принципы работы',
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'sub', label: 'Подзаголовок', type: 'textarea' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'sub', label: 'Подзаголовок', type: 'rich' },
       { key: 'notes', label: 'Записки', type: 'list', itemLabel: 'Записка', max: 3, of: [
         { key: 'title', label: 'Название', type: 'text' },
-        { key: 'text', label: 'Текст', type: 'textarea' },
+        { key: 'text', label: 'Текст', type: 'rich' },
       ] },
     ],
   },
@@ -88,8 +84,8 @@ const UNIQUE = {
     label: 'Образование',
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'body', label: 'Текст', type: 'textarea' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'body', label: 'Текст', type: 'rich' },
       { key: 'docs', label: 'Документы', type: 'list', itemLabel: 'Документ', of: [
         { key: 'src', label: 'Скан', type: 'image', dir: 'assets/docs/' },
         { key: 'note', label: 'Подпись от руки', type: 'text' },
@@ -103,8 +99,8 @@ const UNIQUE = {
     label: 'Контакты',
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'sub', label: 'Подзаголовок', type: 'textarea' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'sub', label: 'Подзаголовок', type: 'rich' },
       { key: 'items', label: 'Способы связи', type: 'list', itemLabel: 'Способ', of: [
         { key: 'icon', label: 'Значок', type: 'select', options: [
           { value: 'phone', label: 'Телефон' },
@@ -173,8 +169,8 @@ export const SIMPLE = {
     defaults: { eyebrow: '', title: 'Заголовок', body: 'Текст блока.' },
     fields: [
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text', hint: 'Можно оставить пустым.' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'body', label: 'Текст', type: 'textarea', hint: 'Пустая строка разделяет абзацы.' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'body', label: 'Текст', type: 'rich', hint: 'Пустая строка разделяет абзацы.' },
     ],
   },
   image: {
@@ -195,15 +191,15 @@ export const SIMPLE = {
       { key: 'imageSide', label: 'Картинка', type: 'select', options: [
         { value: 'left', label: 'Слева' }, { value: 'right', label: 'Справа' } ] },
       { key: 'eyebrow', label: 'Надзаголовок', type: 'text' },
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'body', label: 'Текст', type: 'textarea' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'body', label: 'Текст', type: 'rich' },
     ],
   },
   quote: {
     label: 'Цитата',
     defaults: { text: 'Текст цитаты.', author: '' },
     fields: [
-      { key: 'text', label: 'Цитата', type: 'textarea', hint: 'Кавычки добавятся сами.' },
+      { key: 'text', label: 'Цитата', type: 'rich', hint: 'Кавычки добавятся сами.' },
       { key: 'author', label: 'Автор', type: 'text' },
     ],
   },
@@ -211,8 +207,8 @@ export const SIMPLE = {
     label: 'Призыв с кнопкой',
     defaults: { title: 'Запишитесь на встречу', body: '', button: { label: 'Связаться со мной', href: '#contacts' } },
     fields: [
-      { key: 'title', label: 'Заголовок', type: 'text' },
-      { key: 'body', label: 'Текст', type: 'textarea' },
+      { key: 'title', label: 'Заголовок', type: 'rich' },
+      { key: 'body', label: 'Текст', type: 'rich' },
       { key: 'button.label', label: 'Надпись на кнопке', type: 'text' },
       { key: 'button.href', label: 'Куда ведёт', type: 'target' },
     ],
@@ -264,28 +260,6 @@ export const addableTypes = Object.keys(SIMPLE);
 // Меню одно на всю страницу: из него собираются и верхнее меню, и мобильная
 // шторка, и подвал. Поэтому оно правится в одном месте, а не в трёх.
 export const SITE_PARTS = {
-  theme: {
-    label: 'Оформление сайта',
-    at: 'theme',
-    fields: [
-      { key: 'textSize', label: 'Размер текста', type: 'select', options: [
-        { value: 'm', label: 'Обычный' },
-        { value: 'l', label: 'Крупнее' } ],
-        hint: 'Меняется основной текст, сильнее всего на телефоне. Заголовки не трогаются: они и так крупные, а от роста начинают переноситься.' },
-      { key: 'script', label: 'Рукописный шрифт', type: 'select', options: [
-        { value: 'decor', label: 'Только как украшение' },
-        { value: 'full', label: 'Везде, как задумано' } ],
-        hint: '«Как украшение» — рукописный остаётся на водяном знаке и на подписи к фотографии, а в строке первого экрана и на бирке диплома текст обычный: там его нужно прочитать.' },
-      { key: 'heroAccent', label: 'Выделение в первом экране', type: 'select', options: [
-        { value: 'accent', label: 'Синим' },
-        { value: 'ink', label: 'Чёрным' } ] },
-      { key: 'floatingContact', label: 'Кнопка связи на телефоне', type: 'select', options: [
-        { value: 'on', label: 'Показывать' },
-        { value: 'off', label: 'Не показывать' } ],
-        hint: 'Круглая кнопка в углу экрана, которая всегда на виду и ведёт к контактам. Только на телефоне: на компьютере кнопка есть в шапке.' },
-    ],
-    hint: 'Общие настройки для всей страницы. Ступени подобраны заранее — что ни выберите, вёрстка не поедет.',
-  },
   meta: {
     label: 'Сайт в поиске',
     at: 'meta',
@@ -312,6 +286,10 @@ export const SITE_PARTS = {
       { key: 'avatar', label: 'Фото в кружке', type: 'image' },
       { key: 'cta.label', label: 'Надпись на кнопке', type: 'text' },
       { key: 'cta.href', label: 'Куда ведёт кнопка', type: 'target' },
+      { key: 'floatingContact', label: 'Круглая кнопка на телефоне', type: 'select', options: [
+        { value: 'on', label: 'Показывать' },
+        { value: 'off', label: 'Не показывать' } ],
+        hint: 'Всегда на виду в углу экрана, ведёт туда же, куда кнопка выше. Только на телефоне: на компьютере кнопка есть в шапке.' },
     ],
   },
   nav: {

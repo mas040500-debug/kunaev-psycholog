@@ -200,3 +200,45 @@ textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
 /* ---------- загрузка картинки ---------- */
 .picker__upload { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .picker__status { font-size: 13px; color: var(--ink-3); }
+
+/* ---------- редактор текста с разметкой ----------
+   Оформление задаётся на выделенный кусок, а не на весь сайт. Выбор — из
+   ступеней: свободная палитра через месяц дала бы серый текст на сиреневом. */
+.rich__bar {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 8px; margin-bottom: -1px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px 10px 0 0;
+}
+.rich__tool { display: flex; flex-direction: column; gap: 2px; }
+.rich__tool-name {
+  font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.rich__select { font-size: 13px; padding: 4px 6px; }
+
+.rich__box {
+  min-height: 92px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 0 0 10px 10px;
+  font-size: 14px; line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.rich__box:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+/* Внутри поля показываем ровно то оформление, которое получится на сайте:
+   правка вслепую — главная причина, по которой такие редакторы бросают. */
+.rich__box .t-color-primary { color: #00081A; }
+.rich__box .t-color-accent  { color: #2E5FD9; }
+.rich__box .t-color-muted   { color: #6B7280; }
+.rich__box .t-color-light   { color: #fff; background: #6B7280; }
+.rich__box .t-size-s  { font-size: .8em; }
+.rich__box .t-size-l  { font-size: 1.25em; }
+.rich__box .t-size-xl { font-size: 1.5em; }
+.rich__box .t-font-script { font-family: 'Good Vibes Pro', cursive; font-size: 1.4em; }
+.rich__box .t-weight-bold   { font-weight: 700; }
+.rich__box .t-weight-normal { font-weight: 400; }

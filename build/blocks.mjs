@@ -19,6 +19,47 @@ const href = (v) => {
   return '#';
 };
 
+// --- размеченный текст --------------------------------------------------
+// Текст из редактора приходит с разметкой: куски фразы могут быть другого
+// цвета, кегля, шрифта или начертания. Хранить и отдавать «как есть» нельзя —
+// это дыра: в поле можно вписать <script> или картинку с обработчиком.
+// Поэтому здесь узкий белый список: только span с классами из шкалы, <b> и
+// перенос строки. Всё остальное выбрасывается, текст экранируется.
+const RICH_CLASS =
+  /^t-(?:color-(?:primary|accent|muted|light)|size-(?:s|l|xl)|font-script|weight-(?:bold|normal))$/;
+
+export function rich(value) {
+  const s = String(value ?? '');
+  let out = '', last = 0, open = 0;
+  const re = /<\/?([a-z0-9]+)([^>]*)>/gi;
+  let m;
+  while ((m = re.exec(s))) {
+    out += esc(s.slice(last, m.index));
+    last = re.lastIndex;
+    const name = m[1].toLowerCase();
+    const closing = m[0].startsWith('</');
+
+    if (name === 'br') { if (!closing) out += '<br>'; continue; }
+
+    if (name === 'span' || name === 'b' || name === 'strong') {
+      if (closing) { if (open) { out += '</span>'; open--; } continue; }
+      const raw = (m[2].match(/class\s*=\s*"([^"]*)"/i) || ['', ''])[1];
+      const classes = raw.split(/\s+/).filter((c) => RICH_CLASS.test(c));
+      // <b> из буфера обмена превращаем в свой класс, чтобы на выходе была
+      // одна форма записи, а не два способа сказать «жирный»
+      if (name !== 'span' && !classes.includes('t-weight-bold')) classes.push('t-weight-bold');
+      out += classes.length ? `<span class="${classes.join(' ')}">` : '<span>';
+      open++;
+      continue;
+    }
+    // всё прочее — молча выбрасываем вместе с содержимым тега
+  }
+  out += esc(s.slice(last));
+  // незакрытые span закрываем сами: иначе они утекут на остальную страницу
+  while (open-- > 0) out += '</span>';
+  return out;
+}
+
 // --- рваный край между секциями --------------------------------------------
 // Цвет — той полосы, которая «наступает» на эту секцию.
 const TORN_VAR = { surface: 'var(--bg-surface)', 'second-soft': 'var(--bg-second-soft)', page: 'var(--bg-page)' };
@@ -96,7 +137,7 @@ const paras = (text, cls) =>
   String(text || '')
     .split(/\n\s*\n/)
     .filter(Boolean)
-    .map((p) => `      <p class="${cls}">${esc(p.trim())}</p>`)
+    .map((p) => `      <p class="${cls}">${rich(p.trim())}</p>`)
     .join('\n');
 
 // --- блоки -----------------------------------------------------------------
@@ -108,11 +149,10 @@ const templates = {
   <div class="hero__inner">
     <div class="hero__text">
       <p class="eyebrow">${esc(d.eyebrow)}</p>
-      <h1 class="hero__title">
-        ${esc(d.titleTop)}<br>
-        <span class="hero__script">${esc(d.titleScript)}</span><br>
-        ${esc(d.titleBottom)}
-      </h1>
+      <!-- Заголовок — один текст, а не три строки: сколько строк получится,
+           решает ширина экрана, а не вёрстка. Выделения внутри задаются
+           разметкой из редактора. -->
+      <h1 class="hero__title">${rich(d.title)}</h1>
       <a class="btn" href="${href(d.cta.href)}">${esc(d.cta.label)}</a>
     </div>
 
@@ -157,10 +197,7 @@ ${c.items.map((it) => `        <li>${esc(it)}</li>`).join('\n')}
 ${torn('top', b.torn.top)}
   <p class="eyebrow">${esc(d.eyebrow)}</p>
 
-  <h2 class="dir__title">
-    ${esc(d.title)}
-    <span class="dir__accent">${esc(d.titleAccent)}</span>
-  </h2>
+  <h2 class="dir__title">${rich(d.title)}</h2>
 
   <!-- Силуэт карточки нарисован SVG, а не border-radius: сверху у неё
        рваный край — тот же бумажный мотив, что у разделителей секций.
@@ -186,12 +223,9 @@ ${torn('top', b.torn.top)}
   </div>
 
   <div class="about__statement">
-    <h2 class="about__lead">
-      ${esc(d.lead)}
-      <span class="about__accent">${esc(d.leadAccent)}</span>
-    </h2>
+    <h2 class="about__lead">${rich(d.lead)}</h2>
     <div class="about__col">
-      <p class="about__body">${esc(d.body)}</p>
+      <p class="about__body">${rich(d.body)}</p>
       <p class="about__tags">${esc(d.tags)}</p>
     </div>
   </div>
@@ -241,8 +275,8 @@ ${torn('bottom', b.torn.bottom)}
 ${torn('top', b.torn.top)}
   <div class="appr__head">
     <p class="eyebrow">${esc(d.eyebrow)}</p>
-    <h2 class="appr__title">${esc(d.title)}</h2>
-    <p class="appr__sub">${esc(d.sub)}</p>
+    <h2 class="appr__title">${rich(d.title)}</h2>
+    <p class="appr__sub">${rich(d.sub)}</p>
   </div>
 
   <div class="appr__map">
@@ -308,8 +342,8 @@ ${torn('top', b.torn.top)}
 
   <div class="edu__text">
     <p class="eyebrow">${esc(d.eyebrow)}</p>
-    <h2 class="edu__title">${esc(d.title)}</h2>
-    <p class="edu__body">${esc(d.body)}</p>
+    <h2 class="edu__title">${rich(d.title)}</h2>
+    <p class="edu__body">${rich(d.body)}</p>
   </div>
 
   <!-- Стрелки — отдельный элемент секции, а не часть текстовой колонки:
@@ -350,8 +384,8 @@ ${torn('bottom', b.torn.bottom)}
 ${torn('top', b.torn.top)}
   <div class="contacts__head">
     <p class="eyebrow">${esc(d.eyebrow)}</p>
-    <h2 class="contacts__title">${esc(d.title)}</h2>
-    <p class="contacts__sub">${esc(d.sub)}</p>
+    <h2 class="contacts__title">${rich(d.title)}</h2>
+    <p class="contacts__sub">${rich(d.sub)}</p>
   </div>
 
   <div class="contacts__cards">
@@ -372,7 +406,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', bgClass(b), 'simple simple--text', alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
-${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -401,7 +435,7 @@ ${torn('top', b.torn.top)}
   </div>
 
   <div class="simple__inner">
-${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+${d.eyebrow ? `      <p class="eyebrow">${esc(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
   </div>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -413,7 +447,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', bgClass(b), 'simple simple--quote', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <blockquote class="quote">
-    <p class="quote__text">${esc(d.text)}</p>
+    <p class="quote__text">${rich(d.text)}</p>
 ${d.author ? `    <footer class="quote__author">${esc(d.author)}</footer>\n` : ''}  </blockquote>
 ${torn('bottom', b.torn.bottom)}
 </section>`;
@@ -425,7 +459,7 @@ ${torn('bottom', b.torn.bottom)}
 <section class="${cls('section', bgClass(b), 'simple simple--cta', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
-${d.title ? `      <h2 class="simple__title">${esc(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
+${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
     <a class="btn" href="${href(d.button.href)}">${esc(d.button.label)}</a>
   </div>
 ${torn('bottom', b.torn.bottom)}

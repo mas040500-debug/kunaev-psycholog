@@ -104,23 +104,10 @@ function jsonLd(site, base) {
  *                   там страница живёт в /admin/, а ссылки на картинки и
  *                   стили в разметке — относительные
  */
-/** Оформление всей страницы — классы на <html>. Так владелец сайта меняет
- *  шрифт и кегль из админки, не трогая ни одной строки вёрстки: сами значения
- *  по-прежнему заданы в CSS ступенями, меняется только выбранная ступень. */
-function themeClass(t = {}) {
-  return [
-    t.script === 'full' ? '' : 'is-script-decor',
-    t.textSize === 'l' ? 'is-text-l' : '',
-    t.heroAccent === 'ink' ? 'is-hero-ink' : '',
-  ].filter(Boolean).join(' ');
-}
-
 export function assemble(site, head, tail, opts = {}) {
   const m = site.meta || {};
   const site_ = siteUrl(m);
-  const theme = themeClass(site.theme);
   let h = head
-    .replace('<html lang="ru">', theme ? `<html lang="ru" class="${theme}">` : '<html lang="ru">')
     .replace(/(<title>)[^<]*(<\/title>)/, `$1${m.title ?? ''}$2`)
     .replace(/(<meta name="description" content=")[^"]*/, `$1${m.description ?? ''}`)
     .replace(/(<link rel="canonical" href=")[^"]*/, `$1${site_}`)
@@ -142,7 +129,7 @@ export function assemble(site, head, tail, opts = {}) {
   // бургер, а туда доходят не все. Кнопка маленькая и одна: рядом с бургером
   // на весь экран кнопок быть не должно.
   const cta = site.header?.cta || {};
-  const float = site.theme?.floatingContact === 'off' ? '' : `
+  const float = site.header?.floatingContact === 'off' ? '' : `
 <a class="floating-cta" href="${floatHref(cta.href)}" aria-label="${esc(cta.label || 'Связаться со мной')}">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg>
 </a>
