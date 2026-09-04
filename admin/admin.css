@@ -242,3 +242,11 @@ textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
 .rich__box .t-font-script { font-family: 'Good Vibes Pro', cursive; font-size: 1.4em; }
 .rich__box .t-weight-bold   { font-weight: 700; }
 .rich__box .t-weight-normal { font-weight: 400; }
+
+.rich__nb {
+  align-self: end;
+  font-size: 12px; padding: 5px 8px;
+  background: #fff; color: var(--ink-2);
+  border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.rich__nb:hover { color: var(--ink); border-color: var(--ink-2); }
