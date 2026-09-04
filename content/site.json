@@ -54,7 +54,7 @@
       "visible": true,
       "bg": "surface",
       "data": {
-        "eyebrow": "Мой приоритет",
+        "eyebrow": "<span class=\"t-size-l\"><span class=\"t-size-s\"><span class=\"t-size-s\"><span class=\"t-size-l\"><span class=\"t-size-l\">Мой приоритет</span></span></span></span></span>",
         "titleTop": "Создание",
         "titleScript": "комфортных условий",
         "titleBottom": "для вашей терапии",
@@ -83,7 +83,7 @@
       "bg": "surface",
       "anchor": "about",
       "data": {
-        "eyebrow": "Обо мне",
+        "eyebrow": "<span class=\"t-size-l\">Обо мне</span>",
         "watermark": "комфорт",
         "photo": {
           "src": "assets/uploads/img-3814-mth1j6l8.jpg",
@@ -102,7 +102,7 @@
       "visible": true,
       "bg": "second-soft",
       "data": {
-        "eyebrow": "Направления",
+        "eyebrow": "<span class=\"t-size-l\">Направления</span>",
         "title": "Разбираем вашу ситуацию, смотрим на неё под разным углом <span class=\"t-color-accent\">и находим точки опоры</span>",
         "cards": [
           {
@@ -158,7 +158,7 @@
       "bg": "surface",
       "anchor": "principles",
       "data": {
-        "eyebrow": "",
+        "eyebrow": "<span class=\"t-size-l\">Подход</span>",
         "title": "Принципы работы",
         "sub": "Я совмещаю структурированную, системную терапию с комфортной и понимающей атмосферой на сессиях.",
         "notes": [
@@ -185,7 +185,7 @@
       "bg": "page",
       "anchor": "education",
       "data": {
-        "eyebrow": "Квалификация",
+        "eyebrow": "<span class=\"t-size-l\">Квалификация</span>",
         "title": "Образование",
         "body": "Окончил МГУ им. М.В. Ломоносова по направлению \"Психология\", дополнительная программа обучения по КПТ и опыт в интервизионных группах. При необходимости и с согласия клиента я разбираю конкретные случаи на супервизиях.",
         "docs": [
@@ -241,7 +241,7 @@
       "bg": "surface",
       "anchor": "contacts",
       "data": {
-        "eyebrow": "Контакты",
+        "eyebrow": "<span class=\"t-size-l\">Контакты</span>",
         "title": "Давайте поговорим",
         "sub": "Вы можете связаться со мной по телефону, в телеграме или вотсапе, и я отвечу вам в течение дня.",
         "items": [
