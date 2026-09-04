@@ -85,16 +85,31 @@
   --font: 'Arimo', 'Helvetica Neue', Arial, sans-serif;
   --font-script: 'Good Vibes Pro', 'Great Vibes', cursive;
 
-  --display-xl: 700 64px/72px var(--font);
-  --display-lg: 700 48px/56px var(--font);
-  --h1: 700 40px/48px var(--font);
-  --h2: 700 32px/40px var(--font);
-  --h3: 700 24px/32px var(--font);
-  --h4: 700 20px/28px var(--font);
-  --body-lg: 400 18px/26px var(--font);
-  --body:    400 16px/24px var(--font);
-  --body-sm: 400 14px/20px var(--font);
-  --caption: 700 20px/24px var(--font);
+  /* Размеры вынесены отдельно от токенов, а токены собраны из них с
+     множителем --text-k. Множитель наследуется от секции, а подстановка
+     переменной происходит там, где токен используется, — поэтому размер
+     текста внутри блока меняется без единой правки в местах применения. */
+  --size-display-xl: 64px; --lh-display-xl: 72px;
+  --size-display-lg: 48px; --lh-display-lg: 56px;
+  --size-h1: 40px; --lh-h1: 48px;
+  --size-h2: 32px; --lh-h2: 40px;
+  --size-h3: 24px; --lh-h3: 32px;
+  --size-h4: 20px; --lh-h4: 28px;
+  --size-body-lg: 18px; --lh-body-lg: 26px;
+  --size-body: 16px; --lh-body: 24px;
+  --size-body-sm: 14px; --lh-body-sm: 20px;
+  --size-caption: 20px; --lh-caption: 24px;
+
+  --display-xl: 700 var(--size-display-xl)/var(--lh-display-xl) var(--font);
+  --display-lg: 700 var(--size-display-lg)/var(--lh-display-lg) var(--font);
+  --h1: 700 var(--size-h1)/var(--lh-h1) var(--font);
+  --h2: 700 var(--size-h2)/var(--lh-h2) var(--font);
+  --h3: 700 var(--size-h3)/var(--lh-h3) var(--font);
+  --h4: 700 var(--size-h4)/var(--lh-h4) var(--font);
+  --body-lg: 400 var(--size-body-lg)/var(--lh-body-lg) var(--font);
+  --body:    400 calc(var(--size-body) * var(--text-k, 1))/calc(var(--lh-body) * var(--text-k, 1)) var(--font);
+  --body-sm: 400 var(--size-body-sm)/var(--lh-body-sm) var(--font);
+  --caption: 700 var(--size-caption)/var(--lh-caption) var(--font);
   --button:  700 16px/24px var(--font);
 
   --script-hero:   400 84px/72px var(--font-script);
@@ -117,11 +132,11 @@
     --pad-container: var(--s32);
     --pad-component: var(--s24);
 
-    --display-xl: 700 48px/56px var(--font);
-    --display-lg: 700 40px/48px var(--font);
-    --h1: 700 32px/40px var(--font);
-    --h2: 700 28px/36px var(--font);
-    --caption: 700 18px/24px var(--font);
+    --size-display-xl: 48px; --lh-display-xl: 56px;
+    --size-display-lg: 40px; --lh-display-lg: 48px;
+    --size-h1: 32px; --lh-h1: 40px;
+    --size-h2: 28px; --lh-h2: 36px;
+    --size-caption: 18px; --lh-caption: 24px;
 
     /* 56px — потолок, при котором «комфортных условий» ещё влезает
        в одну строку на 672px контента (фраза ≈ 10.5–12 кеглей) */
@@ -142,19 +157,66 @@
     --pad-component: var(--s16);
     --pad-element:   var(--s12);
 
-    --display-xl: 700 32px/40px var(--font);
-    --display-lg: 700 28px/36px var(--font);
-    --h1: 700 28px/36px var(--font);
-    --h2: 700 24px/32px var(--font);
-    --h3: 700 20px/28px var(--font);
-    --h4: 700 18px/26px var(--font);
-    --body-lg: 400 16px/24px var(--font);
-    --caption: 700 14px/20px var(--font);
+    --size-display-xl: 32px; --lh-display-xl: 40px;
+    --size-display-lg: 28px; --lh-display-lg: 36px;
+    --size-h1: 28px; --lh-h1: 36px;
+    --size-h2: 24px; --lh-h2: 32px;
+    --size-h3: 20px; --lh-h3: 28px;
+    --size-h4: 18px; --lh-h4: 26px;
+    --size-body-lg: 16px; --lh-body-lg: 24px;
+    --size-caption: 14px; --lh-caption: 20px;
 
     /* 28px, а не крупнее: скрипт обязан влезать в одну строку */
     --script-hero:   400 28px/40px var(--font-script);
     --script-accent: 400 24px/32px var(--font-script);
+
+    /* Высота приклеенной шапки. Нужна первому экрану, чтобы вычесть её из
+       высоты окна и поместиться целиком. Замерена по факту; если в шапку
+       добавится строка, значение придётся поправить — поэтому оно вынесено
+       сюда, а не вписано в calc посреди правил. */
+    --header-h: 76px;
   }
+}
+
+/* ============ ОТСТУПЫ ВНУТРИ БЛОКА ============
+   Владелец сайта подгоняет плотность блока сам, отдельно для трёх экранов:
+   на телефоне то, что на десктопе выглядит воздушно, часто оказывается
+   разреженным. Это не произвольные пиксели, а множитель к тем отступам,
+   которые уже заданы дизайном: пропорции внутри блока сохраняются.
+
+   Классы ставит сборщик: is-gap-d-* — десктоп, is-gap-t-* — планшет,
+   is-gap-m-* — телефон. Значение по умолчанию (обычно) класса не даёт. */
+section { --gap-k: 1; }
+
+@media (min-width: 1025px) {
+  .is-text-d-xs { --display-xl: 700 calc(var(--size-display-xl) * 0.75)/calc(var(--lh-display-xl) * 0.75) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.75)/calc(var(--lh-display-lg) * 0.75) var(--font); --h1: 700 calc(var(--size-h1) * 0.75)/calc(var(--lh-h1) * 0.75) var(--font); --h2: 700 calc(var(--size-h2) * 0.75)/calc(var(--lh-h2) * 0.75) var(--font); --h3: 700 calc(var(--size-h3) * 0.75)/calc(var(--lh-h3) * 0.75) var(--font); --h4: 700 calc(var(--size-h4) * 0.75)/calc(var(--lh-h4) * 0.75) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.75)/calc(var(--lh-body-lg) * 0.75) var(--font); --body: 400 calc(var(--size-body) * 0.75)/calc(var(--lh-body) * 0.75) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.75)/calc(var(--lh-body-sm) * 0.75) var(--font); --caption: 700 calc(var(--size-caption) * 0.75)/calc(var(--lh-caption) * 0.75) var(--font); }
+  .is-text-d-s { --display-xl: 700 calc(var(--size-display-xl) * 0.875)/calc(var(--lh-display-xl) * 0.875) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.875)/calc(var(--lh-display-lg) * 0.875) var(--font); --h1: 700 calc(var(--size-h1) * 0.875)/calc(var(--lh-h1) * 0.875) var(--font); --h2: 700 calc(var(--size-h2) * 0.875)/calc(var(--lh-h2) * 0.875) var(--font); --h3: 700 calc(var(--size-h3) * 0.875)/calc(var(--lh-h3) * 0.875) var(--font); --h4: 700 calc(var(--size-h4) * 0.875)/calc(var(--lh-h4) * 0.875) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.875)/calc(var(--lh-body-lg) * 0.875) var(--font); --body: 400 calc(var(--size-body) * 0.875)/calc(var(--lh-body) * 0.875) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.875)/calc(var(--lh-body-sm) * 0.875) var(--font); --caption: 700 calc(var(--size-caption) * 0.875)/calc(var(--lh-caption) * 0.875) var(--font); }
+  .is-text-d-l { --display-xl: 700 calc(var(--size-display-xl) * 1.15)/calc(var(--lh-display-xl) * 1.15) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.15)/calc(var(--lh-display-lg) * 1.15) var(--font); --h1: 700 calc(var(--size-h1) * 1.15)/calc(var(--lh-h1) * 1.15) var(--font); --h2: 700 calc(var(--size-h2) * 1.15)/calc(var(--lh-h2) * 1.15) var(--font); --h3: 700 calc(var(--size-h3) * 1.15)/calc(var(--lh-h3) * 1.15) var(--font); --h4: 700 calc(var(--size-h4) * 1.15)/calc(var(--lh-h4) * 1.15) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.15)/calc(var(--lh-body-lg) * 1.15) var(--font); --body: 400 calc(var(--size-body) * 1.15)/calc(var(--lh-body) * 1.15) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.15)/calc(var(--lh-body-sm) * 1.15) var(--font); --caption: 700 calc(var(--size-caption) * 1.15)/calc(var(--lh-caption) * 1.15) var(--font); }
+  .is-text-d-xl { --display-xl: 700 calc(var(--size-display-xl) * 1.3)/calc(var(--lh-display-xl) * 1.3) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.3)/calc(var(--lh-display-lg) * 1.3) var(--font); --h1: 700 calc(var(--size-h1) * 1.3)/calc(var(--lh-h1) * 1.3) var(--font); --h2: 700 calc(var(--size-h2) * 1.3)/calc(var(--lh-h2) * 1.3) var(--font); --h3: 700 calc(var(--size-h3) * 1.3)/calc(var(--lh-h3) * 1.3) var(--font); --h4: 700 calc(var(--size-h4) * 1.3)/calc(var(--lh-h4) * 1.3) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.3)/calc(var(--lh-body-lg) * 1.3) var(--font); --body: 400 calc(var(--size-body) * 1.3)/calc(var(--lh-body) * 1.3) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.3)/calc(var(--lh-body-sm) * 1.3) var(--font); --caption: 700 calc(var(--size-caption) * 1.3)/calc(var(--lh-caption) * 1.3) var(--font); }
+  .is-gap-d-xs { --gap-k: .4; }
+  .is-gap-d-s  { --gap-k: .65; }
+  .is-gap-d-l  { --gap-k: 1.4; }
+  .is-gap-d-xl { --gap-k: 1.8; }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .is-text-t-xs { --display-xl: 700 calc(var(--size-display-xl) * 0.75)/calc(var(--lh-display-xl) * 0.75) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.75)/calc(var(--lh-display-lg) * 0.75) var(--font); --h1: 700 calc(var(--size-h1) * 0.75)/calc(var(--lh-h1) * 0.75) var(--font); --h2: 700 calc(var(--size-h2) * 0.75)/calc(var(--lh-h2) * 0.75) var(--font); --h3: 700 calc(var(--size-h3) * 0.75)/calc(var(--lh-h3) * 0.75) var(--font); --h4: 700 calc(var(--size-h4) * 0.75)/calc(var(--lh-h4) * 0.75) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.75)/calc(var(--lh-body-lg) * 0.75) var(--font); --body: 400 calc(var(--size-body) * 0.75)/calc(var(--lh-body) * 0.75) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.75)/calc(var(--lh-body-sm) * 0.75) var(--font); --caption: 700 calc(var(--size-caption) * 0.75)/calc(var(--lh-caption) * 0.75) var(--font); }
+  .is-text-t-s { --display-xl: 700 calc(var(--size-display-xl) * 0.875)/calc(var(--lh-display-xl) * 0.875) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.875)/calc(var(--lh-display-lg) * 0.875) var(--font); --h1: 700 calc(var(--size-h1) * 0.875)/calc(var(--lh-h1) * 0.875) var(--font); --h2: 700 calc(var(--size-h2) * 0.875)/calc(var(--lh-h2) * 0.875) var(--font); --h3: 700 calc(var(--size-h3) * 0.875)/calc(var(--lh-h3) * 0.875) var(--font); --h4: 700 calc(var(--size-h4) * 0.875)/calc(var(--lh-h4) * 0.875) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.875)/calc(var(--lh-body-lg) * 0.875) var(--font); --body: 400 calc(var(--size-body) * 0.875)/calc(var(--lh-body) * 0.875) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.875)/calc(var(--lh-body-sm) * 0.875) var(--font); --caption: 700 calc(var(--size-caption) * 0.875)/calc(var(--lh-caption) * 0.875) var(--font); }
+  .is-text-t-l { --display-xl: 700 calc(var(--size-display-xl) * 1.15)/calc(var(--lh-display-xl) * 1.15) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.15)/calc(var(--lh-display-lg) * 1.15) var(--font); --h1: 700 calc(var(--size-h1) * 1.15)/calc(var(--lh-h1) * 1.15) var(--font); --h2: 700 calc(var(--size-h2) * 1.15)/calc(var(--lh-h2) * 1.15) var(--font); --h3: 700 calc(var(--size-h3) * 1.15)/calc(var(--lh-h3) * 1.15) var(--font); --h4: 700 calc(var(--size-h4) * 1.15)/calc(var(--lh-h4) * 1.15) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.15)/calc(var(--lh-body-lg) * 1.15) var(--font); --body: 400 calc(var(--size-body) * 1.15)/calc(var(--lh-body) * 1.15) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.15)/calc(var(--lh-body-sm) * 1.15) var(--font); --caption: 700 calc(var(--size-caption) * 1.15)/calc(var(--lh-caption) * 1.15) var(--font); }
+  .is-text-t-xl { --display-xl: 700 calc(var(--size-display-xl) * 1.3)/calc(var(--lh-display-xl) * 1.3) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.3)/calc(var(--lh-display-lg) * 1.3) var(--font); --h1: 700 calc(var(--size-h1) * 1.3)/calc(var(--lh-h1) * 1.3) var(--font); --h2: 700 calc(var(--size-h2) * 1.3)/calc(var(--lh-h2) * 1.3) var(--font); --h3: 700 calc(var(--size-h3) * 1.3)/calc(var(--lh-h3) * 1.3) var(--font); --h4: 700 calc(var(--size-h4) * 1.3)/calc(var(--lh-h4) * 1.3) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.3)/calc(var(--lh-body-lg) * 1.3) var(--font); --body: 400 calc(var(--size-body) * 1.3)/calc(var(--lh-body) * 1.3) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.3)/calc(var(--lh-body-sm) * 1.3) var(--font); --caption: 700 calc(var(--size-caption) * 1.3)/calc(var(--lh-caption) * 1.3) var(--font); }
+  .is-gap-t-xs { --gap-k: .4; }
+  .is-gap-t-s  { --gap-k: .65; }
+  .is-gap-t-l  { --gap-k: 1.4; }
+  .is-gap-t-xl { --gap-k: 1.8; }
+}
+@media (max-width: 767px) {
+  .is-text-m-xs { --display-xl: 700 calc(var(--size-display-xl) * 0.75)/calc(var(--lh-display-xl) * 0.75) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.75)/calc(var(--lh-display-lg) * 0.75) var(--font); --h1: 700 calc(var(--size-h1) * 0.75)/calc(var(--lh-h1) * 0.75) var(--font); --h2: 700 calc(var(--size-h2) * 0.75)/calc(var(--lh-h2) * 0.75) var(--font); --h3: 700 calc(var(--size-h3) * 0.75)/calc(var(--lh-h3) * 0.75) var(--font); --h4: 700 calc(var(--size-h4) * 0.75)/calc(var(--lh-h4) * 0.75) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.75)/calc(var(--lh-body-lg) * 0.75) var(--font); --body: 400 calc(var(--size-body) * 0.75)/calc(var(--lh-body) * 0.75) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.75)/calc(var(--lh-body-sm) * 0.75) var(--font); --caption: 700 calc(var(--size-caption) * 0.75)/calc(var(--lh-caption) * 0.75) var(--font); }
+  .is-text-m-s { --display-xl: 700 calc(var(--size-display-xl) * 0.875)/calc(var(--lh-display-xl) * 0.875) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 0.875)/calc(var(--lh-display-lg) * 0.875) var(--font); --h1: 700 calc(var(--size-h1) * 0.875)/calc(var(--lh-h1) * 0.875) var(--font); --h2: 700 calc(var(--size-h2) * 0.875)/calc(var(--lh-h2) * 0.875) var(--font); --h3: 700 calc(var(--size-h3) * 0.875)/calc(var(--lh-h3) * 0.875) var(--font); --h4: 700 calc(var(--size-h4) * 0.875)/calc(var(--lh-h4) * 0.875) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 0.875)/calc(var(--lh-body-lg) * 0.875) var(--font); --body: 400 calc(var(--size-body) * 0.875)/calc(var(--lh-body) * 0.875) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 0.875)/calc(var(--lh-body-sm) * 0.875) var(--font); --caption: 700 calc(var(--size-caption) * 0.875)/calc(var(--lh-caption) * 0.875) var(--font); }
+  .is-text-m-l { --display-xl: 700 calc(var(--size-display-xl) * 1.15)/calc(var(--lh-display-xl) * 1.15) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.15)/calc(var(--lh-display-lg) * 1.15) var(--font); --h1: 700 calc(var(--size-h1) * 1.15)/calc(var(--lh-h1) * 1.15) var(--font); --h2: 700 calc(var(--size-h2) * 1.15)/calc(var(--lh-h2) * 1.15) var(--font); --h3: 700 calc(var(--size-h3) * 1.15)/calc(var(--lh-h3) * 1.15) var(--font); --h4: 700 calc(var(--size-h4) * 1.15)/calc(var(--lh-h4) * 1.15) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.15)/calc(var(--lh-body-lg) * 1.15) var(--font); --body: 400 calc(var(--size-body) * 1.15)/calc(var(--lh-body) * 1.15) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.15)/calc(var(--lh-body-sm) * 1.15) var(--font); --caption: 700 calc(var(--size-caption) * 1.15)/calc(var(--lh-caption) * 1.15) var(--font); }
+  .is-text-m-xl { --display-xl: 700 calc(var(--size-display-xl) * 1.3)/calc(var(--lh-display-xl) * 1.3) var(--font); --display-lg: 700 calc(var(--size-display-lg) * 1.3)/calc(var(--lh-display-lg) * 1.3) var(--font); --h1: 700 calc(var(--size-h1) * 1.3)/calc(var(--lh-h1) * 1.3) var(--font); --h2: 700 calc(var(--size-h2) * 1.3)/calc(var(--lh-h2) * 1.3) var(--font); --h3: 700 calc(var(--size-h3) * 1.3)/calc(var(--lh-h3) * 1.3) var(--font); --h4: 700 calc(var(--size-h4) * 1.3)/calc(var(--lh-h4) * 1.3) var(--font); --body-lg: 400 calc(var(--size-body-lg) * 1.3)/calc(var(--lh-body-lg) * 1.3) var(--font); --body: 400 calc(var(--size-body) * 1.3)/calc(var(--lh-body) * 1.3) var(--font); --body-sm: 400 calc(var(--size-body-sm) * 1.3)/calc(var(--lh-body-sm) * 1.3) var(--font); --caption: 700 calc(var(--size-caption) * 1.3)/calc(var(--lh-caption) * 1.3) var(--font); }
+  .is-gap-m-xs { --gap-k: .4; }
+  .is-gap-m-s  { --gap-k: .65; }
+  .is-gap-m-l  { --gap-k: 1.4; }
+  .is-gap-m-xl { --gap-k: 1.8; }
 }
 
 /* ============ РАЗМЕТКА ВНУТРИ ТЕКСТА ============
@@ -359,10 +421,10 @@ a { color: inherit; }
    ГЕРОЙ
    ============================================================ */
 .hero { overflow: hidden; }
-.hero__inner { display: flex; align-items: center; gap: var(--s64); }
+.hero__inner { display: flex; align-items: center; gap: calc(var(--s64) * var(--gap-k)); }
 .hero__text {
   flex: 1 1 0; min-width: 0;
-  display: flex; flex-direction: column; align-items: flex-start; gap: var(--s24);
+  display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--s24) * var(--gap-k));
 }
 .hero.is-align-center .hero__text { align-items: center;   text-align: center; }
 .hero.is-align-right  .hero__text { align-items: flex-end; text-align: right; }
@@ -397,6 +459,9 @@ a { color: inherit; }
    и то и другое несёт контур .photo-card__bg, у которого вырезаны дырки. */
 .photo-card {
   position: relative;
+  /* контейнер для подписи на плашке: её кегль задан в долях ширины карточки,
+     иначе при масштабировании карточки текст остаётся прежним и вылезает */
+  container-type: inline-size;
   width: 443px; aspect-ratio: 443 / 520;
   /* наклон вынесен в переменную: его переопределяет мобильный брейкпоинт,
      и он же нужен анимации появления, чтобы она не сбрасывала угол */
@@ -431,11 +496,14 @@ a { color: inherit; }
   position: absolute; inset: 0; width: 100%; height: 100%;
   fill: var(--action-default);
 }
-.photo-card__signature { position: relative; font: var(--script-note); white-space: nowrap; }
-.photo-card__caption   { position: relative; font: var(--body); }
+.photo-card__signature {
+  position: relative; white-space: nowrap;
+  font: 400 5.4cqw/0.9 var(--font-script);
+}
+.photo-card__caption { position: relative; font: 400 3.6cqw/1.2 var(--font); }
 
 @media (max-width: 1024px) {
-  .hero__inner { flex-direction: column; align-items: center; gap: var(--s48); }
+  .hero__inner { flex-direction: column; align-items: center; gap: calc(var(--s48) * var(--gap-k)); }
   .hero__text { align-items: flex-start; width: 100%; }
   /* .hero__media нужна СВОЯ явная ширина: align-items:center не растягивает
      флекс-элемент, а всё содержимое .photo-card абсолютно спозиционировано,
@@ -446,12 +514,53 @@ a { color: inherit; }
   .photo-card { width: min(443px, 100%); }
 }
 @media (max-width: 767px) {
-  .hero__inner { gap: var(--s32); }
-  .photo-card { width: 100%; --tilt: 2deg; }
-  /* Плашка сжимается вместе с карточкой, а кегль подписи — нет, и строка
-     вылезала за её край: на узком экране рукописная строка мельче. */
-  .photo-card__signature { font-size: 18px; line-height: 16px; }
-  .photo-card__caption { font: var(--body-sm); }
+  /* Первый экран должен помещаться в телефон целиком: человек открывает сайт
+     и сразу видит и фразу, и кнопку, и фотографию, а не «что-то есть ниже».
+     100dvh, а не 100vh: в мобильных браузерах панель адреса то появляется,
+     то исчезает, и vh считается по её максимальному положению — экран бы
+     всё равно не сходился. Высоту шапки вычитаем: она приклеена сверху. */
+  .hero {
+    min-height: calc(100dvh - var(--header-h));
+    display: flex;
+    /* stretch, а не center: при выравнивании по центру колонка не тянется на
+       всю высоту секции, и карточке, которая берёт «остаток», остаётся ноль —
+       она схлопывается в полоску. Содержимое центрируем внутри колонки. */
+    align-items: stretch;
+    padding-top: var(--s16); padding-bottom: var(--s24);
+  }
+  /* Промежуток между текстом и фотографией небольшой: каждый лишний пиксель
+     здесь отнимается у карточки, потому что она забирает остаток высоты. */
+  .hero__inner { gap: calc(var(--s12) * var(--gap-k)); width: 100%; }
+  .hero__title { font-size: clamp(26px, 8vw, 32px); }
+  /* внутри текстовой колонки промежутки тоже плотнее — они отнимают высоту
+     у карточки так же, как и внешний отступ */
+  .hero__text {
+    gap: var(--s12);
+    /* и она НЕ растягивается: с десктопа у неё осталось flex:1, и в колонке
+       текст забирал половину высоты пустотой — 144px, которые ничего не
+       показывали и отнимались у фотографии */
+    flex: 0 0 auto;
+  }
+  /* Карточка забирает ровно ту высоту, что осталась после текста, и сама
+     считает ширину по своей пропорции. Числами это задавать бесполезно:
+     высота текста зависит от длины фразы и кегля, и на коротком экране
+     (360×640) карточка выталкивала кнопку за нижний край. Здесь никаких
+     подобранных значений — только «займи остаток». */
+  .hero__inner { flex: 1 1 auto; min-height: 0; justify-content: center; }
+  .hero__media {
+    flex: 1 1 auto; min-height: 0;
+    display: flex; justify-content: center;
+    /* карточка выходит за поля секции: на телефоне 16px с каждой стороны —
+       это 8% ширины, и фотография из-за них заметно мельчает */
+    margin-inline: calc(var(--margin) * -1);
+    align-self: stretch;   /* иначе отрицательные поля не расширяют колонку */
+  }
+  .photo-card {
+    height: 100%; width: auto;
+    aspect-ratio: 443 / 520;
+    max-width: 100%;
+    --tilt: 2deg;
+  }
 }
 
 /* ============================================================
@@ -459,7 +568,7 @@ a { color: inherit; }
    ============================================================ */
 .dir {
   display: flex; flex-direction: column;
-  gap: var(--s32);
+  gap: calc(var(--s32) * var(--gap-k));
 }
 .dir.is-align-left   { align-items: flex-start; text-align: left; }
 .dir.is-align-center { align-items: center;     text-align: center; }
@@ -467,7 +576,7 @@ a { color: inherit; }
 .dir__title { font: var(--h2); color: var(--text-primary); max-width: 920px; }
 .dir__cards {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: var(--s24); width: 100%; text-align: left;
+  gap: calc(var(--s24) * var(--gap-k)); width: 100%; text-align: left;
 }
 /* Форма карточки — в .card__bg, а не в border-radius: верхний край рваный.
    Поэтому фона и рамки у самой .card нет, а сверху добавлено 8px, чтобы
@@ -525,7 +634,7 @@ a { color: inherit; }
 }
 .about__statement {
   display: grid; grid-template-columns: 466px 1fr;
-  gap: var(--s128); align-items: start;
+  gap: calc(var(--s128) * var(--gap-k)); align-items: start;
 }
 .about__lead { font: var(--h2); color: var(--text-primary); }
 .about.is-align-center .about__statement { text-align: center; }
@@ -535,7 +644,7 @@ a { color: inherit; }
 .about__tags { font: var(--h3); color: var(--text-accent); }
 
 @media (max-width: 1024px) {
-  .about__statement { grid-template-columns: 1fr; gap: var(--s32); }
+  .about__statement { grid-template-columns: 1fr; gap: calc(var(--s32) * var(--gap-k)); }
   .about__stage { margin: var(--s32) 0 var(--s48); }
 }
 @media (max-width: 767px) {
@@ -559,7 +668,7 @@ a { color: inherit; }
   --blk-base: 18px;      /* кегль текста */
   --blk-scale: 1;        /* поправка на шрифт */
   --blk-lh: 1.45;
-  --blk-gap: var(--s16); /* между строками внутри блока */
+  --blk-gap: calc(var(--s16) * var(--gap-k)); /* между строками внутри блока */
   --blk-gap-lg: var(--s64); /* между картинкой и текстом */
 }
 .simple.is-color-primary   { --blk-color: var(--text-primary); }
@@ -750,7 +859,7 @@ a { color: inherit; }
 .note__text  { font: var(--body-sm); color: var(--text-secondary); }
 
 /* по умолчанию (планшет и уже) — колонка */
-.appr__map { display: flex; flex-direction: column; gap: var(--s32); margin-top: var(--s48); }
+.appr__map { display: flex; flex-direction: column; gap: calc(var(--s32) * var(--gap-k)); margin-top: var(--s48); }
 .appr__links { display: none; }
 
 /* десктоп ≥1200 — майндмап как в макете.

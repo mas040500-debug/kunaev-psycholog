@@ -29,7 +29,10 @@ const RICH_CLASS =
   /^t-(?:color-(?:primary|accent|muted|light)|size-(?:s|l|xl)|font-script|weight-(?:bold|normal))$/;
 
 export function rich(value) {
-  const s = String(value ?? '');
+  // Браузер сохраняет неразрывный пробел как «&nbsp;», а мы экранируем «&» —
+  // без этой замены на странице появилась бы сама подпись «&nbsp;» вместо
+  // пробела. Меняем на настоящий символ: это просто пробел, ничего опасного.
+  const s = String(value ?? '').replace(/&nbsp;/g, '\u00A0');
   let out = '', last = 0, open = 0;
   const re = /<\/?([a-z0-9]+)([^>]*)>/gi;
   let m;
@@ -123,6 +126,22 @@ const styleClass = (s = {}) =>
 // заготовка. Цитата и призыв задуманы по центру, текст — от левого края.
 // Поэтому класс ставится всегда, а «по умолчанию» у каждого своё: иначе
 // блок, которому выравнивание не трогали, поехал бы при первой же правке.
+// Отступы внутри блока — множитель, отдельный для трёх экранов. Ступени, а
+// не пиксели: пропорции внутри блока задал дизайн, владелец сайта делает его
+// плотнее или воздушнее целиком.
+const GAP_STEPS = ['xs', 's', 'm', 'l', 'xl'];
+const step = (kind, bp, v) =>
+  v && v !== 'm' && GAP_STEPS.includes(v) ? `is-${kind}-${bp}-${v}` : '';
+
+const spaceClass = (d = {}) => {
+  const sp = d.space || {};
+  const tx = d.textSize || {};
+  return [
+    step('gap', 'd', sp.desktop), step('gap', 't', sp.tablet), step('gap', 'm', sp.mobile),
+    step('text', 'd', tx.desktop), step('text', 't', tx.tablet), step('text', 'm', tx.mobile),
+  ].filter(Boolean).join(' ');
+};
+
 const ALIGNS = ['left', 'center', 'right'];
 const alignClass = (d = {}, fallback = 'left') => {
   // d.align — прежний формат блока «Заголовок с текстом», до переезда в style
@@ -145,7 +164,7 @@ const templates = {
   hero(b) {
     const d = b.data;
     return `<!-- ==================== ГЕРОЙ ==================== -->
-<section class="${cls('section', 'section--surface hero', alignClass(d, 'left'))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), 'section--surface hero', alignClass(d, 'left'))}"${anchor(b)}>
   <div class="hero__inner">
     <div class="hero__text">
       <p class="eyebrow">${rich(d.eyebrow)}</p>
@@ -193,7 +212,7 @@ ${c.items.map((it) => `        <li>${esc(it)}</li>`).join('\n')}
     </article>`).join('\n\n');
 
     return `<!-- ==================== НАПРАВЛЕНИЯ ==================== -->
-<section class="${cls('section', 'section--second dir', alignClass(d, 'center'))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), 'section--second dir', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <p class="eyebrow">${rich(d.eyebrow)}</p>
 
@@ -213,7 +232,7 @@ ${torn('bottom', b.torn.bottom)}
   about(b) {
     const d = b.data;
     return `<!-- ==================== ОБО МНЕ ==================== -->
-<section class="${cls('section', 'section--surface about', alignClass(d, 'left'))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), 'section--surface about', alignClass(d, 'left'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <p class="eyebrow">${rich(d.eyebrow)}</p>
 
@@ -271,7 +290,7 @@ ${torn('bottom', b.torn.bottom)}
     }).join('\n\n');
 
     return `<!-- ==================== ПОДХОД ==================== -->
-<section class="${cls('section', 'section--surface appr', alignClass(d, 'center'))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), 'section--surface appr', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="appr__head">
     <p class="eyebrow">${rich(d.eyebrow)}</p>
@@ -299,7 +318,7 @@ ${torn('bottom', b.torn.bottom)}
     // до того, как отработает скрипт карусели
     const first = d.docs[0];
     return `<!-- ==================== ОБРАЗОВАНИЕ ==================== -->
-<section class="${cls('edu', alignClass(d, 'left'))}"${anchor(b)}>
+<section class="${cls('edu', spaceClass(d), alignClass(d, 'left'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <!-- Папка собрана вёрсткой, а не картинкой: так бумажка с подписью
        масштабируется вместе с ней на всех экранах. Геометрия — из макета,
@@ -380,7 +399,7 @@ ${torn('bottom', b.torn.bottom)}
     }).join('\n\n');
 
     return `<!-- ==================== КОНТАКТЫ ==================== -->
-<section class="${cls('section', 'section--surface contacts', alignClass(d, 'center'))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), 'section--surface contacts', alignClass(d, 'center'))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="contacts__head">
     <p class="eyebrow">${rich(d.eyebrow)}</p>
@@ -403,7 +422,7 @@ ${torn('bottom', b.torn.bottom)}
   text(b) {
     const d = b.data;
     return `<!-- ==================== ТЕКСТ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--text', alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), bgClass(b), 'simple simple--text', alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.eyebrow ? `      <p class="eyebrow">${rich(d.eyebrow)}</p>\n` : ''}${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}
@@ -415,7 +434,7 @@ ${torn('bottom', b.torn.bottom)}
   image(b) {
     const d = b.data;
     return `<!-- ==================== КАРТИНКА ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--image', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), bgClass(b), 'simple simple--image', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <figure class="simple__figure">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -428,7 +447,7 @@ ${torn('bottom', b.torn.bottom)}
     const d = b.data;
     const side = d.imageSide === 'right' ? 'simple--media-right' : '';
     return `<!-- ==================== КАРТИНКА С ТЕКСТОМ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--media', side, alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), bgClass(b), 'simple simple--media', side, alignClass(d, 'left'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__media">
     <img src="${esc(d.src)}" alt="${esc(d.alt || '')}"${d.width ? ` width="${d.width}"` : ''}${d.height ? ` height="${d.height}"` : ''}>
@@ -444,7 +463,7 @@ ${torn('bottom', b.torn.bottom)}
   quote(b) {
     const d = b.data;
     return `<!-- ==================== ЦИТАТА ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--quote', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), bgClass(b), 'simple simple--quote', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <blockquote class="quote">
     <p class="quote__text">${rich(d.text)}</p>
@@ -456,7 +475,7 @@ ${torn('bottom', b.torn.bottom)}
   cta(b) {
     const d = b.data;
     return `<!-- ==================== ПРИЗЫВ ==================== -->
-<section class="${cls('section', bgClass(b), 'simple simple--cta', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
+<section class="${cls('section', spaceClass(d), bgClass(b), 'simple simple--cta', alignClass(d, 'center'), styleClass(d.style))}"${anchor(b)}>
 ${torn('top', b.torn.top)}
   <div class="simple__inner">
 ${d.title ? `      <h2 class="simple__title">${rich(d.title)}</h2>\n` : ''}${paras(d.body, 'simple__body')}

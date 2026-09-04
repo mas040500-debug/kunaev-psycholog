@@ -122,6 +122,40 @@ const UNIQUE = {
 // только читаемые на всех трёх фонах, шрифта два, размера три. Свободный
 // выбор дал бы через месяц серый текст на сиреневом и восемь кеглей на
 // одной странице, а чинить это пришлось бы дизайнеру.
+// Отступы внутри блока — отдельно для трёх экранов. Одного значения мало:
+// то, что на десктопе выглядит воздушно, на телефоне часто разрежено, и
+// наоборот. Ступени, а не пиксели: меняется плотность блока целиком,
+// пропорции внутри него остаются от дизайна.
+const GAP_OPTIONS = [
+  { value: 'xs', label: 'Очень плотно' },
+  { value: 's', label: 'Плотно' },
+  { value: 'm', label: 'Обычно' },
+  { value: 'l', label: 'Просторно' },
+  { value: 'xl', label: 'Очень просторно' },
+];
+
+const GAP_OPTIONS_TEXT = [
+  { value: 'xs', label: 'Сильно мельче' },
+  { value: 's', label: 'Мельче' },
+  { value: 'm', label: 'Обычный' },
+  { value: 'l', label: 'Крупнее' },
+  { value: 'xl', label: 'Сильно крупнее' },
+];
+
+export const SPACE_FIELDS = [
+  { key: 'space.desktop', label: 'Отступы: компьютер', type: 'select', options: GAP_OPTIONS, default: 'm' },
+  { key: 'space.tablet', label: 'Отступы: планшет', type: 'select', options: GAP_OPTIONS, default: 'm' },
+  { key: 'space.mobile', label: 'Отступы: телефон', type: 'select', options: GAP_OPTIONS, default: 'm',
+    hint: 'Расстояния между элементами внутри блока. У каждого экрана своё значение — проверяйте кнопками «Компьютер / Планшет / Телефон» справа.' },
+];
+
+export const TEXT_SIZE_FIELDS = [
+  { key: 'textSize.desktop', label: 'Размер текста: компьютер', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm' },
+  { key: 'textSize.tablet', label: 'Размер текста: планшет', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm' },
+  { key: 'textSize.mobile', label: 'Размер текста: телефон', type: 'select', options: GAP_OPTIONS_TEXT, default: 'm',
+    hint: 'Масштаб всей типографики блока: заголовок и текст меняются вместе, их соотношение остаётся от дизайна.' },
+];
+
 export const ALIGN_FIELD = {
   key: 'style.align', label: 'Выравнивание', type: 'select', options: [
     { value: 'left', label: 'По левому краю' },
@@ -149,10 +183,6 @@ export const STYLE_FIELDS = [
     { value: 'light', label: 'Лёгкий заголовок' } ],
     hint: 'Жирный — для текста, лёгкий — для заголовка. Оба сразу делать не стоит: пропадёт разница между ними.' },
   ALIGN_FIELD,
-  { key: 'style.gap', label: 'Отступы внутри блока', type: 'select', options: [
-    { value: 's', label: 'Плотно' },
-    { value: 'm', label: 'Обычно' },
-    { value: 'l', label: 'Просторно' } ] },
 ];
 
 const STYLE_DEFAULTS = { color: 'default', font: 'base', size: 'm', gap: 'm', weight: 'normal' };
@@ -235,19 +265,25 @@ const ALIGNABLE = ['image'];
 // строки выравнивать нечего, она едет через весь экран.
 const UNIQUE_ALIGN = { hero: 'left', cards: 'center', about: 'left', principles: 'center', education: 'left', contacts: 'center' };
 
+const SPACE_DEFAULTS = { desktop: 'm', tablet: 'm', mobile: 'm' };
+const TEXT_DEFAULTS = { desktop: 'm', tablet: 'm', mobile: 'm' };
+
 export const SCHEMA = {
   ...Object.fromEntries(Object.entries(UNIQUE).map(([t, d]) => [t, {
     ...d,
     unique: true,
-    fields: UNIQUE_ALIGN[t] ? [...d.fields, ALIGN_FIELD] : d.fields,
+    fields: [...(UNIQUE_ALIGN[t] ? [...d.fields, ALIGN_FIELD] : d.fields), ...SPACE_FIELDS, ...TEXT_SIZE_FIELDS],
     defaults: UNIQUE_ALIGN[t] ? { ...(d.defaults || {}), style: { align: UNIQUE_ALIGN[t] } } : d.defaults,
   }])),
   ...Object.fromEntries(Object.entries(SIMPLE).map(([t, d]) => [t, {
     ...d,
     unique: false,
-    fields: STYLED.includes(t) ? [...d.fields, ...STYLE_FIELDS]
-      : ALIGNABLE.includes(t) ? [...d.fields, ALIGN_FIELD]
-      : d.fields,
+    fields: [
+      ...(STYLED.includes(t) ? [...d.fields, ...STYLE_FIELDS]
+        : ALIGNABLE.includes(t) ? [...d.fields, ALIGN_FIELD]
+        : d.fields),
+      ...SPACE_FIELDS, ...TEXT_SIZE_FIELDS,
+    ],
     defaults: STYLED.includes(t) ? { ...d.defaults, style: { ...STYLE_DEFAULTS, align: ALIGN_DEFAULTS[t] } }
       : ALIGNABLE.includes(t) ? { ...d.defaults, style: { align: ALIGN_DEFAULTS[t] } }
       : d.defaults,

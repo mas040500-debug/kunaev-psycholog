@@ -279,7 +279,10 @@ function fieldFor(f, data) {
   const value = getAt(data, f.key);
 
   if (f.type === 'select') {
-    return selectField(f.label, f.options, value ?? f.options[0].value,
+    // без явного значения показываем ступень по умолчанию, а не первую в
+    // списке: у шкалы «очень плотно … очень просторно» первая — это край,
+    // и форма врала бы про текущее состояние блока
+    return selectField(f.label, f.options, value ?? f.default ?? f.options[0].value,
       (v) => { setAt(data, f.key, v); touched(); }, f.hint);
   }
 
@@ -412,7 +415,31 @@ function richField(f, data, value) {
     bar.append(cell);
   });
 
-  box.oninput = save;
+  // Кнопка неразрывного пробела. Ввести «&nbsp;» руками нельзя: текст поля
+  // экранируется, иначе через него на сайт попало бы что угодно. Поэтому
+  // вставляем настоящий символ, а привычную запись подменяем на него же.
+  const nb = el('button', 'rich__nb', '⎵ не разрывать');
+  nb.type = 'button';
+  nb.title = 'Неразрывный пробел: слова по краям не разъедутся на разные строки';
+  nb.onclick = () => {
+    box.focus();
+    document.execCommand('insertText', false, '\u00A0');
+    save();
+  };
+  bar.append(nb);
+
+  box.oninput = () => {
+    if (box.innerHTML.includes('&amp;nbsp;')) {
+      box.innerHTML = box.innerHTML.replaceAll('&amp;nbsp;', '\u00A0');
+      const r = document.createRange();
+      r.selectNodeContents(box);
+      r.collapse(false);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    }
+    save();
+  };
   // вставка из другого редактора приносит чужую разметку — берём только текст
   box.addEventListener('paste', (e) => {
     e.preventDefault();
