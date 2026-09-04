@@ -158,7 +158,7 @@
       "bg": "surface",
       "anchor": "principles",
       "data": {
-        "eyebrow": "<span class=\"t-size-l\">Подход</span>",
+        "eyebrow": "<span><span class=\"t-size-l\">Подход</span></span>",
         "title": "Принципы работы",
         "sub": "Я совмещаю структурированную, системную терапию с комфортной и понимающей атмосферой на сессиях.",
         "notes": [
